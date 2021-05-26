@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navgraph"
+    app:startDestination="@id/startScreen">
+    <fragment
+        android:id="@+id/contacts"
+        android:name="de.uni.cc2coronotracker.Contacts"
+        android:label="fragment_contacts"
+        tools:layout="@layout/fragment_contacts" />
+    <fragment
+        android:id="@+id/startScreen"
+        android:name="de.uni.cc2coronotracker.StartScreen"
+        android:label="fragment_start_screen"
+        tools:layout="@layout/fragment_start_screen" >
+        <action
+            android:id="@+id/action_startScreen_to_contacts"
+            app:destination="@id/contacts" />
+        <action
+            android:id="@+id/action_startScreen_to_showQR"
+            app:destination="@id/showQR" />
+        <action
+            android:id="@+id/action_startScreen_to_readQR"
+            app:destination="@id/readQR" />
+    </fragment>
+    <fragment
+        android:id="@+id/showQR"
+        android:name="de.uni.cc2coronotracker.ShowQR"
+        android:label="fragment_show_qr"
+        tools:layout="@layout/fragment_show_qr" />
+    <fragment
+        android:id="@+id/readQR"
+        android:name="de.uni.cc2coronotracker.ReadQR"
+        android:label="fragment_read_qr"
+        tools:layout="@layout/fragment_read_qr" />
+</navigation>

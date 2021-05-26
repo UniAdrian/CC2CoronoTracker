@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">CC2CoronoTracker</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_contacts">Hello from Contacts</string>
+    <string name="title_qr_read">Hey, here a QR code should be read.</string>
+    <string name="title_qr_create">Hey, here a QR code should be generated and shown to the user.</string>
+    <string name="LinkContacts">Contacts</string>
+    <string name="LinkReadQR">Scan QR</string>
+    <string name="LinkCreateQR">Show QR</string>
 </resources>
