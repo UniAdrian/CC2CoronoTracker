@@ -47,5 +47,8 @@
             android:name="contactId"
             app:argType="long"
             android:defaultValue="-1L"/>
+        <action
+            android:id="@+id/action_contactDetailsFragment_to_contacts"
+            app:destination="@id/contacts" />
     </fragment>
 </navigation>

@@ -29,4 +29,9 @@
     <string name="import_single_contact">Import a contact from your phone.</string>
     <string name="contact_import_success">Contact imported successfully.</string>
     <string name="contacts_how_to">Press the button in the bottom right corner to create or import new contacts.</string>
+    <string name="delete_contact">Delete contact</string>
+    <string name="delete_contact_success">Contact deleted successfully</string>
+    <string name="delete_contact_failure">Failed to delete the contact.</string>
+    <string name="confirm_contact_deletion">Are you sure you want to delete %s?</string>
+    <string name="confirm_contact_deletion_title">Are you sure?</string>
 </resources>

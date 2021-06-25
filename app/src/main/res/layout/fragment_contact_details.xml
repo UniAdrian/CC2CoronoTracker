@@ -84,20 +84,18 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/contactDetailsExposures"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="@{detailsVM.exposures.empty ? View.VISIBLE : View.GONE}"
-                />
+                android:layout_height="419dp"
+                android:visibility="@{detailsVM.exposures.empty ? View.VISIBLE : View.GONE}" />
 
         </LinearLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/detailsLoadingContainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="30dp"
+            android:layout_height="0dp"
             android:background="@color/white"
             android:visibility="@{detailsVM.loading ? View.VISIBLE : View.GONE}"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/btnDeleteContact"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -125,6 +123,20 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/progressBar" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <Button
+            android:id="@+id/btnDeleteContact"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/delete_contact"
+            android:textColor="@color/design_default_color_error"
+            android:onClick="@{() -> detailsVM.deleteContact()}"
+            app:icon="@drawable/ic_baseline_delete_forever_24"
+            app:iconTint="@color/design_default_color_error"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

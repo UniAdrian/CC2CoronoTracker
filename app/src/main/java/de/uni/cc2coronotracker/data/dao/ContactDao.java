@@ -53,4 +53,7 @@ public abstract class ContactDao {
 
     @Query("DELETE FROM contacts")
     public abstract void nukeTable();
+
+    @Query("DELETE FROM contacts WHERE id = :id")
+    public abstract void delete(long id);
 }

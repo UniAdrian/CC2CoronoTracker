@@ -47,7 +47,7 @@ public class Contact {
 
     @Override
     public String toString() {
-        return String.format("Contact [uuid=%s, lookupUri=%s, displayName=%s, photoUri=%s, starred=%b]", uuid, lookupUri, displayName, photoUri, favorite);
+        return String.format("Contact [id=%d, uuid=%s, lookupUri=%s, displayName=%s, photoUri=%s, starred=%b]", id, uuid, lookupUri, displayName, photoUri, favorite);
     }
 
     /**

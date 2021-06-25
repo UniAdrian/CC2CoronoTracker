@@ -52,15 +52,7 @@ public class ContactRepository{
 
 
     private Contact getContact(long id) {
-        Contact c = contactDao.getByIdSync(id);
-        if (c == null) {
-            return null;
-        }
-
-        Contact detailedContact = readContact(c.lookupUri);
-        detailedContact.uuid = c.uuid;
-
-        return detailedContact;
+        return contactDao.getByIdSync(id);
     }
 
     public void getContact(long id, RepositoryCallback<Contact> callback) {
@@ -75,16 +67,8 @@ public class ContactRepository{
         });
     }
 
-    public Contact getContact(UUID uuid) {
-        Contact c = contactDao.getByUUIDSync(uuid);
-        if (c == null) {
-            return null;
-        }
-
-        Contact detailedContact = readContact(c.lookupUri);
-        detailedContact.uuid = c.uuid;
-
-        return detailedContact;
+    private Contact getContact(UUID uuid) {
+        return contactDao.getByUUIDSync(uuid);
     }
 
     /**
@@ -187,7 +171,7 @@ public class ContactRepository{
         });
     }
 
-    public int updateContact(Contact contact) { return contactDao.update(contact); }
+    private int updateContact(Contact contact) { return contactDao.update(contact); }
 
     public void updateContact(Contact contact, RepositoryCallback<Contact> callback) {
         executor.execute(() -> {
@@ -281,5 +265,20 @@ public class ContactRepository{
             result.photoUri = Uri.parse(photouri);
         }
         return result;
+    }
+
+    private void delete(long id) {
+        contactDao.delete(id);
+    }
+
+    public void delete(long id, RepositoryCallback<Void> callback) {
+        executor.execute(() -> {
+            try {
+                delete(id);
+                callback.onComplete(new Result.Success<>(null));
+            } catch (Exception e) {
+                callback.onComplete(new Result.Error<>(e));
+            }
+        });
     }
 }
