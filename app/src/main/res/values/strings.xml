@@ -8,4 +8,25 @@
     <string name="LinkContacts">Contacts</string>
     <string name="LinkReadQR">Scan QR</string>
     <string name="LinkCreateQR">Show QR</string>
+    <string name="loading_generic">Loading...</string>
+    <string name="detailsExposureDescription">Your history with this contact</string>
+    <string name="avatarDescription">Avatar</string>
+    <string name="contact_not_connected">This UUID is not connected to a phone contact yet!</string>
+    <string name="contact_bind_to_button">Pick a contact!</string>
+    <string name="description_no_exposures">There have been no exposures to this contact yet.</string>
+    <string name="contact_avatar_desc">Contact Avatar</string>
+    <string name="contact_favorite_desc">Favorite Contact?</string>
+    <string name="contact_description_none">You have not tracked any contacts with this person yet.</string>
+    <string name="contact_description_some">You had %1$d contacts with this person.</string>
+    <string name="no_contacts_yet">"You do not have any contacts yet. "</string>
+    <string name="add_or_import_contact">Add or import contact(s)</string>
+    <string name="add_contact">Add contact</string>
+    <string name="import_contacts">Import contacts from phone</string>
+    <string name="retry">Retry</string>
+    <string name="import_contact_failed">Importing phone contacts failed.</string>
+    <string name="import_single">Import single contact</string>
+    <string name="no_permission_no_import">Without the Read Contacts permission you won\'t be able to import contacts.</string>
+    <string name="import_single_contact">Import a contact from your phone.</string>
+    <string name="contact_import_success">Contact imported successfully.</string>
+    <string name="contacts_how_to">Press the button in the bottom right corner to create or import new contacts.</string>
 </resources>

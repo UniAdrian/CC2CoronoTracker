@@ -1,4 +1,4 @@
-package de.uni.cc2coronotracker;
+package de.uni.cc2coronotracker.ui.views;
 
 import android.os.Bundle;
 
@@ -8,12 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import de.uni.cc2coronotracker.R;
+
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link ReadQR#newInstance} factory method to
+ * Use the {@link ReadQRFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ReadQR extends Fragment {
+public class ReadQRFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -24,7 +26,7 @@ public class ReadQR extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public ReadQR() {
+    public ReadQRFragment() {
         // Required empty public constructor
     }
 
@@ -37,8 +39,8 @@ public class ReadQR extends Fragment {
      * @return A new instance of fragment ReadQR.
      */
     // TODO: Rename and change types and number of parameters
-    public static ReadQR newInstance(String param1, String param2) {
-        ReadQR fragment = new ReadQR();
+    public static ReadQRFragment newInstance(String param1, String param2) {
+        ReadQRFragment fragment = new ReadQRFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);

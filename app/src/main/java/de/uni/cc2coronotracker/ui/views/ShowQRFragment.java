@@ -1,4 +1,4 @@
-package de.uni.cc2coronotracker;
+package de.uni.cc2coronotracker.ui.views;
 
 import android.os.Bundle;
 
@@ -8,12 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import de.uni.cc2coronotracker.R;
+
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link Contacts#newInstance} factory method to
+ * Use the {@link ShowQRFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Contacts extends Fragment {
+public class ShowQRFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -24,7 +26,7 @@ public class Contacts extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public Contacts() {
+    public ShowQRFragment() {
         // Required empty public constructor
     }
 
@@ -34,11 +36,11 @@ public class Contacts extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment Contacts.
+     * @return A new instance of fragment ShowQR.
      */
     // TODO: Rename and change types and number of parameters
-    public static Contacts newInstance(String param1, String param2) {
-        Contacts fragment = new Contacts();
+    public static ShowQRFragment newInstance(String param1, String param2) {
+        ShowQRFragment fragment = new ShowQRFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -59,6 +61,6 @@ public class Contacts extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_contacts, container, false);
+        return inflater.inflate(R.layout.fragment_show_qr, container, false);
     }
 }

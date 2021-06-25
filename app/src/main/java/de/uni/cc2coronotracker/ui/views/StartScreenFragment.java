@@ -1,4 +1,4 @@
-package de.uni.cc2coronotracker;
+package de.uni.cc2coronotracker.ui.views;
 
 import android.os.Bundle;
 
@@ -10,13 +10,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import de.uni.cc2coronotracker.R;
+
 /**
  * A simple {@link Fragment} subclass.
  * create an instance of this fragment.
  */
-public class StartScreen extends Fragment {
+public class StartScreenFragment extends Fragment {
 
-    public StartScreen() {
+    public StartScreenFragment() {
         // Required empty public constructor
     }
 

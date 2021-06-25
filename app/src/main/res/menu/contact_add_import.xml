@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/fab_link"
+        android:icon="@drawable/ic_baseline_import_contacts_24"
+        android:title="@string/import_contacts" />
+
+    <item
+        android:id="@+id/fab_add"
+        android:icon="@drawable/ic_baseline_add_24"
+        android:title="@string/add_contact" />
+</menu>

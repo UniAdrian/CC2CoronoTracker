@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="titleFontSize">24sp</dimen>
+    <dimen name="margin_medium">2dp</dimen>
+    <dimen name="mediumFontSize">20sp</dimen>
+    <dimen name="standard_55">55dp</dimen>
+    <dimen name="standard_105">105dp</dimen>
+    <dimen name="standard_155">155dp</dimen>
+</resources>
