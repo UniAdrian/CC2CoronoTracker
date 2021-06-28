@@ -47,11 +47,16 @@ public class ContactDetailsFragment extends Fragment {
         });
 
         contactsDetailsViewModel.getContact().observe(this, contact -> {
+
+            if (contact == null)
+                return;
+
             if (contact.photoUri != null) {
                 binding.contactAvatar.setImageURI(contact.photoUri);
             } else {
                 binding.contactAvatar.setImageResource(R.drawable.ic_no_avatar_128);
             }
+
             Toolbar toolbar = requireActivity().findViewById(R.id.app_toolbar_top);
             toolbar.setTitle(contact.displayName);
         });
