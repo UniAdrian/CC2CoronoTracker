@@ -3,6 +3,11 @@ package de.uni.cc2coronotracker.ui.views;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
 import javax.inject.Inject;
 
@@ -28,6 +33,17 @@ public class MainActivity extends AppCompatActivity {
                 contentIfNotHandled.run(this);
             }
         });
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        AppBarConfiguration appBarConfiguration =
+                new AppBarConfiguration.Builder(navController.getGraph()).build();
+        Toolbar toolbar = findViewById(R.id.app_toolbar_top);
+        NavigationUI.setupWithNavController(toolbar, navController, appBarConfiguration);
     }
 
 }

@@ -22,7 +22,6 @@ import de.uni.cc2coronotracker.data.models.Exposure;
 import de.uni.cc2coronotracker.data.repositories.ContactRepository;
 import de.uni.cc2coronotracker.data.repositories.async.Result;
 import de.uni.cc2coronotracker.helper.ContextMediator;
-import de.uni.cc2coronotracker.helper.Event;
 import de.uni.cc2coronotracker.helper.RequestFactory;
 
 @HiltViewModel
@@ -37,9 +36,6 @@ public class ContactDetailsViewModel extends ViewModel {
 
     private MutableLiveData<Contact> contact = new MutableLiveData<>();
     private MutableLiveData<List<Exposure>> exposures = new MutableLiveData<>();
-
-    // Events used to request a contact pick.
-    private MutableLiveData<Event<Void>> requestContactPick = new MutableLiveData<>();
 
 
     @Inject
@@ -56,7 +52,6 @@ public class ContactDetailsViewModel extends ViewModel {
         contactRepository.getContact(contactId, queryResult -> {
             if (queryResult instanceof Result.Success) {
                 Contact receivedContact = ((Result.Success<Contact>) queryResult).data;
-
                 contact.postValue(receivedContact);
                 isLoading.postValue(false);
             } else {

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -51,6 +52,8 @@ public class ContactDetailsFragment extends Fragment {
             } else {
                 binding.contactAvatar.setImageResource(R.drawable.ic_no_avatar_128);
             }
+            Toolbar toolbar = requireActivity().findViewById(R.id.app_toolbar_top);
+            toolbar.setTitle(contact.displayName);
         });
 
     }
