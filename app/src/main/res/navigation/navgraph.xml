@@ -49,6 +49,8 @@
             app:argType="long" />
         <action
             android:id="@+id/action_contactDetailsFragment_to_contacts"
-            app:destination="@id/contacts" />
+            app:destination="@id/contacts"
+            app:popUpTo="@id/contacts"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>
