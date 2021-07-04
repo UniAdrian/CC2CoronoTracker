@@ -14,6 +14,7 @@ import dagger.hilt.InstallIn;
 import dagger.hilt.android.qualifiers.ApplicationContext;
 import dagger.hilt.components.SingletonComponent;
 import de.uni.cc2coronotracker.data.db.AppDatabase;
+import de.uni.cc2coronotracker.data.repositories.AppRepository;
 import de.uni.cc2coronotracker.data.repositories.ContactRepository;
 
 
@@ -25,6 +26,12 @@ public class RepositoriesModule {
     @Singleton
     public ContactRepository bindContactRepository(@ApplicationContext Context ctx, Executor executor, AppDatabase db) {
         return new ContactRepository(ctx, executor, db.getContactDao());
+    }
+
+    @Provides
+    @Singleton
+    public AppRepository bindAppRepository(@ApplicationContext Context ctx, Executor executor) {
+        return new AppRepository(ctx, executor);
     }
 
     @Provides

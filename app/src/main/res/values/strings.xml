@@ -4,7 +4,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_contacts">Hello from Contacts</string>
     <string name="title_qr_read">Hey, here a QR code should be read.</string>
-    <string name="title_qr_create">Hey, here a QR code should be generated and shown to the user.</string>
+    <string name="title_qr_create">Let other people scan your personal QR Code to establish a contact.</string>
     <string name="LinkContacts">Contacts</string>
     <string name="LinkReadQR">Scan QR</string>
     <string name="LinkCreateQR">Show QR</string>
@@ -35,4 +35,6 @@
     <string name="confirm_contact_deletion">Are you sure you want to delete %s?</string>
     <string name="confirm_contact_deletion_title">Are you sure?</string>
     <string name="contacts">Contacts</string>
+    <string name="qr_image_personal">Your personal QR-Code</string>
+    <string name="qr_generation_failed">Your personal QR code could not be created.</string>
 </resources>
