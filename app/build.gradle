@@ -73,6 +73,11 @@ dependencies {
     // For runtime permissions. Why reinvent the wheel?
     implementation 'com.karumi:dexter:6.2.2'
 
+    // Androidx preferences
+    def preference_version = "1.1.1"
+    implementation "androidx.preference:preference:$preference_version"
+
+
     // For instrumentation tests
     androidTestImplementation  'com.google.dagger:hilt-android-testing:2.36'
     androidTestAnnotationProcessor 'com.google.dagger:hilt-compiler:2.36'
