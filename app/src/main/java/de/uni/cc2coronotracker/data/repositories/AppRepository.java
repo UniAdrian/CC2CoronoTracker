@@ -3,11 +3,12 @@ package de.uni.cc2coronotracker.data.repositories;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 
+import androidx.core.content.res.ResourcesCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import java.util.UUID;
 import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
@@ -24,14 +25,15 @@ import de.uni.cc2coronotracker.data.repositories.async.Result;
  */
 public class AppRepository {
 
+    private final String PREFERENCE_UUID = "app_uuid";
+
+
     private final Context applicationContext;
     private final Executor executor;
 
     private final SharedPreferences preferences;
 
-    private final MutableLiveData<Boolean> hasUUIDAttachedLD = new MutableLiveData<>(false);
-    private final MutableLiveData<String> attachedUUID = new MutableLiveData<>(null);
-
+    private final MutableLiveData<UUID> attachedUUID = new MutableLiveData<>();
 
     @Inject
     public AppRepository(@ApplicationContext Context ctx, Executor executor, SharedPreferences preferences) {
@@ -44,27 +46,39 @@ public class AppRepository {
 
     // Does some initial work like e.g. prefetching the attached UUID and other preferences.
     private void init() {
-
+        // Test whether or not we have a personal UUID already
+        getOrCreateUUID();
     }
 
+    /**
+     * Tries to fetch the app uuid from shared preferences
+     * If no uuid was found a new one is created and stored.
+     * @return The stored or newly created uuid
+     */
+    private void getOrCreateUUID() {
+        String uuidAsString = preferences.getString(PREFERENCE_UUID, null);
+        if (uuidAsString!=null) {
+            attachedUUID.postValue(UUID.fromString(uuidAsString));
+        }
 
-    public LiveData<Boolean> hasUUIDAttached() {
-        return hasUUIDAttachedLD;
-    }
-
-    public LiveData<String> getAttachedUUID() {
-        return attachedUUID;
+        // We need to create a new UUID.
+        UUID newUUID = UUID.randomUUID();
+        // Store the new uuid. Since the edit is a potentially expensive operation we push this to the background.
+        executor.execute(() -> {
+            preferences.edit().putString(PREFERENCE_UUID, newUUID.toString());
+            attachedUUID.postValue(newUUID);
+        });
     }
 
     public void generateQRCode(String inputValue, int dimension, RepositoryCallback<Bitmap> callback) {
         executor.execute(() -> {
             QRGEncoder qrgEncoder = new QRGEncoder(inputValue, null, QRGContents.Type.TEXT, dimension);
 
-            qrgEncoder.setColorBlack(R.color.qr_black);
-            qrgEncoder.setColorWhite(R.color.qr_white);
 
-            qrgEncoder.setColorBlack(Color.BLACK);
-            qrgEncoder.setColorWhite(Color.WHITE);
+            int qrBlack = ResourcesCompat.getColor(applicationContext.getResources(), R.color.qr_black, null);
+            int qrWhite =  ResourcesCompat.getColor(applicationContext.getResources(), R.color.qr_white, null);
+            qrgEncoder.setColorBlack(qrBlack);
+            qrgEncoder.setColorWhite(qrWhite);
 
             try {
                 // Getting QR-Code as Bitmap
@@ -74,5 +88,10 @@ public class AppRepository {
                 callback.onComplete(new Result.Error<>(e));
             }
         });
+    }
+
+
+    public LiveData<UUID> getAttachedUUID() {
+        return attachedUUID;
     }
 }
