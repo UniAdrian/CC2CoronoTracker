@@ -1,6 +1,7 @@
 package de.uni.cc2coronotracker.data.repositories;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 
@@ -20,14 +21,17 @@ import de.uni.cc2coronotracker.data.repositories.async.Result;
  */
 public class AppRepository {
 
-    private Context applicationContext;
+    private final Context applicationContext;
     private final Executor executor;
+
+    private final SharedPreferences preferences;
 
 
     @Inject
-    public AppRepository(@ApplicationContext Context ctx, Executor executor) {
+    public AppRepository(@ApplicationContext Context ctx, Executor executor, SharedPreferences preferences) {
         applicationContext = ctx;
         this.executor = executor;
+        this.preferences = preferences;
     }
 
     public void generateQRCode(String inputValue, int dimension, RepositoryCallback<Bitmap> callback) {
