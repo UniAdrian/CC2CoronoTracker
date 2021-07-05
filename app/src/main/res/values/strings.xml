@@ -36,4 +36,11 @@
     <string name="contacts">Contacts</string>
     <string name="qr_image_personal">Your personal QR-Code</string>
     <string name="qr_generation_failed">Your personal QR code could not be created.</string>
+    <string name="preferences_category_general_information">General Information</string>
+    <string name="preferences_category_maps_integration">Maps integration</string>
+    <string name="personal_uuid">Personal UUID</string>
+    <string name="preferences_allow_tracking">Allow location tracking</string>
+    <string name="preferences_track_exposures">Track contact locations</string>
+    <string name="preferences_allow_tracking_summary">If true other people may track your location when scanning your QR code.</string>
+    <string name="preferences_track_exposures_summary">If contact tracking is enabled this option enables tracking of contacts when you scan a QR code.</string>
 </resources>

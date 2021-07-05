@@ -5,6 +5,9 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
 import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
@@ -26,12 +29,31 @@ public class AppRepository {
 
     private final SharedPreferences preferences;
 
+    private final MutableLiveData<Boolean> hasUUIDAttachedLD = new MutableLiveData<>(false);
+    private final MutableLiveData<String> attachedUUID = new MutableLiveData<>(null);
+
 
     @Inject
     public AppRepository(@ApplicationContext Context ctx, Executor executor, SharedPreferences preferences) {
         applicationContext = ctx;
         this.executor = executor;
         this.preferences = preferences;
+
+        init();
+    }
+
+    // Does some initial work like e.g. prefetching the attached UUID and other preferences.
+    private void init() {
+
+    }
+
+
+    public LiveData<Boolean> hasUUIDAttached() {
+        return hasUUIDAttachedLD;
+    }
+
+    public LiveData<String> getAttachedUUID() {
+        return attachedUUID;
     }
 
     public void generateQRCode(String inputValue, int dimension, RepositoryCallback<Bitmap> callback) {
