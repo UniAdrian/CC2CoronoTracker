@@ -48,7 +48,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean gotoPreferences(MenuItem item) {
-        Navigation.findNavController(this, R.id.nav_host_fragment).navigate(R.id.action_global_preferences);
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        if (navController.getCurrentDestination() != null && navController.getCurrentDestination().getId() != R.id.preferencesFragment) {
+            navController.navigate(R.id.action_global_preferences);
+        }
         return true;
     }
 }
