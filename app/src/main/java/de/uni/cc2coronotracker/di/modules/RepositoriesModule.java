@@ -1,6 +1,7 @@
 package de.uni.cc2coronotracker.di.modules;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import androidx.room.Room;
 
@@ -30,8 +31,8 @@ public class RepositoriesModule {
 
     @Provides
     @Singleton
-    public AppRepository bindAppRepository(@ApplicationContext Context ctx, Executor executor) {
-        return new AppRepository(ctx, executor);
+    public AppRepository bindAppRepository(@ApplicationContext Context ctx, Executor executor, SharedPreferences prefs) {
+        return new AppRepository(ctx, executor, prefs);
     }
 
     @Provides
