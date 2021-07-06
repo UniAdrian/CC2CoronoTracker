@@ -8,7 +8,7 @@
         <import type="java.util.UUID" />
         <variable
             name="qrVM"
-            type="de.uni.cc2coronotracker.data.viewmodel.ShowQRViewModel" />
+            type="de.uni.cc2coronotracker.data.viewmodel.PreferencesViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

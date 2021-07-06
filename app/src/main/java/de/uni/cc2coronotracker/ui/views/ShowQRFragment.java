@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import de.uni.cc2coronotracker.R;
-import de.uni.cc2coronotracker.data.viewmodel.ShowQRViewModel;
+import de.uni.cc2coronotracker.data.viewmodel.PreferencesViewModel;
 import de.uni.cc2coronotracker.databinding.FragmentShowQrBinding;
 
 /**
@@ -21,18 +21,22 @@ import de.uni.cc2coronotracker.databinding.FragmentShowQrBinding;
 @AndroidEntryPoint
 public class ShowQRFragment extends Fragment {
 
-    private ShowQRViewModel showQRViewModel;
+    private PreferencesViewModel preferencesViewModel;
     private FragmentShowQrBinding binding;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        showQRViewModel = new ViewModelProvider(this).get(ShowQRViewModel.class);
+        preferencesViewModel = new ViewModelProvider(this).get(PreferencesViewModel.class);
 
-        showQRViewModel.getQRCode().observe(this, bitmap -> {
+        preferencesViewModel.getQRCode().observe(this, bitmap -> {
             Log.d("SQR", "Got bitmap: " + bitmap);
             binding.imgQR.setImageBitmap(bitmap);
+        });
+
+        preferencesViewModel.getUUID().observe(this, uuid -> {
+            Log.d("SQR", "Received UUID: " + uuid);
         });
     }
 
@@ -40,13 +44,13 @@ public class ShowQRFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_show_qr, container, false);
 
-        binding.setQrVM(showQRViewModel);
+        binding.setQrVM(preferencesViewModel);
         binding.setLifecycleOwner(this);
 
         binding.imgQR.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
             int smallDim = Math.min(binding.imgQR.getHeight(), binding.imgQR.getWidth());
             Log.d("SQR", "Creating QR code with dimension: " + smallDim);
-            showQRViewModel.createOrGetQRCode("Test, test, test!", smallDim);
+            preferencesViewModel.createOrGetQRCode("Test, test, test!", smallDim);
         });
 
         View view = binding.getRoot();

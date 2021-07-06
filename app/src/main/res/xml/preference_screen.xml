@@ -4,14 +4,14 @@
 
     <PreferenceCategory android:title="@string/preferences_category_general_information">
 
-        <Preference
+        <EditTextPreference
             android:id="@+id/prfUUID"
             android:clickable="false"
             android:enabled="false"
-            app:enabled="false"
-            app:key="uuid"
-            app:summary="Your personal UUID generated when the app was first started."
-            app:title="@string/personal_uuid" />
+            android:key="app_uuid"
+            android:title="@string/personal_uuid"
+            app:useSimpleSummaryProvider="true"
+            android:shouldDisableView="false"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/preferences_category_maps_integration">

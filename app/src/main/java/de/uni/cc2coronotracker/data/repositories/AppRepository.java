@@ -41,12 +41,6 @@ public class AppRepository {
         this.executor = executor;
         this.preferences = preferences;
 
-        init();
-    }
-
-    // Does some initial work like e.g. prefetching the attached UUID and other preferences.
-    private void init() {
-        // Test whether or not we have a personal UUID already
         getOrCreateUUID();
     }
 
@@ -59,13 +53,14 @@ public class AppRepository {
         String uuidAsString = preferences.getString(PREFERENCE_UUID, null);
         if (uuidAsString!=null) {
             attachedUUID.postValue(UUID.fromString(uuidAsString));
+            return;
         }
 
         // We need to create a new UUID.
         UUID newUUID = UUID.randomUUID();
         // Store the new uuid. Since the edit is a potentially expensive operation we push this to the background.
         executor.execute(() -> {
-            preferences.edit().putString(PREFERENCE_UUID, newUUID.toString());
+            preferences.edit().putString(PREFERENCE_UUID, newUUID.toString()).commit();
             attachedUUID.postValue(newUUID);
         });
     }
