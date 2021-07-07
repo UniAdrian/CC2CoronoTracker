@@ -90,4 +90,7 @@ dependencies {
     testImplementation "androidx.room:room-testing:$room_version"
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+    // Generating QR Codes
+    implementation 'com.budiyev.android:code-scanner:2.1.0'
 }
