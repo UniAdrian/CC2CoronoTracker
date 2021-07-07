@@ -62,5 +62,5 @@
     <fragment
         android:id="@+id/preferencesFragment"
         android:name="de.uni.cc2coronotracker.ui.views.PreferencesFragment"
-        android:label="PreferencesFragment" />
+        android:label="@string/preferences" />
 </navigation>

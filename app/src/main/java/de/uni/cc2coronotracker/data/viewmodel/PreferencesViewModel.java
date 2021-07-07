@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.UUID;
+
 import javax.inject.Inject;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
@@ -19,19 +21,22 @@ import de.uni.cc2coronotracker.helper.ContextMediator;
 import de.uni.cc2coronotracker.helper.RequestFactory;
 
 @HiltViewModel
-public class ShowQRViewModel extends ViewModel {
+public class PreferencesViewModel extends ViewModel {
 
-    private final String TAG = "ShowQRViewModel";
+    private final String TAG = "PreferencesViewModel";
 
     private final ContextMediator contextMediator;
     private final AppRepository appRepository;
 
     private MutableLiveData<Bitmap> qrCode = new MutableLiveData<>();
+    private LiveData<UUID> uuidLD;
 
     @Inject
-    public ShowQRViewModel(ContextMediator ctxMediator, AppRepository appRepository) {
+    public PreferencesViewModel(ContextMediator ctxMediator, AppRepository appRepository) {
         contextMediator = ctxMediator;
         this.appRepository = appRepository;
+
+        uuidLD = appRepository.getAttachedUUID();
     }
 
     /**
@@ -55,5 +60,5 @@ public class ShowQRViewModel extends ViewModel {
     public LiveData<Bitmap> getQRCode() {
         return qrCode;
     }
-
+    public LiveData<UUID> getUUID() { return uuidLD; }
 }

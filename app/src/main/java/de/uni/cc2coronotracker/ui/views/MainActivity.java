@@ -5,6 +5,7 @@ import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -14,6 +15,7 @@ import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import de.uni.cc2coronotracker.R;
+import de.uni.cc2coronotracker.data.viewmodel.PreferencesViewModel;
 import de.uni.cc2coronotracker.helper.CallWithContextRequest;
 import de.uni.cc2coronotracker.helper.ContextMediator;
 
@@ -23,10 +25,15 @@ public class MainActivity extends AppCompatActivity {
     @Inject
     public ContextMediator ctxMediator;
 
+    private PreferencesViewModel preferencesViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Referencing the view model here is actually enough already to assure the UUID is assigned on startup.
+        preferencesViewModel = new ViewModelProvider(this).get(PreferencesViewModel.class);
 
         ctxMediator.getRequests().observe(this, event -> {
             CallWithContextRequest contentIfNotHandled = event.getContentIfNotHandled();

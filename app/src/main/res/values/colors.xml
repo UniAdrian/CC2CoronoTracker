@@ -8,5 +8,5 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="qr_black">#000000</color>
-    <color name="qr_white">#FFFFFFFF</color>
+    <color name="qr_white">#FFFFFF</color>
 </resources>
