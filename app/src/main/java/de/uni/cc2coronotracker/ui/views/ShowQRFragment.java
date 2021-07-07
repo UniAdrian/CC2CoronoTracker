@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
@@ -47,10 +48,15 @@ public class ShowQRFragment extends Fragment {
         binding.setQrVM(preferencesViewModel);
         binding.setLifecycleOwner(this);
 
-        binding.imgQR.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
-            int smallDim = Math.min(binding.imgQR.getHeight(), binding.imgQR.getWidth());
-            Log.d("SQR", "Creating QR code with dimension: " + smallDim);
-            preferencesViewModel.createOrGetQRCode("Test, test, test!", smallDim);
+        binding.imgQR.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                int smallDim = Math.min(binding.imgQR.getHeight(), binding.imgQR.getWidth());
+                Log.d("SQR", "Creating QR code with dimension: " + smallDim);
+                preferencesViewModel.createOrGetQRCode("Test, test, test!", smallDim);
+
+                binding.imgQR.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
         });
 
         View view = binding.getRoot();
