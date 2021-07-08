@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navgraph"
-    app:startDestination="@id/startScreen">
+    app:startDestination="@id/splashFragment">
 
     <action
         android:id="@+id/action_global_preferences"
@@ -63,4 +63,31 @@
         android:id="@+id/preferencesFragment"
         android:name="de.uni.cc2coronotracker.ui.views.PreferencesFragment"
         android:label="@string/preferences" />
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="de.uni.cc2coronotracker.ui.views.splash.SplashFragment"
+        android:label="fragment_splash"
+        tools:layout="@layout/fragment_splash" >
+        <action
+            android:id="@+id/action_splashFragment_to_startScreen"
+            app:destination="@id/startScreen"
+            app:popUpTo="@id/splashFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_splashFragment_to_onBoardingFragment"
+            app:destination="@id/onBoardingFragment"
+            app:popUpTo="@id/splashFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/onBoardingFragment"
+        android:name="de.uni.cc2coronotracker.ui.views.onboarding.OnBoardingFragment"
+        android:label="fragment_on_boarding"
+        tools:layout="@layout/fragment_on_boarding" >
+        <action
+            android:id="@+id/action_onBoardingFragment_to_startScreen"
+            app:destination="@id/startScreen"
+            app:popUpTo="@id/onBoardingFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>
