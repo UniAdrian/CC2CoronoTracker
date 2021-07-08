@@ -44,4 +44,11 @@
     <string name="preferences_allow_tracking_summary">If true other people may track your location when scanning your QR code.</string>
     <string name="preferences_track_exposures_summary">If contact tracking is enabled this option enables tracking of contacts when you scan a QR code.</string>
     <string name="preferences">Preferences</string>
+
+    <string name="on_boarding_topic_title1">Title1</string>
+    <string name="on_boarding_topic_title2">Title2</string>
+    <string name="on_boarding_topic_title3">Title3</string>
+    <string name="on_boarding_topic_description1">Description1</string>
+    <string name="on_boarding_topic_description2">Description2</string>
+    <string name="on_boarding_topic_description3">Description3</string>
 </resources>
