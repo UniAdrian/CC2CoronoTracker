@@ -1,7 +1,9 @@
 package de.uni.cc2coronotracker.ui.views;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -43,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public void onStart() {
         super.onStart();
@@ -52,6 +55,29 @@ public class MainActivity extends AppCompatActivity {
                 new AppBarConfiguration.Builder(navController.getGraph()).build();
         Toolbar toolbar = findViewById(R.id.app_toolbar_top);
         NavigationUI.setupWithNavController(toolbar, navController, appBarConfiguration);
+
+        navController.addOnDestinationChangedListener((controller, d, arguments) -> {
+            boolean condition = d.getId() == R.id.splashFragment || d.getId() == R.id.onBoardingFragment;
+            toolbar.setVisibility(condition ? View.GONE : View.VISIBLE);
+
+            switch (d.getId()) {
+                case R.id.splashFragment:
+                case R.id.onBoardingFragment:
+                    getWindow().getDecorView().setSystemUiVisibility(
+                            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                                    | View.SYSTEM_UI_FLAG_FULLSCREEN
+                    );
+                    break;
+                default:
+                    getWindow().getDecorView().setSystemUiVisibility(
+                            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    );
+                    break;
+            }
+        });
     }
 
     public boolean gotoPreferences(MenuItem item) {

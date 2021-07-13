@@ -53,4 +53,10 @@
     <string name="dialog_select">Select</string>
     <string name="pick_contacts">Select contacts</string>
     <string name="upsert_contact_failed">Failed to update contact \'%s\'.</string>
+    <string name="on_boarding_topic_title1">Title1</string>
+    <string name="on_boarding_topic_title2">Title2</string>
+    <string name="on_boarding_topic_title3">Title3</string>
+    <string name="on_boarding_topic_description1">Description1</string>
+    <string name="on_boarding_topic_description2">Description2</string>
+    <string name="on_boarding_topic_description3">Description3</string>
 </resources>
