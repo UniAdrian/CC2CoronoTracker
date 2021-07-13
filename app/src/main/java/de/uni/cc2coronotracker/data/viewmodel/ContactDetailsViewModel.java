@@ -51,6 +51,7 @@ public class ContactDetailsViewModel extends ViewModel {
 
         contactRepository.getContact(contactId, queryResult -> {
             if (queryResult instanceof Result.Success) {
+                Log.d(LOG_TAG, "Fetched contact: " + ((Result.Success<Contact>) queryResult).data);
                 Contact receivedContact = ((Result.Success<Contact>) queryResult).data;
                 contact.postValue(receivedContact);
                 isLoading.postValue(false);

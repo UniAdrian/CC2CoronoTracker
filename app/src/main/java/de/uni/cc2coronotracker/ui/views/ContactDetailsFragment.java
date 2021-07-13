@@ -18,16 +18,15 @@ import dagger.hilt.android.AndroidEntryPoint;
 import de.uni.cc2coronotracker.R;
 import de.uni.cc2coronotracker.data.adapters.ExposureAdapter;
 import de.uni.cc2coronotracker.data.viewmodel.ContactDetailsViewModel;
-import de.uni.cc2coronotracker.data.viewmodel.shared.AddExposureSharedViewModel;
 import de.uni.cc2coronotracker.databinding.FragmentContactDetailsBinding;
 
 @AndroidEntryPoint
 public class ContactDetailsFragment extends Fragment {
 
-    private FragmentContactDetailsBinding binding;
+    private final String TAG = "ContactDetailsFragment";
 
+    private FragmentContactDetailsBinding binding;
     private ContactDetailsViewModel contactsDetailsViewModel;
-    private AddExposureSharedViewModel addExposureViewModel;
 
     public ContactDetailsFragment() {
     }
@@ -37,7 +36,6 @@ public class ContactDetailsFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         contactsDetailsViewModel = new ViewModelProvider(this).get(ContactDetailsViewModel.class);
-        addExposureViewModel = new ViewModelProvider(this.getActivity()).get(AddExposureSharedViewModel.class);
 
         contactsDetailsViewModel.getExposures().observe(this, exposures -> {
             if (exposures == null) {
@@ -78,7 +76,7 @@ public class ContactDetailsFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ContactDetailsFragmentArgs contactDetailsFragmentArgs = ContactDetailsFragmentArgs.fromBundle(getArguments());
         if (contactDetailsFragmentArgs == null) {
-            Log.e("Details", "No saved instance state... :|");
+            Log.e(TAG, "No saved instance state... :|");
         } else {
             contactsDetailsViewModel.setContactId(contactDetailsFragmentArgs.getContactId());
         }

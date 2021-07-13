@@ -2,21 +2,21 @@ package de.uni.cc2coronotracker.ui.views;
 
 import android.Manifest;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.budiyev.android.codescanner.AutoFocusMode;
 import com.budiyev.android.codescanner.CodeScanner;
-import com.budiyev.android.codescanner.CodeScannerView;
-import com.budiyev.android.codescanner.DecodeCallback;
-import com.google.zxing.Result;
+import com.budiyev.android.codescanner.ScanMode;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.zxing.BarcodeFormat;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -24,53 +24,76 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
-import java.util.Scanner;
+import java.util.Collections;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.AndroidEntryPoint;
 import de.uni.cc2coronotracker.R;
+import de.uni.cc2coronotracker.data.qr.QrIntent;
+import de.uni.cc2coronotracker.data.viewmodel.ReadQRViewModel;
+import de.uni.cc2coronotracker.data.viewmodel.shared.ContactSelectionDialogViewModel;
+import de.uni.cc2coronotracker.databinding.FragmentReadQrBinding;
+import de.uni.cc2coronotracker.helper.ContextMediator;
+import de.uni.cc2coronotracker.helper.RequestFactory;
 
 
+@AndroidEntryPoint
 public class ReadQRFragment extends Fragment {
 
-    public ReadQRFragment() {
+    private CodeScanner codeScanner;
+    private FragmentReadQrBinding binding;
 
+    private ReadQRViewModel readQRViewModel;
+    private ContactSelectionDialogViewModel contactSelectionViewModel;
+
+    @Inject
+    public ContextMediator ctxMediator;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        readQRViewModel = new ViewModelProvider(this).get(ReadQRViewModel.class);
+        contactSelectionViewModel = new ViewModelProvider(getActivity()).get(ContactSelectionDialogViewModel.class);
+
+        contactSelectionViewModel.getOnContactSelection().observe(this, contactPickEvent -> {
+            readQRViewModel.handleContactPick(contactPickEvent);
+        });
     }
-
-    CodeScanner codeScanner;
-    CodeScannerView scannerView;
-    TextView resultData;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_read_qr, container, false);
-        scannerView = view.findViewById(R.id.scannerView);
-        resultData = view.findViewById(R.id.resultsOfScan);
-        codeScanner = new CodeScanner(view.getContext(), scannerView);
-        codeScanner.setDecodeCallback(new DecodeCallback() {
-            @Override
-            public void onDecoded(@NonNull Result result) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-//                        Code for Validation need to be done instead the QR code value is displayed in TextView
-                        resultData.setText(result.getText());
-                    }
-                });
 
-                scannerView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        codeScanner.startPreview();
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_read_qr, container, false);
+        binding.setLifecycleOwner(this);
 
-                    }
-                });
+        codeScanner = new CodeScanner(getContext(), binding.scannerView);
 
+        codeScanner.setCamera(CodeScanner.CAMERA_BACK);
+        codeScanner.setFormats(Collections.singletonList(BarcodeFormat.QR_CODE));
+
+        codeScanner.setAutoFocusMode(AutoFocusMode.SAFE);
+        codeScanner.setScanMode(ScanMode.SINGLE);
+        codeScanner.setAutoFocusEnabled(true);
+
+        codeScanner.setErrorCallback(error -> {
+            Log.e("err", "Read QR Error: " + error.getMessage());
+            codeScanner.startPreview();
+        });
+
+        codeScanner.setDecodeCallback(result -> requireActivity().runOnUiThread(() -> {
+            try {
+                QrIntent.Intent intent = QrIntent.fromString(result.getText());
+                readQRViewModel.handleQRIntent(intent);
+            } catch (Exception e) {
+                ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.qr_scan_failed, Snackbar.LENGTH_LONG, e.getMessage()));
             }
-        });return view;
-    }
+        }));
 
-    private void runOnUiThread(Runnable runnable) {
+        binding.scannerView.setOnClickListener(v -> codeScanner.startPreview());
+
+        return binding.getRoot();
     }
 
     @Override
@@ -79,8 +102,14 @@ public class ReadQRFragment extends Fragment {
         requestForCamera();
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        codeScanner.releaseResources();
+    }
+
     private void requestForCamera() {
-        Dexter.withContext(scannerView.getContext()).withPermission(Manifest.permission.CAMERA).withListener(new PermissionListener() {
+        Dexter.withContext(getContext()).withPermission(Manifest.permission.CAMERA).withListener(new PermissionListener() {
             @Override
             public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
                 codeScanner.startPreview();
@@ -89,7 +118,6 @@ public class ReadQRFragment extends Fragment {
             @Override
             public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
                 Toast.makeText(getActivity(),"Camera Permission is Required",Toast.LENGTH_SHORT).show();
-
             }
 
             @Override
@@ -99,4 +127,4 @@ public class ReadQRFragment extends Fragment {
             }
         }).check();
     }
-    }
+}

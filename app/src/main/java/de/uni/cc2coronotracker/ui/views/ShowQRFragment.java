@@ -1,7 +1,6 @@
 package de.uni.cc2coronotracker.ui.views;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,12 +31,7 @@ public class ShowQRFragment extends Fragment {
         preferencesViewModel = new ViewModelProvider(this).get(PreferencesViewModel.class);
 
         preferencesViewModel.getQRCode().observe(this, bitmap -> {
-            Log.d("SQR", "Got bitmap: " + bitmap);
             binding.imgQR.setImageBitmap(bitmap);
-        });
-
-        preferencesViewModel.getUUID().observe(this, uuid -> {
-            Log.d("SQR", "Received UUID: " + uuid);
         });
     }
 
@@ -52,9 +46,8 @@ public class ShowQRFragment extends Fragment {
             @Override
             public void onGlobalLayout() {
                 int smallDim = Math.min(binding.imgQR.getHeight(), binding.imgQR.getWidth());
-                Log.d("SQR", "Creating QR code with dimension: " + smallDim);
-                preferencesViewModel.createOrGetQRCode("Test, test, test!", smallDim);
 
+                preferencesViewModel.createOrGetPersonalQRCode(smallDim);
                 binding.imgQR.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
         });

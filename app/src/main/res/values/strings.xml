@@ -44,4 +44,13 @@
     <string name="preferences_allow_tracking_summary">If true other people may track your location when scanning your QR code.</string>
     <string name="preferences_track_exposures_summary">If contact tracking is enabled this option enables tracking of contacts when you scan a QR code.</string>
     <string name="preferences">Preferences</string>
+    <string name="scan_qr_description">Scan a QR code</string>
+    <string name="preparing_qr">Preparing your QR Code...</string>
+    <string name="qr_scan_failed">Whoops! This QR code appears to be invalid.\nReason: %s</string>
+    <string name="unknown_intent">This intent is unfortunately not supported by the app yet!</string>
+    <string name="pick_contact">Select a contact</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_select">Select</string>
+    <string name="pick_contacts">Select contacts</string>
+    <string name="upsert_contact_failed">Failed to update contact \'%s\'.</string>
 </resources>

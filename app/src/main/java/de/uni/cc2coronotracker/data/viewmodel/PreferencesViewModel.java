@@ -31,6 +31,8 @@ public class PreferencesViewModel extends ViewModel {
     private MutableLiveData<Bitmap> qrCode = new MutableLiveData<>();
     private LiveData<UUID> uuidLD;
 
+    private MutableLiveData<Boolean> loading = new MutableLiveData<>(false);
+
     @Inject
     public PreferencesViewModel(ContextMediator ctxMediator, AppRepository appRepository) {
         contextMediator = ctxMediator;
@@ -43,22 +45,23 @@ public class PreferencesViewModel extends ViewModel {
      * First tries to find a stored QR code, if none exists it creates a new one and - if the user
      * allows it - stores it on permanent storage.
      */
-    public void createOrGetQRCode(String value, int dimension) {
-        appRepository.generateQRCode(value, dimension, result -> {
+    public void createOrGetPersonalQRCode(int dimension) {
+        loading.postValue(true);
+        appRepository.generateExposureQRCode(dimension, result -> {
+            loading.postValue(false);
             if (result instanceof Result.Success) {
                 qrCode.postValue(((Result.Success<Bitmap>) result).data);
             } else {
                 Log.e(TAG, "Failed to create or get QR code.", ((Result.Error)result).exception);
                 contextMediator.request(RequestFactory.createSnackbarRequest(R.string.qr_generation_failed, Snackbar.LENGTH_LONG, R.string.retry, (v) -> {
-                    createOrGetQRCode(value, dimension);
+                    createOrGetPersonalQRCode(dimension);
                 }));
             }
         });
     }
 
 
-    public LiveData<Bitmap> getQRCode() {
-        return qrCode;
-    }
+    public LiveData<Bitmap> getQRCode() { return qrCode; }
     public LiveData<UUID> getUUID() { return uuidLD; }
+    public LiveData<Boolean> getLoading() {return loading; }
 }

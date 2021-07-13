@@ -8,6 +8,7 @@ import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
@@ -16,6 +17,8 @@ import com.karumi.dexter.Dexter;
 import com.karumi.dexter.listener.single.PermissionListener;
 
 import de.uni.cc2coronotracker.R;
+import de.uni.cc2coronotracker.data.qr.QrIntent;
+import de.uni.cc2coronotracker.ui.dialogs.SelectContactDialogFragment;
 
 public class RequestFactory {
 
@@ -77,6 +80,14 @@ public class RequestFactory {
     public static CallWithContextRequest createNavigationRequest(@IdRes int where) {
         CallWithContextRequest.ContextfulCall call = c -> {
             Navigation.findNavController((Activity) c, R.id.nav_host_fragment).navigate(where);
+        };
+
+        return new CallWithContextRequest(call);
+    }
+
+    public static CallWithContextRequest createContactDialogRequest(boolean isMultiSelect, @Nullable QrIntent.Intent callerIntent) {
+        CallWithContextRequest.ContextfulCall call = c -> {
+            SelectContactDialogFragment.newInstance(isMultiSelect, callerIntent).show(((AppCompatActivity)c).getSupportFragmentManager(), "");
         };
 
         return new CallWithContextRequest(call);

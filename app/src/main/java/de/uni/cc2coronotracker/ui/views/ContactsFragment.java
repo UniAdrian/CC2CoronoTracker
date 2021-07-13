@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -20,7 +21,6 @@ import de.uni.cc2coronotracker.R;
 import de.uni.cc2coronotracker.data.adapters.ContactAdapter;
 import de.uni.cc2coronotracker.data.models.Contact;
 import de.uni.cc2coronotracker.data.viewmodel.ContactViewModel;
-import de.uni.cc2coronotracker.data.viewmodel.shared.AddExposureSharedViewModel;
 import de.uni.cc2coronotracker.databinding.FragmentContactsBinding;
 
 /**
@@ -31,7 +31,6 @@ import de.uni.cc2coronotracker.databinding.FragmentContactsBinding;
 public class ContactsFragment extends Fragment {
 
     private ContactViewModel contactsViewModel;
-    private AddExposureSharedViewModel sharedContactsQRViewModel;
 
     private FragmentContactsBinding binding;
 
@@ -44,8 +43,6 @@ public class ContactsFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         contactsViewModel = new ViewModelProvider(this.getActivity()).get(ContactViewModel.class);
-        sharedContactsQRViewModel = new ViewModelProvider(this.getActivity()).get(AddExposureSharedViewModel.class);
-
         getContactLauncher = registerForActivityResult(new ActivityResultContracts.PickContact(), uri -> {
             contactsViewModel.onContactPick(uri);
         });
@@ -56,7 +53,7 @@ public class ContactsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_contacts, container, false);
 
         binding.setContactVM(contactsViewModel);
@@ -81,7 +78,6 @@ public class ContactsFragment extends Fragment {
         });
 
         contactsViewModel.getAllContacts().observe(getViewLifecycleOwner(), contacts -> {
-            Log.d("CONTACTS", "Got " + contacts);
             binding.contactListRV.setAdapter(new ContactAdapter(contacts, this::onContactClicked));
             binding.contactListRV.getAdapter().notifyDataSetChanged();
         });

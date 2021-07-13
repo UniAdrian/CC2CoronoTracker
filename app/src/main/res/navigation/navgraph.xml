@@ -18,6 +18,11 @@
         <action
             android:id="@+id/action_contacts_to_contactDetailsFragment"
             app:destination="@id/contactDetailsFragment" />
+        <argument
+            android:name="addExposureUUID"
+            app:argType="java.util.UUID"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
     <fragment
         android:id="@+id/startScreen"
@@ -43,7 +48,11 @@
         android:id="@+id/readQR"
         android:name="de.uni.cc2coronotracker.ui.views.ReadQRFragment"
         android:label="fragment_read_qr"
-        tools:layout="@layout/fragment_read_qr" />
+        tools:layout="@layout/fragment_read_qr" >
+        <action
+            android:id="@+id/action_readQR_to_contactDetails"
+            app:destination="@id/contactDetailsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/contactDetailsFragment"
         android:name="de.uni.cc2coronotracker.ui.views.ContactDetailsFragment"

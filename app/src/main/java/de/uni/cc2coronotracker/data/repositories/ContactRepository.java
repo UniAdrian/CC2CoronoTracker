@@ -85,9 +85,7 @@ public class ContactRepository{
                 if (c == null) {
                     result = new Result.Success<>(null);
                 } else {
-                    Contact detailedContact = readContact(c.lookupUri);
-                    detailedContact.uuid = c.uuid;
-                    result = new Result.Success<>(detailedContact);
+                    result = new Result.Success<>(c);
                 }
 
                 callback.onComplete(result);
