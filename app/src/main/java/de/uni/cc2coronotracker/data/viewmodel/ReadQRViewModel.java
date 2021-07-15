@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.Date;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -16,8 +17,10 @@ import javax.inject.Inject;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import de.uni.cc2coronotracker.R;
 import de.uni.cc2coronotracker.data.models.Contact;
+import de.uni.cc2coronotracker.data.models.Exposure;
 import de.uni.cc2coronotracker.data.qr.QrIntent;
 import de.uni.cc2coronotracker.data.repositories.ContactRepository;
+import de.uni.cc2coronotracker.data.repositories.ExposureRepository;
 import de.uni.cc2coronotracker.data.repositories.async.Result;
 import de.uni.cc2coronotracker.data.viewmodel.shared.ContactSelectionDialogViewModel;
 import de.uni.cc2coronotracker.helper.ContextMediator;
@@ -32,13 +35,15 @@ public class ReadQRViewModel extends ViewModel {
 
     private final ContextMediator ctxMediator;
     private final ContactRepository contactRepository;
+    private final ExposureRepository exposureRepository;
 
     private MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
 
     @Inject
-    public ReadQRViewModel(ContextMediator ctxMediator, ContactRepository contactRepository) {
+    public ReadQRViewModel(ContextMediator ctxMediator, ContactRepository contactRepository, ExposureRepository exposureRepository) {
         this.ctxMediator = ctxMediator;
         this.contactRepository = contactRepository;
+        this.exposureRepository = exposureRepository;
     }
 
     public void handleQRIntent(QrIntent.Intent intent) {
@@ -54,7 +59,6 @@ public class ReadQRViewModel extends ViewModel {
     }
 
     public void handleAddExposureIntent(QrIntent.AddExposure intent) {
-
         contactRepository.getContact(intent.uuid, result -> {
             if (result instanceof Result.Success) {
                 Contact c = ((Result.Success<Contact>) result).data;
@@ -87,15 +91,29 @@ public class ReadQRViewModel extends ViewModel {
 
         // TODO: Also request and add location data if appropriate. See MapsIntegration milestone
 
-        Log.d(TAG, "Adding exposure to " + contact);
+        isLoading.postValue(true);
 
-        // TODO: Add the exposure
+        Exposure toAdd = new Exposure();
+        toAdd.contactId = contact.id;
+        toAdd.date = new java.sql.Date(new Date().getTime());
 
-        // Navigate to the contact that was changed.
-        ReadQRFragmentDirections.ActionReadQRToContactDetails actionReadQRToContacts = ReadQRFragmentDirections.actionReadQRToContactDetails();
-        actionReadQRToContacts.setContactId(contact.id);
+        exposureRepository.addExposure(toAdd, result -> {
+            isLoading.postValue(false);
+            if (result instanceof Result.Success) {
+                // Navigate to the contact that was changed.
+                ReadQRFragmentDirections.ActionReadQRToContactDetails actionReadQRToContacts = ReadQRFragmentDirections.actionReadQRToContactDetails();
+                actionReadQRToContacts.setContactId(contact.id);
 
-        ctxMediator.request(RequestFactory.createNavigationRequest(actionReadQRToContacts));
+                ctxMediator.request(RequestFactory.createNavigationRequest(actionReadQRToContacts));
+            } else {
+                Log.e(TAG, "Failed to insert exposure for contact.", ((Result.Error)result).exception);
+                ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.insert_exposure_failed, Snackbar.LENGTH_LONG, R.string.retry, v -> {
+                    addExposure(contact, allowTracking);
+                }, contact.displayName));
+            }
+        });
+
+
     }
 
     private void connectContactAndAddExposure(Contact contact, UUID uuid, boolean allowTracking) {

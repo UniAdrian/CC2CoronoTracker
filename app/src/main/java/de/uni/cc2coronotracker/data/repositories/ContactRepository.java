@@ -2,7 +2,6 @@ package de.uni.cc2coronotracker.data.repositories;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.ContactsContract;
@@ -67,10 +66,6 @@ public class ContactRepository{
         });
     }
 
-    private Contact getContact(UUID uuid) {
-        return contactDao.getByUUIDSync(uuid);
-    }
-
     /**
      * Searches the DB for the user with the given UUID asynchronously and calls a callback when done.
      * @param uuid The UUID of to search for
@@ -90,40 +85,6 @@ public class ContactRepository{
 
                 callback.onComplete(result);
             } catch (Exception e) {
-                Result<Contact> errorResult = new Result.Error<>(e);
-                callback.onComplete(errorResult);
-            }
-        });
-    }
-
-    /**
-     * Inserts a contact into the database.
-     * @param contact The contact to be inserted
-     * @return The number of affected rows.
-     */
-    public long addContact(Contact contact) {
-        return contactDao.insert(contact);
-    }
-
-    /**
-     * Insert a contact into the database asynchronously.
-     * @param contact The contact to be inserted
-     * @param callback Called when the operation ends.
-     */
-    public void addContact(Contact contact, RepositoryCallback<Contact> callback) {
-        executor.execute(() -> {
-            try {
-                long generatedId = addContact(contact);
-                Log.d("---info---", "Generated ID: " + generatedId);
-                if (generatedId > 0) {
-                    Result<Contact> result = new Result.Success<>(contactDao.getByUUIDSync(contact.uuid));
-                    callback.onComplete(result);
-                } else {
-                    Result<Contact> errorResult = new Result.Error<>(new SQLException("Failed to insert user."));
-                    callback.onComplete(errorResult);
-                }
-            } catch (Exception e) {
-                Log.e("ContactRepository", "Failed to add contact", e);
                 Result<Contact> errorResult = new Result.Error<>(e);
                 callback.onComplete(errorResult);
             }
@@ -169,29 +130,6 @@ public class ContactRepository{
         });
     }
 
-    private int updateContact(Contact contact) { return contactDao.update(contact); }
-
-    public void updateContact(Contact contact, RepositoryCallback<Contact> callback) {
-        executor.execute(() -> {
-            try {
-                int affectedRows = updateContact(contact);
-                if (affectedRows > 0) {
-                    Result<Contact> result = new Result.Success<>(readContact(contact.lookupUri));
-                    callback.onComplete(result);
-                } else {
-                    Log.e("ContactRepository", "Failed to update contact. No rows affected.");
-                    Result<Contact> errorResult = new Result.Error<>(new SQLException("Failed to update user. No rows affected."));
-                    callback.onComplete(errorResult);
-                }
-            } catch (Exception e) {
-                Log.e("ContactRepository", "Failed to update contact", e);
-                Result<Contact> errorResult = new Result.Error<>(e);
-                callback.onComplete(errorResult);
-            }
-        });
-    }
-
-
     public void importContacts(RepositoryCallback<Void> callback) {
         executor.execute( () -> {
             // Try with resources is your friend when working with cursors. No leaks guaranteed.
@@ -212,7 +150,6 @@ public class ContactRepository{
             }
         });
     }
-
 
     public void readContact(@NonNull Uri contactUri, RepositoryCallback<Contact> callback) {
         executor.execute(() -> {

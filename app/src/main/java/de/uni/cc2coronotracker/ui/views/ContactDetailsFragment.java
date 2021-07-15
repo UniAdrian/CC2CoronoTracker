@@ -38,26 +38,27 @@ public class ContactDetailsFragment extends Fragment {
         contactsDetailsViewModel = new ViewModelProvider(this).get(ContactDetailsViewModel.class);
 
         contactsDetailsViewModel.getExposures().observe(this, exposures -> {
+            Log.d("EXPOSURES", "Exposures: " + exposures);
             if (exposures == null) {
                 exposures = new ArrayList<>();
             }
-            binding.contactDetailsExposures.setAdapter(new ExposureAdapter(exposures));
+            binding.contactDetailsExposures.setAdapter(new ExposureAdapter(exposures, getContext()));
         });
 
         contactsDetailsViewModel.getContact().observe(this, contact -> {
 
-            if (contact == null)
-                return;
+        if (contact == null)
+            return;
 
-            if (contact.photoUri != null) {
-                binding.contactAvatar.setImageURI(contact.photoUri);
-            } else {
-                binding.contactAvatar.setImageResource(R.drawable.ic_no_avatar_128);
-            }
+        if (contact.photoUri != null) {
+            binding.contactAvatar.setImageURI(contact.photoUri);
+        } else {
+            binding.contactAvatar.setImageResource(R.drawable.ic_no_avatar_128);
+        }
 
-            Toolbar toolbar = requireActivity().findViewById(R.id.app_toolbar_top);
-            toolbar.setTitle(contact.displayName);
-        });
+        Toolbar toolbar = requireActivity().findViewById(R.id.app_toolbar_top);
+        toolbar.setTitle(contact.displayName);
+    });
 
     }
 

@@ -78,14 +78,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/description_no_exposures"
-                android:visibility="@{detailsVM.exposures.empty ? View.GONE : View.VISIBLE}"
+                android:visibility="@{detailsVM.exposures.size > 0 ? View.GONE : View.VISIBLE}"
                 />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/contactDetailsExposures"
                 android:layout_width="match_parent"
                 android:layout_height="419dp"
-                android:visibility="@{detailsVM.exposures.empty ? View.VISIBLE : View.GONE}" />
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:visibility="@{detailsVM.exposures.size > 0 ? View.VISIBLE : View.GONE}" />
 
         </LinearLayout>
 

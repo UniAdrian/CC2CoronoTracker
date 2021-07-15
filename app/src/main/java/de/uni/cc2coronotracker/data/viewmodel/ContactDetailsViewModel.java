@@ -20,6 +20,7 @@ import de.uni.cc2coronotracker.R;
 import de.uni.cc2coronotracker.data.models.Contact;
 import de.uni.cc2coronotracker.data.models.Exposure;
 import de.uni.cc2coronotracker.data.repositories.ContactRepository;
+import de.uni.cc2coronotracker.data.repositories.ExposureRepository;
 import de.uni.cc2coronotracker.data.repositories.async.Result;
 import de.uni.cc2coronotracker.helper.ContextMediator;
 import de.uni.cc2coronotracker.helper.RequestFactory;
@@ -30,6 +31,7 @@ public class ContactDetailsViewModel extends ViewModel {
     private final String LOG_TAG = "ContactDetailsVM";
 
     private final ContactRepository contactRepository;
+    private final ExposureRepository exposureRepository;
     private final ContextMediator ctxMediator;
 
     private MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
@@ -39,8 +41,9 @@ public class ContactDetailsViewModel extends ViewModel {
 
 
     @Inject
-    public ContactDetailsViewModel(@NonNull SavedStateHandle savedState, @NonNull ContactRepository contactRepository, @NonNull ContextMediator ctxMediator) {
+    public ContactDetailsViewModel(@NonNull SavedStateHandle savedState, @NonNull ContactRepository contactRepository, @NonNull ExposureRepository exposureRepository, @NonNull ContextMediator ctxMediator) {
         this.contactRepository = contactRepository;
+        this.exposureRepository = exposureRepository;
         this.ctxMediator = ctxMediator;
     }
 
@@ -54,7 +57,21 @@ public class ContactDetailsViewModel extends ViewModel {
                 Log.d(LOG_TAG, "Fetched contact: " + ((Result.Success<Contact>) queryResult).data);
                 Contact receivedContact = ((Result.Success<Contact>) queryResult).data;
                 contact.postValue(receivedContact);
-                isLoading.postValue(false);
+
+                exposureRepository.getExposures(receivedContact, (exposureResult) -> {
+                    isLoading.postValue(false);
+
+                    if (exposureResult instanceof Result.Success) {
+                        exposures.postValue(((Result.Success<List<Exposure>>) exposureResult).data);
+                    } else {
+                        exposures.postValue(null);
+                        Exception e = ((Result.Error) exposureResult).exception;
+                        Log.e(LOG_TAG, "Failed to fetch exposures.", e);
+                    }
+
+                });
+
+
             } else {
                 Exception e = ((Result.Error<Contact>) queryResult).exception;
                 Log.e(LOG_TAG, "Failed to fetch contact.", e);

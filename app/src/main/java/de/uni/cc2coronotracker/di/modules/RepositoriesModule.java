@@ -17,6 +17,7 @@ import dagger.hilt.components.SingletonComponent;
 import de.uni.cc2coronotracker.data.db.AppDatabase;
 import de.uni.cc2coronotracker.data.repositories.AppRepository;
 import de.uni.cc2coronotracker.data.repositories.ContactRepository;
+import de.uni.cc2coronotracker.data.repositories.ExposureRepository;
 
 
 @Module
@@ -33,6 +34,12 @@ public class RepositoriesModule {
     @Singleton
     public AppRepository bindAppRepository(@ApplicationContext Context ctx, Executor executor, SharedPreferences prefs) {
         return new AppRepository(ctx, executor, prefs);
+    }
+
+    @Provides
+    @Singleton
+    public ExposureRepository bindExposureRepository(@ApplicationContext Context ctx, Executor executor, AppDatabase db) {
+        return new ExposureRepository(ctx, executor, db.getExposureDao());
     }
 
     @Provides

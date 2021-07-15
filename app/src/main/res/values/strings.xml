@@ -59,4 +59,6 @@
     <string name="on_boarding_topic_description1">Description1</string>
     <string name="on_boarding_topic_description2">Description2</string>
     <string name="on_boarding_topic_description3">Description3</string>
+    <string name="insert_exposure_failed">Whoops! We failed to insert a new exposure for %s.</string>
+    <string name="exposure_description">You met on  the %s</string>
 </resources>
