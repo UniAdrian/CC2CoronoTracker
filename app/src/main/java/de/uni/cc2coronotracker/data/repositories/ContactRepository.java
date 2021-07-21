@@ -48,7 +48,9 @@ public class ContactRepository{
     public LiveData<List<Contact>> getContacts() {
         return contactDao.getAll();
     }
-
+    public LiveData<List<ContactDao.ContactWithExposures>> getContactsWithExposures() {
+        return contactDao.getAllContactsWithExposures();
+    }
 
     private Contact getContact(long id) {
         return contactDao.getByIdSync(id);

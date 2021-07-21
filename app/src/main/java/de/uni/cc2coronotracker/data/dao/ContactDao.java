@@ -4,9 +4,11 @@ import android.net.Uri;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.Embedded;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Relation;
 import androidx.room.Transaction;
 import androidx.room.Update;
 
@@ -14,6 +16,7 @@ import java.util.List;
 import java.util.UUID;
 
 import de.uni.cc2coronotracker.data.models.Contact;
+import de.uni.cc2coronotracker.data.models.Exposure;
 
 @Dao
 public abstract class ContactDao {
@@ -51,9 +54,24 @@ public abstract class ContactDao {
         return false;
     }
 
+    @Transaction
+    @Query("SELECT * FROM contacts")
+    public abstract LiveData<List<ContactWithExposures>> getAllContactsWithExposures();
+
     @Query("DELETE FROM contacts")
     public abstract void nukeTable();
 
     @Query("DELETE FROM contacts WHERE id = :id")
     public abstract void delete(long id);
+
+
+    public static class ContactWithExposures {
+        @Embedded
+        public Contact contact;
+        @Relation(
+                parentColumn = "id",
+                entityColumn = "contact_id"
+        )
+        public List<Exposure> exposures;
+    }
 }

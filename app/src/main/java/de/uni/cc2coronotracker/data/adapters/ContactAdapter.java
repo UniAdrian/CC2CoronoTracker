@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import de.uni.cc2coronotracker.R;
+import de.uni.cc2coronotracker.data.dao.ContactDao;
 import de.uni.cc2coronotracker.data.models.Contact;
 
 public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHolder> {
@@ -20,7 +21,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
         void onItemClick(Contact item);
     }
 
-    private List<Contact> contacts;
+    private List<ContactDao.ContactWithExposures> contacts;
     private OnItemClickListener clickListener;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -57,7 +58,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
      * @param dataSet List<Contact> containing the data to populate views to be used
      * by RecyclerView.
      */
-    public ContactAdapter(List<Contact> dataSet, OnItemClickListener listener) {
+    public ContactAdapter(List<ContactDao.ContactWithExposures> dataSet, OnItemClickListener listener) {
         contacts = dataSet;
         clickListener = listener;
     }
@@ -71,10 +72,14 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        Contact contact = contacts.get(position);
+        ContactDao.ContactWithExposures contactWithExposures = contacts.get(position);
+        Contact contact = contactWithExposures.contact;
 
-        // TODO: Set valid description and fav state
-        String description = viewHolder.getFavoriteView().getContext().getResources().getString(R.string.contact_description_some, 5);
+        long numberOfExposures = contactWithExposures.exposures.size();
+        String description = viewHolder.getFavoriteView().getContext().getResources().getString(R.string.contact_description_some, numberOfExposures);
+        if (numberOfExposures == 0) {
+            description = viewHolder.getFavoriteView().getContext().getResources().getString(R.string.description_no_exposures);
+        }
 
         viewHolder.getDisplayNameView().setText(contact.displayName);
         viewHolder.getDescriptionView().setText(description);

@@ -16,6 +16,7 @@ import java.util.List;
 
 import de.uni.cc2coronotracker.R;
 import de.uni.cc2coronotracker.data.adapters.ContactSelectionAdapter;
+import de.uni.cc2coronotracker.data.dao.ContactDao;
 import de.uni.cc2coronotracker.data.models.Contact;
 import de.uni.cc2coronotracker.data.qr.QrIntent;
 import de.uni.cc2coronotracker.data.viewmodel.ContactViewModel;
@@ -69,11 +70,16 @@ public class SelectContactDialogFragment extends DialogFragment {
 
         binding.rvContactList.setAdapter(new ContactSelectionAdapter(new ArrayList<>(), null));
 
-        contactsViewModel.getAllContacts().observe(this, contacts -> {
-            if (contacts == null)
+        contactsViewModel.getAllContactsWithExposures().observe(this, contactsWExposures -> {
+            if (contactsWExposures == null)
                 return;
 
-            binding.rvContactList.setAdapter(new ContactSelectionAdapter(contacts, this::onSingleSelect));
+            // Streams would unfortunately require a higher API level, so we stick with traditional loops here.
+            List<Contact> contactList = new ArrayList<>(contactsWExposures.size());
+            for (ContactDao.ContactWithExposures cwe : contactsWExposures) {
+                contactList.add(cwe.contact);
+            }
+            binding.rvContactList.setAdapter(new ContactSelectionAdapter(contactList, this::onSingleSelect));
         });
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);

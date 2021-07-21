@@ -32,10 +32,7 @@ public class ExposureRepository {
 
     public LiveData<List<Exposure>> getExposures() {return exposureDao.getAll();}
 
-    private List<Exposure> getExposures(Contact forContact) {
-        return exposureDao.getByContactIDSync(forContact.id);
-    }
-
+    private List<Exposure> getExposures(Contact forContact) {return exposureDao.getByContactIDSync(forContact.id);}
     public void getExposures(Contact forContact, RepositoryCallback<List<Exposure>> callback) {
         executor.execute(() -> {
             try {
@@ -53,6 +50,17 @@ public class ExposureRepository {
         executor.execute(() -> {
             try {
                 callback.onComplete(new Result.Success<>(addExposure(toAdd)));
+            } catch (Exception e) {
+                callback.onComplete(new Result.Error<>(e));
+            }
+        });
+    }
+
+    private long getNumberOfExposures(Contact c) { return exposureDao.getNumberOfExposuresFor(c.id); }
+    private void getNumberOfExposures(Contact c, RepositoryCallback<Long> callback) {
+        executor.execute(() -> {
+            try {
+                callback.onComplete(new Result.Success<>(getNumberOfExposures(c)));
             } catch (Exception e) {
                 callback.onComplete(new Result.Error<>(e));
             }

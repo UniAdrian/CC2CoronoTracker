@@ -38,4 +38,6 @@ public abstract class ExposureDao {
     @Delete
     public abstract void delete(Exposure exposure);
 
+    @Query("SELECT COUNT(*) FROM exposures WHERE contact_id = :contactId")
+    public abstract long getNumberOfExposuresFor(long contactId);
 }

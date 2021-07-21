@@ -23,6 +23,7 @@ import javax.inject.Inject;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import de.uni.cc2coronotracker.R;
+import de.uni.cc2coronotracker.data.dao.ContactDao;
 import de.uni.cc2coronotracker.data.models.Contact;
 import de.uni.cc2coronotracker.data.repositories.ContactRepository;
 import de.uni.cc2coronotracker.data.repositories.async.Result;
@@ -36,7 +37,7 @@ public class ContactViewModel extends ViewModel {
     private final ContactRepository contactRepository;
     private final ContextMediator ctxMediator;
 
-    private LiveData<List<Contact>> allContacts;
+    private LiveData<List<ContactDao.ContactWithExposures>> allContactsWithExposures;
     private final MutableLiveData<Boolean> loading = new MutableLiveData<>();
     private final MutableLiveData<Event<Void>> requestContactPick = new MutableLiveData<>();
 
@@ -46,15 +47,16 @@ public class ContactViewModel extends ViewModel {
         this.ctxMediator = ctxMediator;
 
         loading.setValue(true);
-        this.allContacts = Transformations.map(contactRepository.getContacts(), list -> {
+        this.allContactsWithExposures = Transformations.map(contactRepository.getContactsWithExposures(), list -> {
             loading.setValue(false);
             return list;
         });
     }
 
-    public LiveData<List<Contact>> getAllContacts() {
-        return allContacts;
+    public LiveData<List<ContactDao.ContactWithExposures>> getAllContactsWithExposures() {
+        return allContactsWithExposures;
     }
+
     public LiveData<Event<Void>> getRequestContactPick() { return requestContactPick; }
 
     public LiveData<Boolean> isLoading() {

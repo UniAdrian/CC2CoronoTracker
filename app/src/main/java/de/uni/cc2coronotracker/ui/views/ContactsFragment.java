@@ -1,7 +1,6 @@
 package de.uni.cc2coronotracker.ui.views;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,7 +76,7 @@ public class ContactsFragment extends Fragment {
             getContactLauncher.launch(null);
         });
 
-        contactsViewModel.getAllContacts().observe(getViewLifecycleOwner(), contacts -> {
+        contactsViewModel.getAllContactsWithExposures().observe(getViewLifecycleOwner(), contacts -> {
             binding.contactListRV.setAdapter(new ContactAdapter(contacts, this::onContactClicked));
             binding.contactListRV.getAdapter().notifyDataSetChanged();
         });
