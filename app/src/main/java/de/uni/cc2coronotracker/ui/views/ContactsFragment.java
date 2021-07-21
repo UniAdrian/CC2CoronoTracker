@@ -1,13 +1,18 @@
 package de.uni.cc2coronotracker.ui.views;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -27,7 +32,7 @@ import de.uni.cc2coronotracker.databinding.FragmentContactsBinding;
  * create an instance of this fragment.
  */
 @AndroidEntryPoint
-public class ContactsFragment extends Fragment {
+public class ContactsFragment extends Fragment implements SearchView.OnQueryTextListener {
 
     private ContactViewModel contactsViewModel;
 
@@ -45,6 +50,8 @@ public class ContactsFragment extends Fragment {
         getContactLauncher = registerForActivityResult(new ActivityResultContracts.PickContact(), uri -> {
             contactsViewModel.onContactPick(uri);
         });
+
+        setHasOptionsMenu(true);
     }
 
     private void onContactClicked(Contact c) {
@@ -83,6 +90,30 @@ public class ContactsFragment extends Fragment {
 
         View view = binding.getRoot();
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.search_menu, menu);
+
+        final MenuItem searchItem = menu.findItem(R.id.action_search);
+        final SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(this);
+
+
+    }
+
+    @Override
+    public boolean onQueryTextChange(String query) {
+        Log.d("DBG", "Query String: " + query);
+        ((ContactAdapter)binding.contactListRV.getAdapter()).getFilter().filter(query);
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
     }
 
     private void gotoContactDetails(Contact c) {

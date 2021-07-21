@@ -2,6 +2,7 @@ package de.uni.cc2coronotracker.ui.views;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     public ContextMediator ctxMediator;
 
     private PreferencesViewModel preferencesViewModel;
+    AppBarConfiguration appBarConfiguration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,10 +53,12 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        AppBarConfiguration appBarConfiguration =
-                new AppBarConfiguration.Builder(navController.getGraph()).build();
+
         Toolbar toolbar = findViewById(R.id.app_toolbar_top);
-        NavigationUI.setupWithNavController(toolbar, navController, appBarConfiguration);
+        setSupportActionBar(toolbar);
+
+        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
         navController.addOnDestinationChangedListener((controller, d, arguments) -> {
             boolean condition = d.getId() == R.id.splashFragment || d.getId() == R.id.onBoardingFragment;
@@ -78,6 +82,19 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
         });
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        return NavigationUI.navigateUp(navController, appBarConfiguration)
+                || super.onSupportNavigateUp();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.actionbar_main_menu, menu);
+        return true;
     }
 
     public boolean gotoPreferences(MenuItem item) {
