@@ -1,14 +1,13 @@
 package de.uni.cc2coronotracker.ui.views;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import de.uni.cc2coronotracker.R;
 
@@ -36,10 +35,12 @@ public class StartScreenFragment extends Fragment {
         Button gtContacts = (Button) view.findViewById(R.id.btnGotoContacts);
         Button gtRQR = (Button) view.findViewById(R.id.btnGotoReadQR);
         Button gtCQR = (Button) view.findViewById(R.id.btnGotoCreateQR);
+        Button gtMaps = (Button) view.findViewById(R.id.btnGotoMaps);
 
         gtContacts.setOnClickListener(this::gotoContacts);
         gtRQR.setOnClickListener(this::gotoReadQR);
         gtCQR.setOnClickListener(this::gotoCreateQR);
+        gtMaps.setOnClickListener(this::gotoMaps);
 
         return view;
     }
@@ -54,5 +55,9 @@ public class StartScreenFragment extends Fragment {
 
     public void gotoCreateQR(View view) {
         Navigation.findNavController(view).navigate(R.id.action_startScreen_to_showQR);
+    }
+
+    public void gotoMaps(View view) {
+        Navigation.findNavController(view).navigate(R.id.action_startScreen_to_mapsFragment);
     }
 }

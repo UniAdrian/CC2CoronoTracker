@@ -70,4 +70,5 @@
     <string name="display_name_cannnot_be_blank">The display name must not be blank.</string>
     <string name="create_contact_failed">Failed to create new contact.</string>
     <string name="persist_uri_failed">Sorry, your phone didnt want you to pick this image. Try again?</string>
+    <string name="LinkMaps">Maps</string>
 </resources>
