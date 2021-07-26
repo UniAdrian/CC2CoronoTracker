@@ -1,5 +1,6 @@
 package de.uni.cc2coronotracker.data.adapters;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,8 @@ import de.uni.cc2coronotracker.data.dao.ContactDao;
 import de.uni.cc2coronotracker.data.models.Contact;
 
 public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHolder> implements Filterable {
+
+    private final String TAG = "ContactAdapter";
 
     public interface OnItemClickListener {
         void onItemClick(Contact item);
@@ -90,7 +93,12 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
         viewHolder.getDescriptionView().setText(description);
 
         if (contact.photoUri != null) {
-            viewHolder.getAvatarView().setImageURI(contact.photoUri);
+            try {
+                viewHolder.getAvatarView().setImageURI(contact.photoUri);
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to set image uri: ", e);
+                viewHolder.getAvatarView().setImageResource(R.drawable.ic_no_avatar_128);
+            }
         } else {
             viewHolder.getAvatarView().setImageResource(R.drawable.ic_no_avatar_128);
         }

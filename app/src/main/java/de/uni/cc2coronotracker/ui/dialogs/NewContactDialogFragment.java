@@ -100,8 +100,14 @@ public class NewContactDialogFragment extends DialogFragment implements TextWatc
             return;
         }
 
-        getActivity().getContentResolver().takePersistableUriPermission(imgUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        binding.imgAvatar.setImageURI(imgUri);
+        try {
+            getActivity().getContentResolver().takePersistableUriPermission(imgUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            binding.imgAvatar.setImageURI(imgUri);
+        } catch (Exception e) {
+            imageUri = null;
+            binding.imgAvatar.setImageResource(R.drawable.ic_no_avatar_128);
+            Toast.makeText(getContext(), R.string.persist_uri_failed, Toast.LENGTH_LONG);
+        }
     }
 
 
