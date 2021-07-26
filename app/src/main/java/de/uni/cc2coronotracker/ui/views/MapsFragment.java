@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -16,9 +17,14 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import dagger.hilt.android.AndroidEntryPoint;
 import de.uni.cc2coronotracker.R;
+import de.uni.cc2coronotracker.data.viewmodel.MapsViewModel;
 
+@AndroidEntryPoint
 public class MapsFragment extends Fragment {
+
+    private MapsViewModel mapsViewModel;
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
@@ -44,6 +50,9 @@ public class MapsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+
+        mapsViewModel = new ViewModelProvider(this.getActivity()).get(MapsViewModel.class);
+
         return inflater.inflate(R.layout.fragment_maps, container, false);
     }
 
@@ -52,6 +61,7 @@ public class MapsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+
         if (mapFragment != null) {
             mapFragment.getMapAsync(callback);
         }
