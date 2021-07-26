@@ -2,6 +2,7 @@ package de.uni.cc2coronotracker.ui.dialogs;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
@@ -36,7 +37,7 @@ public class NewContactDialogFragment extends DialogFragment implements TextWatc
 
     private Uri imageUri = null;
 
-    ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(), this::onImagePicked);
+    ActivityResultLauncher<String[]> mGetContent = registerForActivityResult(new ActivityResultContracts.OpenDocument(), this::onImagePicked);
 
     public static NewContactDialogFragment newInstance() {
         NewContactDialogFragment newDialog = new NewContactDialogFragment();
@@ -84,7 +85,7 @@ public class NewContactDialogFragment extends DialogFragment implements TextWatc
         binding.txtLoDisplayName.addTextChangedListener(this);
 
         binding.btnSelectFromGallery.setOnClickListener(v -> {
-            this.mGetContent.launch("image/*");
+            this.mGetContent.launch(new String[] {"image/*"});
         });
 
         return dialog;
@@ -99,6 +100,7 @@ public class NewContactDialogFragment extends DialogFragment implements TextWatc
             return;
         }
 
+        getActivity().getContentResolver().takePersistableUriPermission(imgUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
         binding.imgAvatar.setImageURI(imgUri);
     }
 
