@@ -42,13 +42,13 @@
     <fragment
         android:id="@+id/showQR"
         android:name="de.uni.cc2coronotracker.ui.views.ShowQRFragment"
-        android:label="fragment_show_qr"
+        android:label="Let others scan you"
         tools:layout="@layout/fragment_show_qr" />
     <fragment
         android:id="@+id/readQR"
         android:name="de.uni.cc2coronotracker.ui.views.ReadQRFragment"
-        android:label="fragment_read_qr"
-        tools:layout="@layout/fragment_read_qr" >
+        android:label="Scan a QR code"
+        tools:layout="@layout/fragment_read_qr">
         <action
             android:id="@+id/action_readQR_to_contactDetails"
             app:destination="@id/contactDetailsFragment" />

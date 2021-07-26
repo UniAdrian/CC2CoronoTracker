@@ -63,7 +63,7 @@ public class ReadQRViewModel extends ViewModel {
             if (result instanceof Result.Success) {
                 Contact c = ((Result.Success<Contact>) result).data;
                 if (c == null) {
-                    ctxMediator.request(RequestFactory.createContactDialogRequest(false, intent));
+                    ctxMediator.request(RequestFactory.createContactSelectionDialogRequest(false, intent));
                 } else {
                     addExposure(c, intent.allowTracking);
                 }

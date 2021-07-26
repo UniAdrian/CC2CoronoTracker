@@ -1,7 +1,6 @@
 package de.uni.cc2coronotracker.ui.views;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,6 +24,7 @@ import de.uni.cc2coronotracker.R;
 import de.uni.cc2coronotracker.data.adapters.ContactAdapter;
 import de.uni.cc2coronotracker.data.models.Contact;
 import de.uni.cc2coronotracker.data.viewmodel.ContactViewModel;
+import de.uni.cc2coronotracker.data.viewmodel.shared.ContactCreationDialogViewModel;
 import de.uni.cc2coronotracker.databinding.FragmentContactsBinding;
 
 /**
@@ -35,9 +35,9 @@ import de.uni.cc2coronotracker.databinding.FragmentContactsBinding;
 public class ContactsFragment extends Fragment implements SearchView.OnQueryTextListener {
 
     private ContactViewModel contactsViewModel;
+    private ContactCreationDialogViewModel contactCreationViewModel;
 
     private FragmentContactsBinding binding;
-
     private ActivityResultLauncher<Void> getContactLauncher;
 
     private boolean fabMenuOpen = false;
@@ -47,6 +47,8 @@ public class ContactsFragment extends Fragment implements SearchView.OnQueryText
         super.onCreate(savedInstanceState);
 
         contactsViewModel = new ViewModelProvider(this.getActivity()).get(ContactViewModel.class);
+        contactCreationViewModel = new ViewModelProvider(this.getActivity()).get(ContactCreationDialogViewModel.class);
+
         getContactLauncher = registerForActivityResult(new ActivityResultContracts.PickContact(), uri -> {
             contactsViewModel.onContactPick(uri);
         });
@@ -88,6 +90,15 @@ public class ContactsFragment extends Fragment implements SearchView.OnQueryText
             binding.contactListRV.getAdapter().notifyDataSetChanged();
         });
 
+
+        contactCreationViewModel.getNewContacts().observe(getViewLifecycleOwner(), event -> {
+            Contact newContact = event.getContentIfNotHandled();
+            if (newContact != null) {
+                this.contactsViewModel.addContact(newContact);
+            }
+        });
+
+
         View view = binding.getRoot();
         return view;
     }
@@ -100,13 +111,10 @@ public class ContactsFragment extends Fragment implements SearchView.OnQueryText
         final MenuItem searchItem = menu.findItem(R.id.action_search);
         final SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setOnQueryTextListener(this);
-
-
     }
 
     @Override
     public boolean onQueryTextChange(String query) {
-        Log.d("DBG", "Query String: " + query);
         ((ContactAdapter)binding.contactListRV.getAdapter()).getFilter().filter(query);
         return false;
     }

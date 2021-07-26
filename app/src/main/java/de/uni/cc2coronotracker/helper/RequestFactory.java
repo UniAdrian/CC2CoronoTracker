@@ -18,6 +18,7 @@ import com.karumi.dexter.listener.single.PermissionListener;
 
 import de.uni.cc2coronotracker.R;
 import de.uni.cc2coronotracker.data.qr.QrIntent;
+import de.uni.cc2coronotracker.ui.dialogs.NewContactDialogFragment;
 import de.uni.cc2coronotracker.ui.dialogs.SelectContactDialogFragment;
 
 public class RequestFactory {
@@ -85,9 +86,17 @@ public class RequestFactory {
         return new CallWithContextRequest(call);
     }
 
-    public static CallWithContextRequest createContactDialogRequest(boolean isMultiSelect, @Nullable QrIntent.Intent callerIntent) {
+    public static CallWithContextRequest createContactSelectionDialogRequest(boolean isMultiSelect, @Nullable QrIntent.Intent callerIntent) {
         CallWithContextRequest.ContextfulCall call = c -> {
             SelectContactDialogFragment.newInstance(isMultiSelect, callerIntent).show(((AppCompatActivity)c).getSupportFragmentManager(), "");
+        };
+
+        return new CallWithContextRequest(call);
+    }
+
+    public static CallWithContextRequest createNewContactDialogRequest() {
+        CallWithContextRequest.ContextfulCall call = c -> {
+            NewContactDialogFragment.newInstance().show(((AppCompatActivity)c).getSupportFragmentManager(), "");
         };
 
         return new CallWithContextRequest(call);

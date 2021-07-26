@@ -55,7 +55,6 @@ public class ContactRepository{
     private Contact getContact(long id) {
         return contactDao.getByIdSync(id);
     }
-
     public void getContact(long id, RepositoryCallback<Contact> callback) {
         executor.execute(() -> {
             try {
@@ -120,6 +119,11 @@ public class ContactRepository{
         });
     }
 
+    /**
+     * Creates OR updates a contact
+     * @param c The contact to be inserted
+     * @return True on insert, false on update
+     */
     private boolean upsertContact(Contact c) {return contactDao.upsert(c);}
     public void upsertContact(Contact c, RepositoryCallback<Boolean> callback) {
         executor.execute(() -> {
@@ -127,6 +131,23 @@ public class ContactRepository{
                 callback.onComplete(new Result.Success<>(upsertContact(c)));
             } catch (Exception e) {
                 Log.e("ContactRepository", "Failed to upsert contact", e);
+                callback.onComplete(new Result.Error<>(e));
+            }
+        });
+    }
+
+    /**
+     * Inserts a contact into the database
+     * @param c The contact to be inserted
+     * @return The id of the new entry
+     */
+    private long insertContact(Contact c) {return contactDao.insert(c);}
+    public void insertContact(Contact c, RepositoryCallback<Long> callback) {
+        executor.execute(() -> {
+            try {
+                callback.onComplete(new Result.Success<>(insertContact(c)));
+            } catch (Exception e) {
+                Log.e("ContactRepository", "Failed to insert contact", e);
                 callback.onComplete(new Result.Error<>(e));
             }
         });

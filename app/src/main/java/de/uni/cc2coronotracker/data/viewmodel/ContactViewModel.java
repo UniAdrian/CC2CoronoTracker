@@ -26,13 +26,17 @@ import de.uni.cc2coronotracker.R;
 import de.uni.cc2coronotracker.data.dao.ContactDao;
 import de.uni.cc2coronotracker.data.models.Contact;
 import de.uni.cc2coronotracker.data.repositories.ContactRepository;
+import de.uni.cc2coronotracker.data.repositories.async.RepositoryCallback;
 import de.uni.cc2coronotracker.data.repositories.async.Result;
 import de.uni.cc2coronotracker.helper.ContextMediator;
 import de.uni.cc2coronotracker.helper.Event;
 import de.uni.cc2coronotracker.helper.RequestFactory;
+import de.uni.cc2coronotracker.ui.views.ContactsFragmentDirections;
 
 @HiltViewModel
 public class ContactViewModel extends ViewModel {
+
+    private final String TAG = "ContactVM";
 
     private final ContactRepository contactRepository;
     private final ContextMediator ctxMediator;
@@ -96,10 +100,10 @@ public class ContactViewModel extends ViewModel {
 
                 contactRepository.importContacts( result -> {
                     if (result instanceof Result.Success) {
-                        Log.d("Contacts", "Imported all contacts!");
+                        Log.d(TAG, "Imported all contacts!");
                         loading.postValue(false);
                     } else {
-                        Log.e("Contacts", "Failed to import phone contacts", ((Result.Error)result).exception);
+                        Log.e(TAG, "Failed to import phone contacts", ((Result.Error)result).exception);
                         showImportError();
                         loading.postValue(false);
                     }
@@ -131,16 +135,27 @@ public class ContactViewModel extends ViewModel {
         );
     }
 
+    // Prompts the user to add new information
     public void addContact() {
-
+        ctxMediator.request(RequestFactory.createNewContactDialogRequest());
     }
 
-    public void clearDatabase() {
-        contactRepository.deleteAll(result -> {
+
+    // Actually adds a contact to the repository
+    public void addContact(Contact newContact) {
+        Log.d(TAG, "Creating new contact: " + newContact);
+
+        contactRepository.insertContact(newContact, (RepositoryCallback<Long>) result -> {
             if (result instanceof Result.Success) {
-                Log.d("Contacts", "Nuked database.");
+                Log.d(TAG, "Successfully entered new contact.");
+
+                ContactsFragmentDirections.ActionContactsToContactDetailsFragment action = ContactsFragmentDirections.actionContactsToContactDetailsFragment();
+                action.setContactId(((Result.Success<Long>) result).data);
+                ctxMediator.request(RequestFactory.createNavigationRequest(action));
             } else {
-                Log.e("Contacts", "Failed to nuke database.", ((Result.Error)result).exception);
+                ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.create_contact_failed, Snackbar.LENGTH_LONG, R.string.retry, v -> {
+                    addContact(newContact);
+                }));
             }
         });
     }
@@ -172,4 +187,6 @@ public class ContactViewModel extends ViewModel {
             }
         });
     }
+
+
 }
