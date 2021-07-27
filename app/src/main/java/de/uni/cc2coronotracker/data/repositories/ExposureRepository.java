@@ -55,15 +55,4 @@ public class ExposureRepository {
             }
         });
     }
-
-    private long getNumberOfExposures(Contact c) { return exposureDao.getNumberOfExposuresFor(c.id); }
-    private void getNumberOfExposures(Contact c, RepositoryCallback<Long> callback) {
-        executor.execute(() -> {
-            try {
-                callback.onComplete(new Result.Success<>(getNumberOfExposures(c)));
-            } catch (Exception e) {
-                callback.onComplete(new Result.Error<>(e));
-            }
-        });
-    }
 }

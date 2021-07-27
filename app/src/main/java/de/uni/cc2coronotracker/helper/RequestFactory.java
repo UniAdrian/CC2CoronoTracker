@@ -2,6 +2,8 @@ package de.uni.cc2coronotracker.helper;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.provider.Settings;
 import android.view.View;
 
 import androidx.annotation.IdRes;
@@ -97,6 +99,31 @@ public class RequestFactory {
     public static CallWithContextRequest createNewContactDialogRequest() {
         CallWithContextRequest.ContextfulCall call = c -> {
             NewContactDialogFragment.newInstance().show(((AppCompatActivity)c).getSupportFragmentManager(), "");
+        };
+
+        return new CallWithContextRequest(call);
+    }
+
+    public static CallWithContextRequest createOpenLocationSettingsRequest() {
+        CallWithContextRequest.ContextfulCall call = c -> {
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(c, R.style.Theme_AppCompat_DayNight_Dialog_Alert);
+            alertDialog.setTitle("GPS Error");
+            alertDialog.setMessage("GPS is not enabled. Do you want to go to settings?");
+            alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    c.startActivity(intent);
+                }
+            });
+
+            alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+            alertDialog.show();
         };
 
         return new CallWithContextRequest(call);

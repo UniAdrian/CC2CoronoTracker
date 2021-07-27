@@ -38,13 +38,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Referencing the view model here is actually enough already to assure the UUID is assigned on startup.
         preferencesViewModel = new ViewModelProvider(this).get(PreferencesViewModel.class);
-
-        ctxMediator.getRequests().observe(this, event -> {
-            CallWithContextRequest contentIfNotHandled = event.getContentIfNotHandled();
-            if (contentIfNotHandled != null) {
-                contentIfNotHandled.run(this);
-            }
-        });
     }
 
     @SuppressLint("NonConstantResourceId")
@@ -80,6 +73,17 @@ public class MainActivity extends AppCompatActivity {
                             View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                     );
                     break;
+            }
+        });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ctxMediator.getRequests().observe(this, event -> {
+            CallWithContextRequest contentIfNotHandled = event.getContentIfNotHandled();
+            if (contentIfNotHandled != null) {
+                contentIfNotHandled.run(this);
             }
         });
     }

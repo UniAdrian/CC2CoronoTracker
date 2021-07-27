@@ -59,7 +59,7 @@
     <string name="on_boarding_topic_description1">Description1</string>
     <string name="on_boarding_topic_description2">Description2</string>
     <string name="on_boarding_topic_description3">Description3</string>
-    <string name="insert_exposure_failed">Whoops! We failed to insert a new exposure for %s.</string>
+    <string name="insert_exposure_failed">Whoops! We failed to insert a new exposure.</string>
     <string name="exposure_description">You met on  the %s</string>
     <string name="action_search">Search</string>
     <string name="display_name">Displayname</string>
@@ -71,4 +71,9 @@
     <string name="create_contact_failed">Failed to create new contact.</string>
     <string name="persist_uri_failed">Sorry, your phone didnt want you to pick this image. Try again?</string>
     <string name="LinkMaps">Maps</string>
+    <string name="location_not_available">Unfortunately location data does not seem to be available right now.</string>
+    <string name="no_permission_no_location">The app needs location permissions to work correctly.</string>
+
+    <string name="preferences_allow_tracking_key" translatable="false">allow_tracking</string>
+    <string name="preferences_track_exposures_key" translatable="false">track_exposures</string>
 </resources>

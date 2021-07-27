@@ -4,6 +4,8 @@ import android.net.Uri;
 
 import androidx.room.TypeConverter;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.sql.Date;
 import java.util.UUID;
 
@@ -45,5 +47,22 @@ public class Converters {
     @TypeConverter
     public static Date dateFromTimestamp(long timestamp) {
         return new Date(timestamp);
+    }
+
+
+    @TypeConverter
+    public static String stringFromLatLang(LatLng latLang) {
+        if (latLang == null) return null;
+        return latLang.latitude + ";" + latLang.longitude;
+    }
+
+    @TypeConverter
+    public static LatLng latLangFromString(String latLang) {
+        if (latLang == null) return null;
+
+        String[] components = latLang.split(";");
+        double latitude = Double.valueOf(components[0]);
+        double longitude = Double.valueOf(components[1]);
+        return new LatLng(latitude, longitude);
     }
 }
