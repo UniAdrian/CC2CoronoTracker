@@ -66,13 +66,4 @@ public class MapsViewModel extends ViewModel {
             // TODO: Fetch all exposures, brush em up and display them.
         }
     }
-
-    public void startLocationTracking() {
-        locationProvider.startTracking();
-    }
-
-    public void stopLocationTracking() {
-        Log.d(TAG, "Stopping tracking...");
-        locationProvider.stopTracking();
-    }
 }

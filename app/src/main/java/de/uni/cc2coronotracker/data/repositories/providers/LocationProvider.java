@@ -2,19 +2,18 @@ package de.uni.cc2coronotracker.data.repositories.providers;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.core.location.LocationManagerCompat;
-import androidx.lifecycle.LiveData;
+import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationAvailability;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -36,33 +35,44 @@ import de.uni.cc2coronotracker.data.repositories.async.Result;
 import de.uni.cc2coronotracker.helper.ContextMediator;
 import de.uni.cc2coronotracker.helper.RequestFactory;
 
-public class LocationProvider {
-
+public class LocationProvider implements LifecycleObserver {
     public interface LocationListener {
         void onLocation(LocationResult location);
+        void onLocationUnavailable();
     }
 
     private final String TAG = "LocationProvider";
 
-    private long UPDATE_INTERVAL = 10000; // 10 secs
-    private long FASTEST_INTERVAL = 2000; // 2 secs
+    private static final long UPDATE_INTERVAL = 10000; // 10 secs
+    private static final long FASTEST_INTERVAL = 2000; // 2 secs
 
     private final ContextMediator ctxMediator;
     private final Context context;
 
     private final FusedLocationProviderClient fusedLocationClient;
+
     private final LocationRequest locationRequest;
     private final LocationCallback locationCallback;
 
     private final MutableLiveData<LocationResult> locationResults = new MutableLiveData<>();
-    private final MutableLiveData<LocationAvailability> locationAvailabilities = new MutableLiveData<>();
 
-    private final List<LocationListener> locationOnceListener = new LinkedList<>();
+    private final List<LocationListener> locationListeners = new LinkedList<>();
 
-    public void notifyLocationOnce(LocationListener listener) {
-        locationOnceListener.add(listener);
+    public void addLocationListener(LocationListener listener) {
+        if (locationListeners.size() == 0) {
+            startTracking();
+        }
+        locationListeners.add(listener);
     }
 
+
+    public void removeLocationListener(LocationListener listener) {
+        locationListeners.remove(listener);
+
+        if (locationListeners.size() == 0) {
+            stopTracking();
+        }
+    }
 
     public LocationProvider(@ApplicationContext Context applicationContext, ContextMediator ctxMediator) {
         context = applicationContext;
@@ -76,23 +86,10 @@ public class LocationProvider {
                 super.onLocationResult(locationResult);
 
                 // Notify all listeners, this allows our viewmodels to use this as well.
-                for (LocationListener listener : locationOnceListener) {
+                for (LocationListener listener : locationListeners) {
                     listener.onLocation(locationResult);
                 }
-                locationOnceListener.clear();
-
                 locationResults.postValue(locationResult);
-            }
-
-            @Override
-            public void onLocationAvailability(@NonNull LocationAvailability locationAvailability) {
-                super.onLocationAvailability(locationAvailability);
-
-                if (!locationAvailability.isLocationAvailable()) {
-                    promptSettingsChange();
-                }
-
-                locationAvailabilities.postValue(locationAvailability);
             }
         };
 
@@ -102,18 +99,12 @@ public class LocationProvider {
                 .setFastestInterval(FASTEST_INTERVAL);
     }
 
-    public void promptSettingsChange() {
-        ctxMediator.request(RequestFactory.createOpenLocationSettingsRequest());
-    }
-
-    @SuppressLint("MissingPermission")
-    public void startTracking() {
+    private void startTracking() {
         Log.d(TAG, "waiting for permission...");
         ctxMediator.request(RequestFactory.createPermissionRequest(Manifest.permission.ACCESS_FINE_LOCATION, new PermissionListener() {
             @Override
             public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-                Log.d(TAG, "Starting to track location...");
-                fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+                checkSettingsAndProceed();
             }
 
             @Override
@@ -131,7 +122,42 @@ public class LocationProvider {
         }));
     }
 
-    public void stopTracking() {
+    /**
+     * Checks the state of the location service and reacts accordingly
+     * e.g. proceeding to listen on success or prompting the user to change the settings otherwise.
+     */
+    @SuppressLint("MissingPermission")
+    private void checkSettingsAndProceed() {
+        ctxMediator.request(RequestFactory.createActivateLocationRequest(locationRequest, result -> {
+            if (result instanceof Result.Success) {
+                Log.d(TAG, "Starting to track location...");
+                fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+            } else {
+                Log.e(TAG, "Location unavailable...", ((Result.Error)result).exception);
+                notifyAndStop();
+            }
+        }));
+    }
+
+    @SuppressLint("MissingPermission")
+    public void onSettingsResult(int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            Log.d(TAG, "Starting to track location...");
+            fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+        } else {
+            Log.e(TAG, "Location unavailable... Code: " + resultCode);
+            notifyAndStop();
+        }
+    }
+
+    private void notifyAndStop() {
+        for (LocationListener listener : locationListeners) {
+            listener.onLocationUnavailable();
+        }
+        stopTracking();
+    }
+
+    private void stopTracking() {
         Log.d(TAG, "Stopping to track location...");
         fusedLocationClient.removeLocationUpdates(locationCallback);
     }
@@ -179,12 +205,4 @@ public class LocationProvider {
             }
         }));
     }
-
-    public boolean isLocationServiceEnabled() {
-        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        return LocationManagerCompat.isLocationEnabled(locationManager);
-    }
-
-    public LiveData<LocationResult> getLocationResults() {return locationResults; }
-    public LiveData<LocationAvailability> getLocationAvailabilities() {return locationAvailabilities; }
 }

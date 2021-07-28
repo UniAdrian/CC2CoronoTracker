@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -112,9 +113,7 @@ public class ReadQRViewModel extends ViewModel {
                 ctxMediator.request(RequestFactory.createNavigationRequest(actionReadQRToContacts));
             } else {
                 Log.e(TAG, "Failed to insert exposure for contact.", ((Result.Error)result).exception);
-                ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.insert_exposure_failed, Snackbar.LENGTH_LONG, R.string.retry, v -> {
-                    addExposure(toAdd);
-                }));
+                ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.insert_exposure_failed, Snackbar.LENGTH_LONG, R.string.retry, v -> addExposure(toAdd)));
             }
         });
     }
@@ -128,26 +127,31 @@ public class ReadQRViewModel extends ViewModel {
         toAdd.location = null;
         toAdd.date = new java.sql.Date(new Date().getTime());
 
-        if (allowTracking == false || !settingsProvider.getTrackExposures()) {
+        if (!allowTracking || !settingsProvider.getTrackExposures()) {
             addExposure(toAdd);
             return;
         }
 
-        // Let the locationProvider know, that we want location data...
-        locationprovider.startTracking();
-
-        if (!locationprovider.isLocationServiceEnabled()) {
-            Log.d(TAG, "Location service not available.");
-        }
-
         isLoadingText.postValue("Waiting for location data...");
-        locationprovider.notifyLocationOnce(locationResult -> {
-            Log.d(TAG, "#Locations: " + locationResult.getLocations().size() + ", " + locationResult.getLastLocation());
-            Location location = locationResult.getLastLocation();
-            toAdd.location = new LatLng(location.getLatitude(), location.getLongitude());
+        LocationProvider.LocationListener locationListener = new LocationProvider.LocationListener() {
+            @Override
+            public void onLocation(LocationResult locationResult) {
+                Location location = locationResult.getLastLocation();
+                toAdd.location = new LatLng(location.getLatitude(), location.getLongitude());
 
-            addExposure(toAdd);
-        });
+                locationprovider.removeLocationListener(this);
+                addExposure(toAdd);
+            }
+
+            @Override
+            public void onLocationUnavailable() {
+                ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.allow_location_or_preferences, Snackbar.LENGTH_LONG));
+                locationprovider.removeLocationListener(this);
+                isLoading.postValue(false);
+            }
+        };
+
+        locationprovider.addLocationListener(locationListener);
     }
 
     private void connectContactAndAddExposure(Contact contact, UUID uuid, boolean allowTracking) {
@@ -158,9 +162,7 @@ public class ReadQRViewModel extends ViewModel {
                 prepareAndAddExposure(contact, allowTracking);
             } else {
                 Log.e(TAG, "Failed to update contact.", ((Result.Error)result).exception);
-                ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.upsert_contact_failed, Snackbar.LENGTH_LONG, R.string.retry, v -> {
-                    connectContactAndAddExposure(contact, uuid, allowTracking);
-                }, contact.displayName));
+                ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.upsert_contact_failed, Snackbar.LENGTH_LONG, R.string.retry, v -> connectContactAndAddExposure(contact, uuid, allowTracking), contact.displayName));
             }
         });
     }

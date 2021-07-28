@@ -1,6 +1,7 @@
 package de.uni.cc2coronotracker.ui.views;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -72,14 +73,19 @@ public class MapsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mapsViewModel = new ViewModelProvider(this.getActivity()).get(MapsViewModel.class);
-        contactSelectionViewModel = new ViewModelProvider(this.getActivity()).get(ContactSelectionDialogViewModel.class);
-        contactSelectionViewModel.getOnContactSelection().observe(this, event -> {
-            ContactSelectionDialogViewModel.ContactIntentTuple contentIfNotHandled = event.getContentIfNotHandled();
-            if (contentIfNotHandled != null) {
-                mapsViewModel.selectContacts(contentIfNotHandled.contactList);
-            }
-        });
+        // Should never happen, but you never know
+        if (getActivity()!=null) {
+            mapsViewModel = new ViewModelProvider(this.getActivity()).get(MapsViewModel.class);
+            contactSelectionViewModel = new ViewModelProvider(this.getActivity()).get(ContactSelectionDialogViewModel.class);
+            contactSelectionViewModel.getOnContactSelection().observe(this, event -> {
+                ContactSelectionDialogViewModel.ContactIntentTuple contentIfNotHandled = event.getContentIfNotHandled();
+                if (contentIfNotHandled != null) {
+                    mapsViewModel.selectContacts(contentIfNotHandled.contactList);
+                }
+            });
+        } else {
+            Log.e(TAG, "getActivity returned null.");
+        }
 
         setHasOptionsMenu(true);
     }
@@ -104,7 +110,7 @@ public class MapsFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.maps_menu, menu);
 
@@ -120,20 +126,16 @@ public class MapsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        mapsViewModel.startLocationTracking();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mapsViewModel.stopLocationTracking();
     }
 
     private void setupHooks(GoogleMap map) {
         mapsViewModel.onMapReady();
-        mapsViewModel.getGotoPosition().observe(this.getViewLifecycleOwner(), loc -> {
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, ZOOM_STREETS));
-        });
+        mapsViewModel.getGotoPosition().observe(this.getViewLifecycleOwner(), loc -> map.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, ZOOM_STREETS)));
 
         mapsViewModel.getMarkers().observe(this, markerOptions -> {
             if (markerOptions == null) {
