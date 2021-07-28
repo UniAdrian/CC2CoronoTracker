@@ -41,6 +41,9 @@
         <action
             android:id="@+id/action_startScreen_to_mapsFragment"
             app:destination="@id/mapsFragment" />
+        <action
+        android:id="@+id/action_startScreen_to_calendarFragment"
+        app:destination="@id/calendar"/>
     </fragment>
     <fragment
         android:id="@+id/showQR"
@@ -107,4 +110,9 @@
         android:name="de.uni.cc2coronotracker.ui.views.MapsFragment"
         android:label="fragment_maps"
         tools:layout="@layout/fragment_maps" />
+    <fragment
+    android:id="@+id/calendar"
+    android:name="de.uni.cc2coronotracker.ui.views.CalendarFragment"
+    android:label="fragment_calendar"
+    tools:layout="@layout/fragment_calendar" />
 </navigation>

@@ -36,11 +36,13 @@ public class StartScreenFragment extends Fragment {
         Button gtRQR = (Button) view.findViewById(R.id.btnGotoReadQR);
         Button gtCQR = (Button) view.findViewById(R.id.btnGotoCreateQR);
         Button gtMaps = (Button) view.findViewById(R.id.btnGotoMaps);
+        Button gtCalendar = (Button) view.findViewById(R.id.btnGotoCalendar);
 
         gtContacts.setOnClickListener(this::gotoContacts);
         gtRQR.setOnClickListener(this::gotoReadQR);
         gtCQR.setOnClickListener(this::gotoCreateQR);
         gtMaps.setOnClickListener(this::gotoMaps);
+        gtCalendar.setOnClickListener(this::gotoCalendar);
 
         return view;
     }
@@ -59,5 +61,9 @@ public class StartScreenFragment extends Fragment {
 
     public void gotoMaps(View view) {
         Navigation.findNavController(view).navigate(R.id.action_startScreen_to_mapsFragment);
+    }
+
+    public void gotoCalendar(View view) {
+        Navigation.findNavController(view).navigate(R.id.action_startScreen_to_calendarFragment);
     }
 }
