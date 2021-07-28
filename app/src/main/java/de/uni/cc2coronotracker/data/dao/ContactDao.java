@@ -58,6 +58,10 @@ public abstract class ContactDao {
     @Query("SELECT * FROM contacts")
     public abstract LiveData<List<ContactWithExposures>> getAllContactsWithExposures();
 
+    @Transaction
+    @Query("SELECT * FROM contacts WHERE id IN (:forContacts)")
+    public abstract List<ContactWithExposures> getContactsWithExposuresSync(List<Long> forContacts);
+
     @Query("DELETE FROM contacts")
     public abstract void nukeTable();
 

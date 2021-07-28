@@ -3,14 +3,12 @@ package de.uni.cc2coronotracker.ui.views;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -20,6 +18,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import javax.inject.Inject;
 
@@ -27,6 +26,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 import de.uni.cc2coronotracker.R;
 import de.uni.cc2coronotracker.data.viewmodel.MapsViewModel;
 import de.uni.cc2coronotracker.data.viewmodel.shared.ContactSelectionDialogViewModel;
+import de.uni.cc2coronotracker.databinding.FragmentMapsBinding;
 import de.uni.cc2coronotracker.helper.ContextMediator;
 import de.uni.cc2coronotracker.ui.dialogs.SelectContactDialogFragment;
 
@@ -43,6 +43,8 @@ public class MapsFragment extends Fragment {
 
     private MapsViewModel mapsViewModel;
     private ContactSelectionDialogViewModel contactSelectionViewModel;
+
+    private FragmentMapsBinding binding;
 
     @Inject
     public ContextMediator ctxMediator;
@@ -73,21 +75,23 @@ public class MapsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Should never happen, but you never know
-        if (getActivity()!=null) {
+        Log.d(TAG, "On Create");
+
+        // Should never happen, but you never know - Makes the warning disappear anyway.
+        if (getActivity() != null) {
+            // Setup view models...
             mapsViewModel = new ViewModelProvider(this.getActivity()).get(MapsViewModel.class);
+
             contactSelectionViewModel = new ViewModelProvider(this.getActivity()).get(ContactSelectionDialogViewModel.class);
             contactSelectionViewModel.getOnContactSelection().observe(this, event -> {
                 ContactSelectionDialogViewModel.ContactIntentTuple contentIfNotHandled = event.getContentIfNotHandled();
                 if (contentIfNotHandled != null) {
-                    mapsViewModel.selectContacts(contentIfNotHandled.contactList);
+                    mapsViewModel.DisplayMarkersForContacts(contentIfNotHandled.contactList);
                 }
             });
         } else {
             Log.e(TAG, "getActivity returned null.");
         }
-
-        setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -95,7 +99,31 @@ public class MapsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_maps, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_maps, container, false);
+
+        binding.setMapsVM(mapsViewModel);
+        binding.setLifecycleOwner(this);
+
+        setupBottomSheet();
+
+        return binding.getRoot();
+    }
+
+    private void setupBottomSheet() {
+        BottomSheetBehavior sheetBehavior = BottomSheetBehavior.from(binding.bottomSheetInclude.mapsBottomSheet);
+        sheetBehavior.setHideable(false);
+
+        binding.bottomSheetInclude.mapsConfigTitle.setOnClickListener(v -> {
+            if (sheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
+                sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            } else {
+                sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            }
+        });
+
+        binding.bottomSheetInclude.mapsSelectContacts.setOnClickListener(v-> {
+            selectContacts();
+        });
     }
 
     @Override
@@ -109,28 +137,8 @@ public class MapsFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.maps_menu, menu);
-
-        final MenuItem selectContacts = menu.findItem(R.id.maps_select_contacts);
-        selectContacts.setOnMenuItemClickListener(this::selectContacts);
-    }
-
-    private boolean selectContacts(MenuItem mitem) {
+    private void selectContacts() {
         SelectContactDialogFragment.newInstance(true, null).show(this.getParentFragmentManager(), null);
-        return true;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
     }
 
     private void setupHooks(GoogleMap map) {

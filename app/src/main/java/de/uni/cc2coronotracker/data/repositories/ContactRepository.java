@@ -10,6 +10,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Executor;
@@ -48,8 +49,26 @@ public class ContactRepository{
     public LiveData<List<Contact>> getContacts() {
         return contactDao.getAll();
     }
+
     public LiveData<List<ContactDao.ContactWithExposures>> getContactsWithExposures() {
         return contactDao.getAllContactsWithExposures();
+    }
+    public void getContactsWithExposures(List<Contact> forContacts, RepositoryCallback<List<ContactDao.ContactWithExposures>> callback) {
+        executor.execute(() -> {
+
+            try {
+                // I really miss my streams...
+                List<Long> asIdList = new ArrayList<>(forContacts.size());
+                for (Contact contact : forContacts) {
+                    asIdList.add(contact.id);
+                }
+
+                List<ContactDao.ContactWithExposures> contactsWithExposuresResult= contactDao.getContactsWithExposuresSync(asIdList);
+                callback.onComplete(new Result.Success<>(contactsWithExposuresResult));
+            } catch (Exception e) {
+                callback.onComplete(new Result.Error<>(e));
+            }
+        });
     }
 
     private Contact getContact(long id) {
