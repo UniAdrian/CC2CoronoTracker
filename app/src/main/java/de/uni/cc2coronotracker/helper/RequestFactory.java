@@ -107,9 +107,9 @@ public class RequestFactory {
     public static CallWithContextRequest createOpenLocationSettingsRequest() {
         CallWithContextRequest.ContextfulCall call = c -> {
             AlertDialog.Builder alertDialog = new AlertDialog.Builder(c, R.style.Theme_AppCompat_DayNight_Dialog_Alert);
-            alertDialog.setTitle("GPS Error");
-            alertDialog.setMessage("GPS is not enabled. Do you want to go to settings?");
-            alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+            alertDialog.setTitle(R.string.enable_location);
+            alertDialog.setMessage(R.string.enable_location_reason);
+            alertDialog.setPositiveButton(R.string.open_settings, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
@@ -117,12 +117,7 @@ public class RequestFactory {
                 }
             });
 
-            alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
+            alertDialog.setNegativeButton(R.string.dialog_cancel, (dialog, which) -> dialog.cancel());
             alertDialog.show();
         };
 
