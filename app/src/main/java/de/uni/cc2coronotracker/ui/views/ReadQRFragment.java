@@ -41,6 +41,8 @@ import de.uni.cc2coronotracker.helper.RequestFactory;
 @AndroidEntryPoint
 public class ReadQRFragment extends Fragment {
 
+    private static final String TAG = "ReadQRFragment";
+
     private CodeScanner codeScanner;
     private FragmentReadQrBinding binding;
 
@@ -86,6 +88,7 @@ public class ReadQRFragment extends Fragment {
 
         codeScanner.setDecodeCallback(result -> requireActivity().runOnUiThread(() -> {
             try {
+                Log.d(TAG, result.getText());
                 QrIntent.Intent intent = QrIntent.fromString(result.getText());
                 readQRViewModel.handleQRIntent(intent);
             } catch (Exception e) {

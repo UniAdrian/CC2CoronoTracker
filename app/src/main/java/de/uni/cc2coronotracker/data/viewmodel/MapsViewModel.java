@@ -14,8 +14,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.apache.commons.collections4.ListUtils;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
@@ -104,13 +106,45 @@ public class MapsViewModel extends ViewModel {
     private void processExposures(List<ContactDao.ContactWithExposures> contactsWithExposures) {
         Log.d(TAG, "Processing CWE...");
 
+
+        // TODO: REMOVE ME. I AM DEBUG CODE
+        for (int i=0; i<10; ++i) {
+            ContactDao.ContactWithExposures cwe = new ContactDao.ContactWithExposures();
+            cwe.contact = new Contact();
+            cwe.contact.displayName = "Test Account #" + i;
+            cwe.contact.id = 0;
+
+            Random rng = new Random();
+
+            int n = 0 + (int)(Math.random() * 30);
+            cwe.exposures = new ArrayList<>(n);
+            for (int j=0; j<n; ++j) {
+                double rndLat = rng.nextDouble() * .05 - .025;
+                double rndLng = rng.nextDouble() * .05 - .025;
+                LatLng kassel = new LatLng(51.312801 + rndLat, 9.481544 + rndLng);
+
+                Exposure exp = new Exposure();
+                exp.location = kassel;
+                exp.date = new Date(new java.util.Date().getTime());
+
+                cwe.exposures.add(exp);
+            }
+
+            contactsWithExposures.add(cwe);
+        }
+
         List<MarkerOptions> newOptions = new ArrayList<>();
 
         float hue = 0;
         BitmapDescriptor descriptor;
 
-        for (ContactDao.ContactWithExposures cwe : ListUtils.emptyIfNull(contactsWithExposures)) {
+        // By calculating the center of gravity we can go to a position on the map
+        // where the most exposures are likely to be.
+        long exposureCount = 0;
+        double cogLng = 0;
+        double cogLat = 0;
 
+        for (ContactDao.ContactWithExposures cwe : ListUtils.emptyIfNull(contactsWithExposures)) {
             descriptor = BitmapDescriptorFactory.defaultMarker(hue);
             hue = (hue + 11) % 360;
 
@@ -118,13 +152,22 @@ public class MapsViewModel extends ViewModel {
                 if (exposure.location == null) continue;
 
                 MarkerOptions options = new MarkerOptions()
-                .draggable(false)
-                .position(exposure.location)
-                .title(cwe.contact.displayName + " - " + exposure.date)
-                .icon(descriptor);
+                        .draggable(false)
+                        .position(exposure.location)
+                        .title(cwe.contact.displayName + " - " + exposure.date)
+                        .icon(descriptor);
 
                 newOptions.add(options);
+
+                // For calculating the "center of gravity"
+                exposureCount++;
+                cogLng += exposure.location.longitude;
+                cogLat += exposure.location.latitude;
             }
+        }
+
+        if (exposureCount > 0) {
+            requestPosition.postValue(new LatLng(cogLat / exposureCount, cogLng / exposureCount));
         }
 
         isLoading.postValue(false);

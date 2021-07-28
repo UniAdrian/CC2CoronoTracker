@@ -143,13 +143,10 @@ public class MapsFragment extends Fragment {
 
     private void setupHooks(GoogleMap map) {
         mapsViewModel.onMapReady();
-        mapsViewModel.getGotoPosition().observe(this.getViewLifecycleOwner(), loc -> map.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, ZOOM_STREETS)));
+        mapsViewModel.getGotoPosition().observe(this.getViewLifecycleOwner(), loc -> map.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, ZOOM_CITY)));
 
         mapsViewModel.getMarkers().observe(this, markerOptions -> {
-            if (markerOptions == null) {
-                map.clear();
-                return;
-            }
+            map.clear();
 
             for (MarkerOptions opt : markerOptions) {
                 map.addMarker(opt);
