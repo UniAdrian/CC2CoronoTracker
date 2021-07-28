@@ -76,4 +76,7 @@
 
     <string name="preferences_allow_tracking_key" translatable="false">allow_tracking</string>
     <string name="preferences_track_exposures_key" translatable="false">track_exposures</string>
+    <string name="enable_location">Location unavailable</string>
+    <string name="enable_location_reason">This feature requires location information.\nPlease activate location services in your settings.</string>
+    <string name="open_settings">Open settings</string>
 </resources>
