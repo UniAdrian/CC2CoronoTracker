@@ -33,6 +33,7 @@ public class SelectContactDialogFragment extends DialogFragment {
 
     private DialogContactPickerBinding binding;
     private ContactViewModel contactsViewModel;
+
     private ContactSelectionDialogViewModel contactSelectionViewModel;
 
 

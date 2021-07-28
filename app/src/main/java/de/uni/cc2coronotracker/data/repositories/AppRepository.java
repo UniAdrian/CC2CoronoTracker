@@ -98,7 +98,6 @@ public class AppRepository {
         });
     }
 
-
     public LiveData<UUID> getAttachedUUID() {
         return attachedUUID;
     }

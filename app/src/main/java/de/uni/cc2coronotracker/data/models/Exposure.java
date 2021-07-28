@@ -6,6 +6,8 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.sql.Date;
 
 /**
@@ -34,4 +36,7 @@ public class Exposure {
     @ColumnInfo(name = "date")
     @NonNull
     public Date date;
+
+    @ColumnInfo(name = "location", defaultValue = "NULL")
+    public LatLng location;
 }

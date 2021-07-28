@@ -66,6 +66,8 @@ public class ReadQRFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_read_qr, container, false);
+
+        binding.setQrVM(readQRViewModel);
         binding.setLifecycleOwner(this);
 
         codeScanner = new CodeScanner(getContext(), binding.scannerView);
@@ -99,7 +101,11 @@ public class ReadQRFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        requestForCamera();
+
+        Boolean isProcessing = readQRViewModel.isLoading().getValue();
+        if (isProcessing == null || isProcessing == false) {
+            requestForCamera();
+        }
     }
 
     @Override

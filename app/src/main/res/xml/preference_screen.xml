@@ -17,14 +17,14 @@
     <PreferenceCategory android:title="@string/preferences_category_maps_integration">
         <SwitchPreference
             android:defaultValue="false"
-            android:key="allow_tracking"
+            android:key="@string/preferences_allow_tracking_key"
             android:title="@string/preferences_allow_tracking"
             android:summary="@string/preferences_allow_tracking_summary" />
         <SwitchPreference
             android:defaultValue="false"
-            android:key="track_exposures"
+            android:key="@string/preferences_track_exposures_key"
             android:title="@string/preferences_track_exposures"
-            android:dependency="allow_tracking"
+            android:dependency="@string/preferences_allow_tracking_key"
             android:summary="@string/preferences_track_exposures_summary"/>
     </PreferenceCategory>
 

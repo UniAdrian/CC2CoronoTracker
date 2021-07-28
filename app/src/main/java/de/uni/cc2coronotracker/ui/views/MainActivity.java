@@ -1,6 +1,7 @@
 package de.uni.cc2coronotracker.ui.views;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,6 +19,7 @@ import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import de.uni.cc2coronotracker.R;
+import de.uni.cc2coronotracker.data.repositories.providers.LocationProvider;
 import de.uni.cc2coronotracker.data.viewmodel.PreferencesViewModel;
 import de.uni.cc2coronotracker.helper.CallWithContextRequest;
 import de.uni.cc2coronotracker.helper.ContextMediator;
@@ -25,8 +27,13 @@ import de.uni.cc2coronotracker.helper.ContextMediator;
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
 
+    public static final int LOCATION_AVAILABILITY_REQUEST = 1337;
+
     @Inject
     public ContextMediator ctxMediator;
+
+    @Inject
+    public LocationProvider locationProvider;
 
     private PreferencesViewModel preferencesViewModel;
     AppBarConfiguration appBarConfiguration;
@@ -38,13 +45,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Referencing the view model here is actually enough already to assure the UUID is assigned on startup.
         preferencesViewModel = new ViewModelProvider(this).get(PreferencesViewModel.class);
-
-        ctxMediator.getRequests().observe(this, event -> {
-            CallWithContextRequest contentIfNotHandled = event.getContentIfNotHandled();
-            if (contentIfNotHandled != null) {
-                contentIfNotHandled.run(this);
-            }
-        });
     }
 
     @SuppressLint("NonConstantResourceId")
@@ -85,6 +85,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        ctxMediator.getRequests().observe(this, event -> {
+            CallWithContextRequest contentIfNotHandled = event.getContentIfNotHandled();
+            if (contentIfNotHandled != null) {
+                contentIfNotHandled.run(this);
+            }
+        });
+    }
+
+    @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, appBarConfiguration)
@@ -103,5 +114,14 @@ public class MainActivity extends AppCompatActivity {
             navController.navigate(R.id.action_global_preferences);
         }
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // Check for the integer request code originally supplied to startResolutionForResult().
+        if (requestCode == LOCATION_AVAILABILITY_REQUEST) {
+            locationProvider.onSettingsResult(resultCode, data);
+        }
     }
 }

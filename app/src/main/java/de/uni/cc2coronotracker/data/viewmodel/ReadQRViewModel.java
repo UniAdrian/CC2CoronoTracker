@@ -1,12 +1,15 @@
 package de.uni.cc2coronotracker.data.viewmodel;
 
 
+import android.location.Location;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Date;
@@ -22,6 +25,8 @@ import de.uni.cc2coronotracker.data.qr.QrIntent;
 import de.uni.cc2coronotracker.data.repositories.ContactRepository;
 import de.uni.cc2coronotracker.data.repositories.ExposureRepository;
 import de.uni.cc2coronotracker.data.repositories.async.Result;
+import de.uni.cc2coronotracker.data.repositories.providers.LocationProvider;
+import de.uni.cc2coronotracker.data.repositories.providers.ReadOnlySettingsProvider;
 import de.uni.cc2coronotracker.data.viewmodel.shared.ContactSelectionDialogViewModel;
 import de.uni.cc2coronotracker.helper.ContextMediator;
 import de.uni.cc2coronotracker.helper.Event;
@@ -34,14 +39,22 @@ public class ReadQRViewModel extends ViewModel {
     private final String TAG = "ReadQRVM";
 
     private final ContextMediator ctxMediator;
+    private final LocationProvider locationprovider;
+    private final ReadOnlySettingsProvider settingsProvider;
+
     private final ContactRepository contactRepository;
     private final ExposureRepository exposureRepository;
 
     private MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
+    private MutableLiveData<String> isLoadingText = new MutableLiveData<>();
 
     @Inject
-    public ReadQRViewModel(ContextMediator ctxMediator, ContactRepository contactRepository, ExposureRepository exposureRepository) {
+    public ReadQRViewModel(ContextMediator ctxMediator, ContactRepository contactRepository,
+                           ExposureRepository exposureRepository, LocationProvider locationProvider,
+                           ReadOnlySettingsProvider settingsProvider) {
         this.ctxMediator = ctxMediator;
+        this.locationprovider = locationProvider;
+        this.settingsProvider = settingsProvider;
         this.contactRepository = contactRepository;
         this.exposureRepository = exposureRepository;
     }
@@ -65,7 +78,7 @@ public class ReadQRViewModel extends ViewModel {
                 if (c == null) {
                     ctxMediator.request(RequestFactory.createContactSelectionDialogRequest(false, intent));
                 } else {
-                    addExposure(c, intent.allowTracking);
+                    prepareAndAddExposure(c, intent.allowTracking);
                 }
             } else {
                 Log.e(TAG, "Failed to fetch contact with uuid " + intent.uuid, ((Result.Error)result).exception);
@@ -87,33 +100,58 @@ public class ReadQRViewModel extends ViewModel {
         }
     }
 
-    private void addExposure(Contact contact, boolean allowTracking) {
-
-        // TODO: Also request and add location data if appropriate. See MapsIntegration milestone
-
-        isLoading.postValue(true);
-
-        Exposure toAdd = new Exposure();
-        toAdd.contactId = contact.id;
-        toAdd.date = new java.sql.Date(new Date().getTime());
-
+    private void addExposure(Exposure toAdd) {
+        isLoadingText.postValue("One last step...");
         exposureRepository.addExposure(toAdd, result -> {
             isLoading.postValue(false);
+
             if (result instanceof Result.Success) {
                 // Navigate to the contact that was changed.
                 ReadQRFragmentDirections.ActionReadQRToContactDetails actionReadQRToContacts = ReadQRFragmentDirections.actionReadQRToContactDetails();
-                actionReadQRToContacts.setContactId(contact.id);
+                actionReadQRToContacts.setContactId(toAdd.contactId);
 
                 ctxMediator.request(RequestFactory.createNavigationRequest(actionReadQRToContacts));
             } else {
                 Log.e(TAG, "Failed to insert exposure for contact.", ((Result.Error)result).exception);
-                ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.insert_exposure_failed, Snackbar.LENGTH_LONG, R.string.retry, v -> {
-                    addExposure(contact, allowTracking);
-                }, contact.displayName));
+                ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.insert_exposure_failed, Snackbar.LENGTH_LONG, R.string.retry, v -> addExposure(toAdd)));
             }
         });
+    }
 
+    private void prepareAndAddExposure(Contact contact, boolean allowTracking) {
+        isLoading.postValue(true);
+        isLoadingText.postValue("Preparing exposure...");
 
+        Exposure toAdd = new Exposure();
+        toAdd.contactId = contact.id;
+        toAdd.location = null;
+        toAdd.date = new java.sql.Date(new Date().getTime());
+
+        if (!allowTracking || !settingsProvider.getTrackExposures()) {
+            addExposure(toAdd);
+            return;
+        }
+
+        isLoadingText.postValue("Waiting for location data...");
+        LocationProvider.LocationListener locationListener = new LocationProvider.LocationListener() {
+            @Override
+            public void onLocation(LocationResult locationResult) {
+                Location location = locationResult.getLastLocation();
+                toAdd.location = new LatLng(location.getLatitude(), location.getLongitude());
+
+                locationprovider.removeLocationListener(this);
+                addExposure(toAdd);
+            }
+
+            @Override
+            public void onLocationUnavailable() {
+                ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.allow_location_or_preferences, Snackbar.LENGTH_LONG));
+                locationprovider.removeLocationListener(this);
+                isLoading.postValue(false);
+            }
+        };
+
+        locationprovider.addLocationListener(locationListener);
     }
 
     private void connectContactAndAddExposure(Contact contact, UUID uuid, boolean allowTracking) {
@@ -121,16 +159,15 @@ public class ReadQRViewModel extends ViewModel {
         contact.uuid = uuid;
         contactRepository.upsertContact(contact, result -> {
             if (result instanceof Result.Success) {
-                addExposure(contact, allowTracking);
+                prepareAndAddExposure(contact, allowTracking);
             } else {
                 Log.e(TAG, "Failed to update contact.", ((Result.Error)result).exception);
-                ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.upsert_contact_failed, Snackbar.LENGTH_LONG, R.string.retry, v -> {
-                    connectContactAndAddExposure(contact, uuid, allowTracking);
-                }, contact.displayName));
+                ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.upsert_contact_failed, Snackbar.LENGTH_LONG, R.string.retry, v -> connectContactAndAddExposure(contact, uuid, allowTracking), contact.displayName));
             }
         });
     }
 
 
-    public LiveData<Boolean> getIsLoading() {return isLoading; }
+    public LiveData<Boolean> isLoading() {return isLoading; }
+    public LiveData<String> getLoadingText() {return isLoadingText; }
 }

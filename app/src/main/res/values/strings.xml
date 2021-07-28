@@ -7,7 +7,7 @@
     <string name="LinkContacts">Contacts</string>
     <string name="LinkReadQR">Scan QR</string>
     <string name="LinkCreateQR">Show QR</string>
-    <string name="loading_generic">Loading...</string>
+    <string name="loading_generic">Loading…</string>
     <string name="detailsExposureDescription">Your history with this contact</string>
     <string name="avatarDescription">Avatar</string>
     <string name="contact_not_connected">This UUID is not connected to a phone contact yet!</string>
@@ -45,7 +45,7 @@
     <string name="preferences_track_exposures_summary">If contact tracking is enabled this option enables tracking of contacts when you scan a QR code.</string>
     <string name="preferences">Preferences</string>
     <string name="scan_qr_description">Scan a QR code</string>
-    <string name="preparing_qr">Preparing your QR Code...</string>
+    <string name="preparing_qr">Preparing your QR Code…</string>
     <string name="qr_scan_failed">Whoops! This QR code appears to be invalid.\nReason: %s</string>
     <string name="unknown_intent">This intent is unfortunately not supported by the app yet!</string>
     <string name="pick_contact">Select a contact</string>
@@ -59,7 +59,7 @@
     <string name="on_boarding_topic_description1">Description1</string>
     <string name="on_boarding_topic_description2">Description2</string>
     <string name="on_boarding_topic_description3">Description3</string>
-    <string name="insert_exposure_failed">Whoops! We failed to insert a new exposure for %s.</string>
+    <string name="insert_exposure_failed">Whoops! We failed to insert a new exposure.</string>
     <string name="exposure_description">You met on  the %s</string>
     <string name="action_search">Search</string>
     <string name="display_name">Displayname</string>
@@ -69,6 +69,15 @@
     <string name="confirm_create_contact">Create new Contact</string>
     <string name="display_name_cannnot_be_blank">The display name must not be blank.</string>
     <string name="create_contact_failed">Failed to create new contact.</string>
-    <string name="persist_uri_failed">Sorry, your phone didnt want you to pick this image. Try again?</string>
+    <string name="persist_uri_failed">Sorry, your phone didn\'t want you to pick this image. Try again?</string>
     <string name="LinkMaps">Maps</string>
+    <string name="location_not_available">Unfortunately location data does not seem to be available right now.</string>
+    <string name="no_permission_no_location">The app needs location permissions to work correctly.</string>
+
+    <string name="preferences_allow_tracking_key" translatable="false">allow_tracking</string>
+    <string name="preferences_track_exposures_key" translatable="false">track_exposures</string>
+    <string name="enable_location">Location unavailable</string>
+    <string name="enable_location_reason">This feature requires location information.\nPlease activate location services in your settings.</string>
+    <string name="open_settings">Open settings</string>
+    <string name="allow_location_or_preferences">Please enable location services or change your preferences to disable location tracking to add the exposure.</string>
 </resources>
