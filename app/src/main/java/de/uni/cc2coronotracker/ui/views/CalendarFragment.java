@@ -29,21 +29,10 @@ import de.uni.cc2coronotracker.data.repositories.CalendarRepository;
 import de.uni.cc2coronotracker.data.viewmodel.CalendarViewModel;
 public class CalendarFragment extends Fragment {
 
-    private Context applicationContext;
-    private final Executor executor;
-    private MutableLiveData<List<Exposure>> exposures = new MutableLiveData<>();
-    private MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
-
-
-    private final ExposureDao exposureDao;
     private CalendarViewModel calenderViewModel;
 
-
     @Inject()
-    public CalendarFragment(@ApplicationContext Context ctx, Executor executor, ExposureDao exposureDao) {
-        this.applicationContext = ctx;
-        this.executor = executor;
-        this.exposureDao = exposureDao;
+    public CalendarFragment() {
     }
     CalendarView calendarView;
     TextView calendarText;
