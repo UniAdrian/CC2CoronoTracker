@@ -2,8 +2,6 @@ package de.uni.cc2coronotracker.helper;
 
 import android.util.Log;
 
-import androidx.annotation.Nullable;
-
 import com.google.android.gms.common.util.Hex;
 import com.google.iot.cbor.CborArray;
 import com.google.iot.cbor.CborConversionException;
@@ -11,9 +9,13 @@ import com.google.iot.cbor.CborMap;
 import com.google.iot.cbor.CborObject;
 import com.google.iot.cbor.CborParseException;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.DataFormatException;
@@ -23,7 +25,8 @@ import COSE.CoseException;
 import COSE.Message;
 import COSE.MessageTag;
 import COSE.Sign1Message;
-import de.uni.cc2coronotracker.data.qr.QrIntent;
+import de.uni.cc2coronotracker.data.models.EUCertificate;
+import de.uni.cc2coronotracker.data.qr.EGC;
 import nl.minvws.encoding.Base45;
 
 public class EGCHelper {
@@ -31,7 +34,7 @@ public class EGCHelper {
     private static final String TAG = "EGCHelper";
 
 
-    public static QrIntent.EGC parse(String toParse) throws CborConversionException, CborParseException, IOException, DataFormatException, CoseException {
+    public static EGC parse(String toParse) throws CborConversionException, CborParseException, IOException, DataFormatException, CoseException {
 
         byte[] decodedBytes = Base45.getDecoder().decode(toParse.substring(4));
         byte[] decompressed = decompress(decodedBytes);
@@ -64,18 +67,16 @@ public class EGCHelper {
 
                 EUCertificate euCert = new EUCertificate();
 
-                euCert.version = cert.get("ver").toString();
+                euCert.version = getString(cert, "ver");
 
                 CborMap names = CborMap.createFromCborByteArray(cert.get("nam").toCborByteArray());
-                euCert.surnames = names.get("fn").toString();
-                euCert.surnamesStandardised = names.get("fnt").toString();
+                euCert.surnames = getString(names, "fn");
+                euCert.surnamesStandardised = getString(names, "fnt");
 
-                if (names.containsKey("gn"))
-                    euCert.forenames = names.get("gn").toString();
-                if (names.containsKey("gnt"))
-                    euCert.forenamesStandardised = names.get("gnt").toString();
+                euCert.forenames = getString(names, "gn", null);
+                euCert.forenamesStandardised = getString(names, "gnt", null);
 
-                euCert.dateOfBirth = cert.get("dob").toString();
+                euCert.dateOfBirth = getString(cert, "dob");
 
 
                 /**
@@ -104,90 +105,104 @@ public class EGCHelper {
             throw new IllegalArgumentException("Invalid EGC: Must contain at least one valid health certificate.");
         }
 
-        QrIntent.EGC egc = new QrIntent.EGC();
+        EGC egc = new EGC();
         egc.raw = toParse;
-        egc.issuer = issuer.toString();
-        egc.expiration = Long.valueOf(expirationTime.toString());
-        egc.issuedAt = Long.valueOf(issuedAt.toString());
+        egc.issuer = StringUtils.unwrap(issuer.toString(), '"');
+
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        long expiredAtLong = Long.parseLong(StringUtils.unwrap(expirationTime.toString(), '"'));
+        long issuedAtLong = Long.parseLong(StringUtils.unwrap(issuedAt.toString(), '"'));
+
+        egc.expiration = sf.format(new Date(expiredAtLong * 1000));
+        egc.issuedAt = sf.format(new Date(issuedAtLong * 1000));
 
         egc.certificates = parsedCerts;
 
         return egc;
     }
 
-    private static VaccinationGroup parseVaccinationGroup(CborObject v) throws CborParseException {
+    private static EUCertificate.VaccinationGroup parseVaccinationGroup(CborObject v) throws CborParseException {
         // For some reason they use an array even tho the spec requires exactly one entry ... always...
         Log.d(TAG, "Parsing VaccineGroup: " + v.toString());
         CborArray arr = (CborArray)v;
 
         CborMap group = CborMap.createFromCborByteArray(arr.listValue().get(0).toCborByteArray());
-        VaccinationGroup vg = new VaccinationGroup();
+        EUCertificate.VaccinationGroup vg = new EUCertificate.VaccinationGroup();
 
-        vg.disease = group.get("tg").toString();
-        vg.prophylaxis = group.get("vp").toString();
+        vg.disease = getString(group,"tg");
+        vg.prophylaxis = getString(group,"vp");
 
-        vg.product = group.get("mp").toString();
-        vg.producer = group.get("ma").toString();
+        vg.product = getString(group,"mp");
+        vg.producer = getString(group,"ma");
 
-        vg.dose = group.get("dn").toString();
-        vg.doseRequired = group.get("sd").toString();
-        vg.doseReceived = group.get("dt").toString();
-        vg.doseProvider = group.get("co").toString();
+        vg.dose = getString(group,"dn");
+        vg.doseRequired = getString(group,"sd");
+        vg.doseReceived = getString(group,"dt");
+        vg.doseProvider = getString(group,"co");
 
-        vg.issuer = group.get("is").toString();
-        vg.identifier = group.get("ci").toString();
+        vg.issuer = getString(group,"is");
+        vg.identifier = getString(group,"ci");
 
         return vg;
     }
 
-    private static TestGroup parseTestGroup(CborObject t) throws CborParseException {
+    private static EUCertificate.TestGroup parseTestGroup(CborObject t) throws CborParseException {
         // For some reason they use an array even tho the spec requires exactly one entry ... always...
         Log.d(TAG, "Parsing TestGroup: " + t.toString());
         CborArray arr = (CborArray)t;
 
         CborMap group = CborMap.createFromCborByteArray(arr.listValue().get(0).toCborByteArray());
-        TestGroup tg = new TestGroup();
+        EUCertificate.TestGroup tg = new EUCertificate.TestGroup();
 
-        tg.disease = group.get("tg").toString();
+        tg.disease = getString(group,"tg");
+        tg.testType = getString(group,"tt");
+        tg.testName = getString(group,"nm", null);
+        tg.testDevice = getString(group,"ma", null);
 
-        tg.testType = group.get("tt").toString();
+        tg.sampleDate = getString(group,"sc");
+        tg.result = getString(group,"tr");
 
-        if (group.containsKey("nm"))
-            tg.testName = group.get("nm").toString();
+        tg.facility = getString(group,"tc", null);
 
-        if (group.containsKey("ma"))
-            tg.testDevice = group.get("ma").toString();
-
-        tg.sampleDate = group.get("sc").toString();
-        tg.resultDate = group.get("tr").toString();
-
-        if (group.containsKey("tc"))
-            tg.facility = group.get("tc").toString();
-
-        tg.testProvider = group.get("co").toString();
-        tg.issuer = group.get("is").toString();
-        tg.identifier = group.get("ci").toString();
+        tg.testProvider = getString(group,"co");
+        tg.issuer = getString(group,"is");
+        tg.identifier = getString(group,"ci");
 
         return tg;
     }
 
-    private static RecoveryGroup parseRecoveryGroup(CborObject t) throws CborParseException {
+    private static EUCertificate.RecoveryGroup parseRecoveryGroup(CborObject t) throws CborParseException {
         // For some reason they use an array even tho the spec requires exactly one entry ... always...
         Log.d(TAG, "Parsing RecoveryGroup: " + t.toString());
         CborArray arr = (CborArray)t;
 
         CborMap group = CborMap.createFromCborByteArray(arr.listValue().get(0).toCborByteArray());
-        RecoveryGroup rg = new RecoveryGroup();
+        EUCertificate.RecoveryGroup rg = new EUCertificate.RecoveryGroup();
 
-        rg.disease = group.get("tg").toString();
-        rg.firstPositiveTest = group.get("fr").toString();
-        rg.testProvider = group.get("co").toString();
-        rg.issuer = group.get("is").toString();
-        rg.validFrom = group.get("df").toString();
-        rg.validUntil = group.get("du").toString();
-        rg.identifier = group.get("ci").toString();
+        rg.disease = getString(group,"tg");
+        rg.firstPositiveTest = getString(group,"fr");
+        rg.testProvider = getString(group,"co");
+        rg.issuer = getString(group,"is");
+        rg.validFrom = getString(group,"df");
+        rg.validUntil = getString(group,"du");
+        rg.identifier = getString(group,"ci");
 
         return rg;
+    }
+
+    private static String getString(CborMap obj, String key) {
+        if (obj.containsKey(key))
+            return StringUtils.unwrap(obj.get(key).toString(), '"');
+
+        throw new IllegalArgumentException("Expected map to have key '" + key + "', but was not found.");
+    }
+
+    private static String getString(CborMap obj, String key, String defaultVal) {
+        if (obj.containsKey(key))
+            return StringUtils.unwrap(obj.get(key).toString(), '"');
+
+        return defaultVal;
     }
 
     public static byte[] decompress(byte[] data) throws IOException, DataFormatException {
@@ -203,62 +218,6 @@ public class EGCHelper {
         outputStream.close();
         byte[] output = outputStream.toByteArray();
         return output;
-    }
-
-    public static class EUCertificate {
-        public String version;
-
-        // Surnames, human readable
-        public String surnames;
-        // Surnames as stated on the perso
-        public String surnamesStandardised;
-        // Forenames (May not exist)
-        public String forenames;
-        // Standardised forenames
-        public String forenamesStandardised;
-
-        // DOB, String, YYYY-MM-DD, YYYY-MM, YYYY only. Missing entries may be X (e.g. 1990-XX-XX)
-        public String dateOfBirth;
-
-        public VaccinationGroup vaccinationGroup;
-        public TestGroup testGroup;
-        public RecoveryGroup recoveryGroup;
-    }
-
-    public static class VaccinationGroup {
-        public String disease;
-        public String prophylaxis;
-        public String product;
-        public String producer;
-        public String dose;
-        public String doseRequired;
-        public String doseReceived;
-        public String doseProvider;
-        public String issuer;
-        public String identifier;
-    }
-
-    public static class TestGroup {
-        public String disease;
-        public String testProvider;
-        public String issuer;
-        public String identifier;
-        public String testType;
-        public String testName;
-        public @Nullable String testDevice;
-        public String sampleDate;
-        public String resultDate;
-        public String facility;
-    }
-
-    public static class RecoveryGroup {
-        public String disease;
-        public String firstPositiveTest;
-        public String testProvider;
-        public String issuer;
-        public String validFrom;
-        public String validUntil;
-        public String identifier;
     }
 
 }

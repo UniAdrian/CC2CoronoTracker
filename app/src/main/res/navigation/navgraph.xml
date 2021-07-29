@@ -9,6 +9,10 @@
         android:id="@+id/action_global_preferences"
         app:destination="@id/preferencesFragment" />
 
+    <action
+        android:id="@+id/action_goto_certificates"
+        app:destination="@id/certificateFragment" />
+
 
     <fragment
         android:id="@+id/contacts"
@@ -58,6 +62,9 @@
         <action
             android:id="@+id/action_readQR_to_contactDetails"
             app:destination="@id/contactDetailsFragment" />
+        <action
+            android:id="@+id/action_readQR_to_certificateFragment"
+            app:destination="@id/certificateFragment" />
     </fragment>
     <fragment
         android:id="@+id/contactDetailsFragment"
@@ -115,4 +122,12 @@
     android:name="de.uni.cc2coronotracker.ui.views.CalendarFragment"
     android:label="fragment_calendar"
     tools:layout="@layout/fragment_calendar" />
+    <fragment
+        android:id="@+id/certificateFragment"
+        android:name="de.uni.cc2coronotracker.ui.views.CertificateFragment"
+        android:label="@string/certificate_title">
+        <argument
+            android:name="certificate"
+            app:argType="de.uni.cc2coronotracker.data.qr.EGC" />
+    </fragment>
 </navigation>

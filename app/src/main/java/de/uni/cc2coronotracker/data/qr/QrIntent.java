@@ -15,12 +15,10 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.util.List;
 import java.util.UUID;
 import java.util.zip.DataFormatException;
 
 import COSE.CoseException;
-import de.uni.cc2coronotracker.helper.EGCHelper;
 
 /**
  * A QR intent is a bundle of an identifier and some additional parameters
@@ -151,36 +149,6 @@ public class QrIntent {
                     uuid.toString(),
                     String.valueOf(allowTracking),
                     String.valueOf(doTrack)
-            });
-        }
-    }
-
-    public static class EGC implements Intent {
-
-        // Raw string as received by scanning the QR code
-        public String raw;
-
-        public String issuer;
-        public Long expiration;
-        public Long issuedAt;
-
-        public List<EGCHelper.EUCertificate> certificates;
-
-        public EGC() {
-        }
-
-        public static EGC parse(String toParse) throws IOException, DataFormatException, CoseException, CborParseException, CborConversionException {
-            return EGCHelper.parse(toParse);
-        }
-
-        @Override
-        public String toString() {
-            return TextUtils.join(SEPARATOR, new String[] {
-                    String.valueOf(QR_EGC),
-                    issuer,
-                    expiration.toString(),
-                    issuedAt.toString(),
-                    "#Certs: " + ((certificates != null) ? certificates.size() : 0)
             });
         }
     }

@@ -21,6 +21,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 import de.uni.cc2coronotracker.R;
 import de.uni.cc2coronotracker.data.models.Contact;
 import de.uni.cc2coronotracker.data.models.Exposure;
+import de.uni.cc2coronotracker.data.qr.EGC;
 import de.uni.cc2coronotracker.data.qr.QrIntent;
 import de.uni.cc2coronotracker.data.repositories.ContactRepository;
 import de.uni.cc2coronotracker.data.repositories.ExposureRepository;
@@ -66,9 +67,16 @@ public class ReadQRViewModel extends ViewModel {
         } else if (intent instanceof QrIntent.ImportSettings) {
             // TODO: Add me!
             ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.unknown_intent, Snackbar.LENGTH_SHORT));
+        } else if (intent instanceof EGC) {
+            handleEGCIntent((EGC)intent);
         } else {
             ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.unknown_intent, Snackbar.LENGTH_SHORT));
         }
+    }
+
+    private void handleEGCIntent(EGC intent) {
+        ReadQRFragmentDirections.ActionReadQRToCertificateFragment actionGotoCertificates = ReadQRFragmentDirections.actionReadQRToCertificateFragment(intent);
+        ctxMediator.request(RequestFactory.createNavigationRequest(actionGotoCertificates));
     }
 
     public void handleAddExposureIntent(QrIntent.AddExposure intent) {
