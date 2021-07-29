@@ -4,6 +4,7 @@ import android.content.Context;
 
 import androidx.lifecycle.LiveData;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.concurrent.Executor;
 
@@ -52,6 +53,21 @@ public class ExposureRepository {
                 callback.onComplete(new Result.Success<>(addExposure(toAdd)));
             } catch (Exception e) {
                 callback.onComplete(new Result.Error<>(e));
+            }
+        });
+    }
+
+    private List<Exposure> getExposuresByDate(Date date) {
+        return exposureDao.getExposuresByDate(date);
+    }
+    public void getExposuresByDate(Date date, RepositoryCallback<List<Exposure>> callback) {
+        executor.execute(() -> {
+            try {
+                List<Exposure> c = getExposuresByDate(date);
+                callback.onComplete(new Result.Success<>(c));
+            } catch (Exception e) {
+                Result errorResult = new Result.Error<>(e);
+                callback.onComplete(errorResult);
             }
         });
     }

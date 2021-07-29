@@ -1,48 +1,41 @@
 package de.uni.cc2coronotracker.ui.views;
 
-import android.content.Context;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModelProvider;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CalendarView;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
 import java.sql.Date;
-import java.util.List;
-import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
 
-import dagger.hilt.android.qualifiers.ApplicationContext;
+import dagger.hilt.android.AndroidEntryPoint;
 import de.uni.cc2coronotracker.R;
-import de.uni.cc2coronotracker.data.dao.ExposureDao;
-import de.uni.cc2coronotracker.data.models.Exposure;
-
-import de.uni.cc2coronotracker.data.repositories.CalendarRepository;
 import de.uni.cc2coronotracker.data.viewmodel.CalendarViewModel;
+
+@AndroidEntryPoint
 public class CalendarFragment extends Fragment {
 
     private CalendarViewModel calenderViewModel;
 
+    CalendarView calendarView;
+    TextView calendarText;
+
     @Inject()
     public CalendarFragment() {
     }
-    CalendarView calendarView;
-    TextView calendarText;
+
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-        calenderViewModel = new ViewModelProvider(this).get(CalendarViewModel.class);
+        calenderViewModel = new ViewModelProvider(this.getActivity()).get(CalendarViewModel.class);
 
     }
 
@@ -54,8 +47,6 @@ public class CalendarFragment extends Fragment {
         calendarText = view.findViewById(R.id.calendartext);
         Date selectedDate = new Date(calendarView.getDate());
         calenderViewModel.fetchExposure(selectedDate);
-
-
 
         return view;
     }
