@@ -14,10 +14,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.apache.commons.collections4.ListUtils;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
@@ -108,6 +106,7 @@ public class MapsViewModel extends ViewModel {
 
 
         // TODO: REMOVE ME. I AM DEBUG CODE
+        /*
         for (int i=0; i<10; ++i) {
             ContactDao.ContactWithExposures cwe = new ContactDao.ContactWithExposures();
             cwe.contact = new Contact();
@@ -132,6 +131,7 @@ public class MapsViewModel extends ViewModel {
 
             contactsWithExposures.add(cwe);
         }
+        */
 
         List<MarkerOptions> newOptions = new ArrayList<>();
 
