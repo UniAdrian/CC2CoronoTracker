@@ -122,6 +122,14 @@ public class EGCHelper {
         return egc;
     }
 
+
+    private static String getFromMapOrDefault(Map<String, String> map, String key, String defaultValue) {
+        // getOrDefault(key, defaultValue); would require a higher API level...
+        if (map.containsKey(key))
+            return map.get(key);
+        return defaultValue;
+    }
+
     private static EUCertificate.VaccinationGroup parseVaccinationGroup(CborObject v) throws CborParseException {
         // For some reason they use an array even tho the spec requires exactly one entry ... always...
         Log.d(TAG, "Parsing VaccineGroup: " + v.toString());
@@ -130,16 +138,21 @@ public class EGCHelper {
         CborMap group = CborMap.createFromCborByteArray(arr.listValue().get(0).toCborByteArray());
         EUCertificate.VaccinationGroup vg = new EUCertificate.VaccinationGroup();
 
-        vg.disease = getString(group,"tg");
-        vg.prophylaxis = getString(group,"vp");
+        String diseaseIdent = getString(group, "tg");
+        String prophylaxisIdent = getString(group,"vp");
+        String productIdent = getString(group,"mp");
+        String producerIdent = getString(group,"ma");
+        String coIdent = getString(group,"co");
 
-        vg.product = getString(group,"mp");
-        vg.producer = getString(group,"ma");
+        vg.disease = getFromMapOrDefault(EGCValueMaps.DISEASE_AGENT_TARGETED, diseaseIdent, diseaseIdent);
+        vg.prophylaxis = getFromMapOrDefault(EGCValueMaps.VACCINE_PROPHYLAXIS, prophylaxisIdent, prophylaxisIdent);
+        vg.product = getFromMapOrDefault(EGCValueMaps.VACCINE_MEDICINAL_PRODUCT, productIdent, productIdent);
+        vg.producer = getFromMapOrDefault(EGCValueMaps.VACCINE_MAH_MANF, producerIdent, producerIdent);
+        vg.doseProvider = getFromMapOrDefault(EGCValueMaps.COUNTRY_2_CODES_EN, coIdent, coIdent);
 
         vg.dose = getString(group,"dn");
         vg.doseRequired = getString(group,"sd");
         vg.doseReceived = getString(group,"dt");
-        vg.doseProvider = getString(group,"co");
 
         vg.issuer = getString(group,"is");
         vg.identifier = getString(group,"ci");
@@ -155,17 +168,24 @@ public class EGCHelper {
         CborMap group = CborMap.createFromCborByteArray(arr.listValue().get(0).toCborByteArray());
         EUCertificate.TestGroup tg = new EUCertificate.TestGroup();
 
-        tg.disease = getString(group,"tg");
-        tg.testType = getString(group,"tt");
-        tg.testName = getString(group,"nm", null);
-        tg.testDevice = getString(group,"ma", null);
+        String diseaseIdent = getString(group, "tg");
+        String typeIdent = getString(group,"tt");
+        String deviceIdent = getString(group, "ma", null);
+        String resultIdent = getString(group,"tr");
+        String coIdent = getString(group,"co");
 
+        tg.disease = getFromMapOrDefault(EGCValueMaps.DISEASE_AGENT_TARGETED, diseaseIdent, diseaseIdent);
+        tg.testType = getFromMapOrDefault(EGCValueMaps.TEST_TYPE, typeIdent, typeIdent);
+        tg.testDevice = getFromMapOrDefault(EGCValueMaps.TEST_DEVICES, deviceIdent, deviceIdent);
+        tg.result = getFromMapOrDefault(EGCValueMaps.TEST_RESULT, resultIdent, resultIdent);
+        tg.testProvider = getFromMapOrDefault(EGCValueMaps.COUNTRY_2_CODES_EN, coIdent, coIdent);
+
+        tg.testName = getString(group,"nm", null);
         tg.sampleDate = getString(group,"sc");
-        tg.result = getString(group,"tr");
+
 
         tg.facility = getString(group,"tc", null);
 
-        tg.testProvider = getString(group,"co");
         tg.issuer = getString(group,"is");
         tg.identifier = getString(group,"ci");
 
@@ -180,9 +200,13 @@ public class EGCHelper {
         CborMap group = CborMap.createFromCborByteArray(arr.listValue().get(0).toCborByteArray());
         EUCertificate.RecoveryGroup rg = new EUCertificate.RecoveryGroup();
 
-        rg.disease = getString(group,"tg");
+        String diseaseIdent = getString(group, "tg");
+        String coIdent = getString(group,"co");
+
+        rg.disease = getFromMapOrDefault(EGCValueMaps.DISEASE_AGENT_TARGETED, diseaseIdent, diseaseIdent);
+        rg.testProvider = getFromMapOrDefault(EGCValueMaps.DISEASE_AGENT_TARGETED, coIdent, coIdent);
+
         rg.firstPositiveTest = getString(group,"fr");
-        rg.testProvider = getString(group,"co");
         rg.issuer = getString(group,"is");
         rg.validFrom = getString(group,"df");
         rg.validUntil = getString(group,"du");
