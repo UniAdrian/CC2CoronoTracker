@@ -1,16 +1,30 @@
 package de.uni.cc2coronotracker.data.qr;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.common.util.Hex;
+import com.upokecenter.cbor.CBORObject;
+
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.UUID;
+import java.util.zip.DataFormatException;
+import java.util.zip.Inflater;
+
+import COSE.CoseException;
+import COSE.Message;
+import COSE.MessageTag;
+import COSE.Sign1Message;
+import nl.minvws.encoding.Base45;
 
 /**
  * A QR intent is a bundle of an identifier and some additional parameters
@@ -23,25 +37,34 @@ import java.util.UUID;
  */
 public class QrIntent {
 
+    private static final String TAG = "QrIntent";
+
     public interface Intent extends Serializable {}
 
     public static final int QR_ADD_EXPOSURE = 0;
     public static final int QR_IMPORT       = 1;
+    public static final int QR_EGC          = 2;
+
+    public static final String EGC_PREFIX = "HC1";
 
     /**
      * It is recommended to use this approach over an enum to keep dex sizes smalls.
      * Doesnt matter much for one enum but i like to stick with good practices.
      */
-    @IntDef({QR_ADD_EXPOSURE, QR_IMPORT})
+    @IntDef({QR_ADD_EXPOSURE, QR_IMPORT, QR_EGC})
     @Retention(RetentionPolicy.SOURCE)
     public @interface QR_INTENT { }
 
 
     public final static String SEPARATOR = ";";
 
-    public static Intent fromString(@NonNull String toParse) throws InstantiationException {
+    public static Intent fromString(@NonNull String toParse) throws InstantiationException, CoseException, IOException, DataFormatException {
         if (StringUtils.isBlank(toParse)) {
             throw new IllegalArgumentException("The provided code is malformed: The code cannot be blank.");
+        }
+
+        if (toParse.startsWith(EGC_PREFIX)) {
+            return EGC.parse(toParse);
         }
 
         String[] frags = toParse.split(SEPARATOR);
@@ -55,6 +78,7 @@ public class QrIntent {
                 return ImportSettings.parse(frags);
 
             default:
+                Log.e(TAG, "Could not parse: \n" + toParse);
                 throw new InstantiationException("The provided code is malformed: Unknown intent identifier.");
         }
     }
@@ -131,6 +155,52 @@ public class QrIntent {
                     uuid.toString(),
                     String.valueOf(allowTracking),
                     String.valueOf(doTrack)
+            });
+        }
+    }
+
+    public static class EGC implements Intent {
+
+        public EGC() {
+
+        }
+
+        public static EGC parse(String toParse) throws IOException, DataFormatException, CoseException {
+            byte[] decodedBytes = Base45.getDecoder().decode(toParse.substring(4));
+            byte[] decompressed = decompress(decodedBytes);
+
+
+            Sign1Message msg = (Sign1Message) Message.DecodeFromBytes(decompressed, MessageTag.Sign1);
+            byte[] content = msg.GetContent();
+
+            Log.d(TAG, Hex.bytesToStringLowercase(decompressed));
+            Log.d(TAG, Hex.bytesToStringLowercase(content));
+
+            CBORObject cborObject = CBORObject.DecodeFromBytes(content);
+            Log.d(TAG, cborObject.ToJSONString());
+
+            return new EGC();
+        }
+
+        public static byte[] decompress(byte[] data) throws IOException, DataFormatException {
+            Inflater inflater = new Inflater();
+            inflater.setInput(data);
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
+            byte[] buffer = new byte[1024];
+            while (!inflater.finished()) {
+                int count = inflater.inflate(buffer);
+                outputStream.write(buffer, 0, count);
+            }
+            outputStream.close();
+            byte[] output = outputStream.toByteArray();
+            return output;
+        }
+
+        @Override
+        public String toString() {
+            return TextUtils.join(SEPARATOR, new String[] {
+                    String.valueOf(QR_EGC)
             });
         }
     }

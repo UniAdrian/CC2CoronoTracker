@@ -80,4 +80,9 @@
     <string name="enable_location_reason">This feature requires location information.\nPlease activate location services in your settings.</string>
     <string name="open_settings">Open settings</string>
     <string name="allow_location_or_preferences">Please enable location services or change your preferences to disable location tracking to add the exposure.</string>
+    <string name="maps_title_exposures">Display Exposures</string>
+    <string name="maps_exposures_description">Select</string>
+    <string name="map_configuration_title">Display settings</string>
+    <string name="map_configuration_current_display_num">Currently displaying %d contacts.</string>
+    <string name="map_view_title">Location </string>
 </resources>
