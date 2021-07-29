@@ -6,25 +6,21 @@ import android.util.Log;
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 
-import com.google.android.gms.common.util.Hex;
-import com.upokecenter.cbor.CBORObject;
+import com.google.iot.cbor.CborConversionException;
+import com.google.iot.cbor.CborParseException;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.List;
 import java.util.UUID;
 import java.util.zip.DataFormatException;
-import java.util.zip.Inflater;
 
 import COSE.CoseException;
-import COSE.Message;
-import COSE.MessageTag;
-import COSE.Sign1Message;
-import nl.minvws.encoding.Base45;
+import de.uni.cc2coronotracker.helper.EGCHelper;
 
 /**
  * A QR intent is a bundle of an identifier and some additional parameters
@@ -58,7 +54,7 @@ public class QrIntent {
 
     public final static String SEPARATOR = ";";
 
-    public static Intent fromString(@NonNull String toParse) throws InstantiationException, CoseException, IOException, DataFormatException {
+    public static Intent fromString(@NonNull String toParse) throws InstantiationException, CoseException, IOException, DataFormatException, CborParseException, CborConversionException {
         if (StringUtils.isBlank(toParse)) {
             throw new IllegalArgumentException("The provided code is malformed: The code cannot be blank.");
         }
@@ -161,46 +157,30 @@ public class QrIntent {
 
     public static class EGC implements Intent {
 
+        // Raw string as received by scanning the QR code
+        public String raw;
+
+        public String issuer;
+        public Long expiration;
+        public Long issuedAt;
+
+        public List<EGCHelper.EUCertificate> certificates;
+
         public EGC() {
-
         }
 
-        public static EGC parse(String toParse) throws IOException, DataFormatException, CoseException {
-            byte[] decodedBytes = Base45.getDecoder().decode(toParse.substring(4));
-            byte[] decompressed = decompress(decodedBytes);
-
-
-            Sign1Message msg = (Sign1Message) Message.DecodeFromBytes(decompressed, MessageTag.Sign1);
-            byte[] content = msg.GetContent();
-
-            Log.d(TAG, Hex.bytesToStringLowercase(decompressed));
-            Log.d(TAG, Hex.bytesToStringLowercase(content));
-
-            CBORObject cborObject = CBORObject.DecodeFromBytes(content);
-            Log.d(TAG, cborObject.ToJSONString());
-
-            return new EGC();
-        }
-
-        public static byte[] decompress(byte[] data) throws IOException, DataFormatException {
-            Inflater inflater = new Inflater();
-            inflater.setInput(data);
-
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
-            byte[] buffer = new byte[1024];
-            while (!inflater.finished()) {
-                int count = inflater.inflate(buffer);
-                outputStream.write(buffer, 0, count);
-            }
-            outputStream.close();
-            byte[] output = outputStream.toByteArray();
-            return output;
+        public static EGC parse(String toParse) throws IOException, DataFormatException, CoseException, CborParseException, CborConversionException {
+            return EGCHelper.parse(toParse);
         }
 
         @Override
         public String toString() {
             return TextUtils.join(SEPARATOR, new String[] {
-                    String.valueOf(QR_EGC)
+                    String.valueOf(QR_EGC),
+                    issuer,
+                    expiration.toString(),
+                    issuedAt.toString(),
+                    "#Certs: " + ((certificates != null) ? certificates.size() : 0)
             });
         }
     }
