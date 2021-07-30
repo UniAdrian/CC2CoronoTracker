@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
+        <import type="android.view.View" />
         <variable
             name="mapsVM"
             type="de.uni.cc2coronotracker.data.viewmodel.MapsViewModel" />
@@ -75,6 +76,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:onClick="@{() -> mapsVM.gotoLocation(mapsVM.ownLocation)}"
+            android:visibility="@{(mapsVM.ownLocation != null)?View.VISIBLE:View.GONE}"
+            app:layout_constraintBottom_toBottomOf="@+id/mapsConfigTitle"
+            app:layout_constraintEnd_toEndOf="@+id/mapsConfigTitle"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_baseline_my_location_24" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

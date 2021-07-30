@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -47,6 +48,7 @@ public class MapsViewModel extends ViewModel {
     private MutableLiveData<LatLng> requestPosition = new MutableLiveData<>();
     private MutableLiveData<List<MarkerOptions>> markers = new MutableLiveData<>();
 
+    public MutableLiveData<LatLng> ownLocation = new MutableLiveData<>(null);
     private MutableLiveData<LocationInfo> locationInfos = new MutableLiveData<>(null);
 
     private MutableLiveData<List<Contact>> selectedContacts = new MutableLiveData<>();
@@ -81,6 +83,7 @@ public class MapsViewModel extends ViewModel {
     public LiveData<Boolean> getIsLoading() {return isLoading; }
     public LiveData<LocationInfo> getLocationInfo() { return locationInfos; }
 
+
     public void onMapReady() {
         locationProvider.getLastLocation(result -> {
             if (result instanceof Result.Success) {
@@ -92,6 +95,30 @@ public class MapsViewModel extends ViewModel {
             }
         });
     }
+
+    public void startUpdateOwnLocation() {
+        locationProvider.addLocationListener(ownLocationListener);
+    }
+
+    public void stopUpdateOwnLocation() {
+        locationProvider.removeLocationListener(ownLocationListener);
+    }
+
+    private LocationProvider.LocationListener ownLocationListener = new LocationProvider.LocationListener() {
+        @Override
+        public void onLocation(LocationResult location) {
+            Location loc = location.getLastLocation();
+            if (loc == null)
+                ownLocation.postValue(null);
+            else
+                ownLocation.postValue(new LatLng(loc.getLatitude(), loc.getLongitude()));
+        }
+
+        @Override
+        public void onLocationUnavailable() {
+            // TODO: Maybe inform the user?
+        }
+    };
 
     public void DisplayMarkersForContacts(List<Contact> contactList) {
         Log.d(TAG, "Got new contact list: " + contactList);
@@ -139,7 +166,10 @@ public class MapsViewModel extends ViewModel {
                 ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.incidence_api_unavailable, Snackbar.LENGTH_SHORT));
             }
         });
+    }
 
+    public void gotoLocation(LatLng location) {
+        requestPosition.postValue(location);
     }
 
     /**

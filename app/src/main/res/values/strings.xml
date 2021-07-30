@@ -119,4 +119,5 @@
     <string name="map_county">County</string>
     <string name="map_state">State</string>
     <string name="map_7_day_incidence">7day incidence</string>
+    <string name="map_own_location">Your Location</string>
 </resources>

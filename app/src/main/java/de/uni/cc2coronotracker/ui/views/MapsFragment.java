@@ -1,5 +1,10 @@
 package de.uni.cc2coronotracker.ui.views;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +14,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -18,7 +24,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
@@ -42,6 +51,9 @@ public class MapsFragment extends Fragment {
     private final float ZOOM_CITY = 10.0f;
     private final float ZOOM_STREETS = 15.0f;
     private final float ZOOM_BUILDINGS = 20.0f;
+
+    private MarkerOptions defaultMarkerOptions;
+    private Marker ownPosition;
 
     private MapsViewModel mapsViewModel;
     private ContactSelectionDialogViewModel contactSelectionViewModel;
@@ -69,16 +81,38 @@ public class MapsFragment extends Fragment {
             map.getUiSettings().setZoomControlsEnabled(false);
             map.getUiSettings().setMyLocationButtonEnabled(true);
 
+            String ownLocation = getResources().getString(R.string.map_own_location);
+            defaultMarkerOptions = new MarkerOptions()
+                    .position(new LatLng(0,0))
+                    .draggable(false)
+                    .title(ownLocation)
+                    .icon(bitmapDescriptorFromVector(getContext(), R.drawable.ic_baseline_my_location_24))
+                    .visible(false);
+            ownPosition = map.addMarker(defaultMarkerOptions);
+
+            if (mapsViewModel.ownLocation.getValue() != null) {
+                ownPosition.setPosition(mapsViewModel.ownLocation.getValue());
+            }
+
             setupHooks(map);
         }
     };
 
+    private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
+        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
+        vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
+        vectorDrawable.setAlpha(255);
+        vectorDrawable.setTint(Color.BLACK);
+
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Log.d(TAG, "On Create");
 
         // Should never happen, but you never know - Makes the warning disappear anyway.
         if (getActivity() != null) {
@@ -142,6 +176,18 @@ public class MapsFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mapsViewModel.startUpdateOwnLocation();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mapsViewModel.stopUpdateOwnLocation();
+    }
+
     private void selectContacts() {
         SelectContactDialogFragment.newInstance(true, null).show(this.getParentFragmentManager(), null);
     }
@@ -149,10 +195,12 @@ public class MapsFragment extends Fragment {
     private void setupHooks(GoogleMap map) {
         mapsViewModel.onMapReady();
 
-        mapsViewModel.getGotoPosition().observe(this.getViewLifecycleOwner(), loc -> {
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, ZOOM_CITY));
-            mapsViewModel.updateLocationInfo(loc);
+        map.setOnMarkerClickListener(marker -> {
+            mapsViewModel.updateLocationInfo(marker.getPosition());
+            return false;
         });
+
+        mapsViewModel.getGotoPosition().observe(this.getViewLifecycleOwner(), loc -> map.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, ZOOM_STREETS)));
 
         mapsViewModel.getMarkers().observe(this, markerOptions -> {
             map.clear();
@@ -166,9 +214,25 @@ public class MapsFragment extends Fragment {
             TopSheetBehavior<ConstraintLayout> topSheetBehaviour = TopSheetBehavior.from(binding.topSheetInclude.mapsTopSheet);
             if (info == null) {
                 topSheetBehaviour.setState(TopSheetBehavior.STATE_COLLAPSED);
+                return;
             }
             binding.topSheetInclude.setInfo(info);
             topSheetBehaviour.setState(TopSheetBehavior.STATE_EXPANDED);
+        });
+
+        mapsViewModel.ownLocation.observe(this, loc -> {
+            // Map not ready yet?
+            if (map == null || ownPosition == null) {
+                return;
+            }
+
+            if (loc == null) {
+                ownPosition.setVisible(false);
+                return;
+            }
+
+            ownPosition.setVisible(true);
+            ownPosition.setPosition(loc);
         });
     }
 }
