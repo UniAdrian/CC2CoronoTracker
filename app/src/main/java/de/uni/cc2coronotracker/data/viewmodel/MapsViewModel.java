@@ -11,23 +11,33 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.apache.commons.collections4.ListUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
+import de.uni.cc2coronotracker.R;
+import de.uni.cc2coronotracker.data.api.RKIApiInterface;
 import de.uni.cc2coronotracker.data.dao.ContactDao;
 import de.uni.cc2coronotracker.data.models.Contact;
 import de.uni.cc2coronotracker.data.models.Exposure;
+import de.uni.cc2coronotracker.data.models.api.Attributes;
+import de.uni.cc2coronotracker.data.models.api.RKIApiResult;
 import de.uni.cc2coronotracker.data.repositories.ContactRepository;
 import de.uni.cc2coronotracker.data.repositories.async.Result;
 import de.uni.cc2coronotracker.data.repositories.providers.LocationProvider;
 import de.uni.cc2coronotracker.helper.ContextMediator;
+import de.uni.cc2coronotracker.helper.RequestFactory;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 @HiltViewModel
 public class MapsViewModel extends ViewModel {
@@ -37,22 +47,27 @@ public class MapsViewModel extends ViewModel {
     private MutableLiveData<LatLng> requestPosition = new MutableLiveData<>();
     private MutableLiveData<List<MarkerOptions>> markers = new MutableLiveData<>();
 
+    private MutableLiveData<LocationInfo> locationInfos = new MutableLiveData<>(null);
+
     private MutableLiveData<List<Contact>> selectedContacts = new MutableLiveData<>();
 
     private MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
 
     private final LocationProvider locationProvider;
     private final ContactRepository contactRepository;
+    private final RKIApiInterface api;
 
     private final Executor executor;
     private final ContextMediator ctxMediator;
 
     @Inject
-    public MapsViewModel(ContextMediator mediator, LocationProvider locationProvider, ContactRepository contactRepository, Executor executor) {
+    public MapsViewModel(ContextMediator mediator, LocationProvider locationProvider,
+                         ContactRepository contactRepository, Executor executor, RKIApiInterface api) {
         ctxMediator = mediator;
         this.executor = executor;
         this.locationProvider = locationProvider;
         this.contactRepository = contactRepository;
+        this.api = api;
     }
 
 
@@ -64,6 +79,7 @@ public class MapsViewModel extends ViewModel {
         return markers;
     }
     public LiveData<Boolean> getIsLoading() {return isLoading; }
+    public LiveData<LocationInfo> getLocationInfo() { return locationInfos; }
 
     public void onMapReady() {
         locationProvider.getLastLocation(result -> {
@@ -94,6 +110,36 @@ public class MapsViewModel extends ViewModel {
                 }
             });
         }
+    }
+
+    public void updateLocationInfo(LatLng forLocation) {
+        Call<RKIApiResult> incidenceByLocation = api.getIncidenceByLocation(String.format(Locale.US,"%f,%f,", forLocation.longitude, forLocation.latitude));
+        isLoading.postValue(true);
+        incidenceByLocation.enqueue(new Callback<RKIApiResult>() {
+            @Override
+            public void onResponse(Call<RKIApiResult> call, Response<RKIApiResult> response) {
+                isLoading.postValue(false);
+
+                if (response.body().getFeatures().isEmpty())
+                {
+                    locationInfos.postValue(null);
+                    return;
+                }
+
+                Attributes attr = response.body().getFeatures().get(0).getAttributes();
+                LocationInfo info = new LocationInfo(forLocation, attr.getBl(), attr.getCounty(), attr.getCases7Per100k());
+                locationInfos.postValue(info);
+            }
+
+            @Override
+            public void onFailure(Call<RKIApiResult> call, Throwable t) {
+                isLoading.postValue(false);
+                locationInfos.postValue(null);
+                Log.e(TAG, "Failed to fetch incidence by location", t);
+                ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.incidence_api_unavailable, Snackbar.LENGTH_SHORT));
+            }
+        });
+
     }
 
     /**
@@ -172,5 +218,20 @@ public class MapsViewModel extends ViewModel {
 
         isLoading.postValue(false);
         markers.postValue(newOptions);
+    }
+
+    public static class LocationInfo {
+        public LatLng location;
+        public String county;
+        public String state;
+        public double incidence;
+
+        public LocationInfo() {}
+        public LocationInfo(LatLng location, String state, String county, double incidence) {
+            this.location = location;
+            this.state = state;
+            this.county = county;
+            this.incidence = incidence;
+        }
     }
 }

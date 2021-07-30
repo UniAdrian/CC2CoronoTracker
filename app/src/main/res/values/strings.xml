@@ -114,4 +114,9 @@
     <string name="cert_recovery_provider">Provided by</string>
     <string name="cert_recovery_valid_from">Valid From</string>
     <string name="cert_recovery_valid_until">Valid until</string>
+    <string name="incidence_api_unavailable">Incidence data is currently unavailable.</string>
+    <string name="map_location">Location</string>
+    <string name="map_county">County</string>
+    <string name="map_state">State</string>
+    <string name="map_7_day_incidence">7day incidence</string>
 </resources>

@@ -55,6 +55,8 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:18.0.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.1'
 
+    implementation 'com.github.techisfun:androidtopsheet:0.2'
+
     // Generating QR Codes
     implementation 'androidmads.library.qrgenearator:QRGenearator:1.0.4'
     implementation 'com.google.zxing:core:3.3.2'
@@ -63,6 +65,11 @@ dependencies {
     implementation "com.google.iot.cbor:cbor:0.01.02"
     implementation "com.augustcellars.cose:cose-java:0.9.7"
     implementation 'io.github.ehn-digital-green-development:base45:0.0.3'
+
+    // Rest API requests
+    implementation 'com.google.code.gson:gson:2.8.7'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
     // Utility packages.
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'

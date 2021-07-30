@@ -5,6 +5,9 @@ import android.content.SharedPreferences;
 
 import androidx.room.Room;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.util.concurrent.Executor;
 
 import javax.inject.Singleton;
@@ -14,6 +17,7 @@ import dagger.Provides;
 import dagger.hilt.InstallIn;
 import dagger.hilt.android.qualifiers.ApplicationContext;
 import dagger.hilt.components.SingletonComponent;
+import de.uni.cc2coronotracker.data.api.RKIApiInterface;
 import de.uni.cc2coronotracker.data.db.AppDatabase;
 import de.uni.cc2coronotracker.data.repositories.AppRepository;
 import de.uni.cc2coronotracker.data.repositories.ContactRepository;
@@ -21,6 +25,8 @@ import de.uni.cc2coronotracker.data.repositories.ExposureRepository;
 import de.uni.cc2coronotracker.data.repositories.providers.LocationProvider;
 import de.uni.cc2coronotracker.data.repositories.providers.ReadOnlySettingsProvider;
 import de.uni.cc2coronotracker.helper.ContextMediator;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 @Module
@@ -62,5 +68,20 @@ public class RepositoriesModule {
     @Singleton
     public ReadOnlySettingsProvider provideReadOnlySettings(@ApplicationContext Context appContext, SharedPreferences preferences)  {
         return new ReadOnlySettingsProvider(appContext, preferences);
+    }
+
+    @Provides
+    @Singleton
+    public RKIApiInterface provideRKIApiInterface()  {
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .create();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://services7.arcgis.com/mOBPykOjAyBO2ZKk/arcgis/rest/services/RKI_Landkreisdaten/FeatureServer/0/")
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        return retrofit.create(RKIApiInterface.class);
     }
 }

@@ -8,10 +8,12 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.github.techisfun.android.topsheet.TopSheetBehavior;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -64,7 +66,8 @@ public class MapsFragment extends Fragment {
         public void onMapReady(GoogleMap map) {
             LatLng kassel = new LatLng(51.312801, 9.481544);
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(kassel, ZOOM_CITY));
-            map.getUiSettings().setZoomControlsEnabled(true);
+            map.getUiSettings().setZoomControlsEnabled(false);
+            map.getUiSettings().setMyLocationButtonEnabled(true);
 
             setupHooks(map);
         }
@@ -105,6 +108,8 @@ public class MapsFragment extends Fragment {
         binding.setLifecycleOwner(this);
 
         setupBottomSheet();
+        TopSheetBehavior<ConstraintLayout> topSheetBehaviour = TopSheetBehavior.from(binding.topSheetInclude.mapsTopSheet);
+        topSheetBehaviour.setState(TopSheetBehavior.STATE_COLLAPSED);
 
         return binding.getRoot();
     }
@@ -143,7 +148,11 @@ public class MapsFragment extends Fragment {
 
     private void setupHooks(GoogleMap map) {
         mapsViewModel.onMapReady();
-        mapsViewModel.getGotoPosition().observe(this.getViewLifecycleOwner(), loc -> map.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, ZOOM_CITY)));
+
+        mapsViewModel.getGotoPosition().observe(this.getViewLifecycleOwner(), loc -> {
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, ZOOM_CITY));
+            mapsViewModel.updateLocationInfo(loc);
+        });
 
         mapsViewModel.getMarkers().observe(this, markerOptions -> {
             map.clear();
@@ -151,6 +160,15 @@ public class MapsFragment extends Fragment {
             for (MarkerOptions opt : markerOptions) {
                 map.addMarker(opt);
             }
+        });
+
+        mapsViewModel.getLocationInfo().observe(this, info -> {
+            TopSheetBehavior<ConstraintLayout> topSheetBehaviour = TopSheetBehavior.from(binding.topSheetInclude.mapsTopSheet);
+            if (info == null) {
+                topSheetBehaviour.setState(TopSheetBehavior.STATE_COLLAPSED);
+            }
+            binding.topSheetInclude.setInfo(info);
+            topSheetBehaviour.setState(TopSheetBehavior.STATE_EXPANDED);
         });
     }
 }
