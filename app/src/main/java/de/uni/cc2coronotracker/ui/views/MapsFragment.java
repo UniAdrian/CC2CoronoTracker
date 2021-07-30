@@ -31,6 +31,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -54,6 +57,8 @@ public class MapsFragment extends Fragment {
 
     private MarkerOptions defaultMarkerOptions;
     private Marker ownPosition;
+
+    private List<Marker> currentMarkers = new ArrayList<>();
 
     private MapsViewModel mapsViewModel;
     private ContactSelectionDialogViewModel contactSelectionViewModel;
@@ -203,10 +208,16 @@ public class MapsFragment extends Fragment {
         mapsViewModel.getGotoPosition().observe(this.getViewLifecycleOwner(), loc -> map.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, ZOOM_STREETS)));
 
         mapsViewModel.getMarkers().observe(this, markerOptions -> {
-            map.clear();
 
+            // Remove all old markers
+            for (Marker marker : currentMarkers) {
+                marker.remove();
+            }
+            currentMarkers.clear();
+
+            // Add the new ones.
             for (MarkerOptions opt : markerOptions) {
-                map.addMarker(opt);
+                currentMarkers.add(map.addMarker(opt));
             }
         });
 

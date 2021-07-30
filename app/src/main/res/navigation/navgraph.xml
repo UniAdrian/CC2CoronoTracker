@@ -48,6 +48,9 @@
         <action
         android:id="@+id/action_startScreen_to_calendarFragment"
         app:destination="@id/calendar"/>
+        <action
+            android:id="@+id/action_startScreen_to_statistics"
+            app:destination="@id/statistics" />
     </fragment>
     <fragment
         android:id="@+id/showQR"
@@ -130,4 +133,9 @@
             android:name="certificate"
             app:argType="de.uni.cc2coronotracker.data.qr.EGC" />
     </fragment>
+    <fragment
+        android:id="@+id/statistics"
+        android:name="de.uni.cc2coronotracker.ui.views.StatisticsFragment"
+        android:label="statistics_fragment"
+        tools:layout="@layout/statistics_fragment" />
 </navigation>

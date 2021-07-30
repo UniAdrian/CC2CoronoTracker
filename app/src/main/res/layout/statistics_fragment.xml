@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <import type="de.uni.cc2coronotracker.data.viewmodel.StatisticsViewModel.EXPOSURE_RANGE" />
+        <variable
+            name="frag"
+            type="de.uni.cc2coronotracker.ui.views.StatisticsFragment" />
+        <variable
+            name="vm"
+            type="de.uni.cc2coronotracker.data.viewmodel.StatisticsViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        tools:context=".ui.views.StatisticsFragment">
+
+        <TextView
+            android:id="@+id/textView48"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/statistics"
+            android:textSize="@dimen/titleFontSize"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/chrtExposuresLastN"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.555"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView49">
+        </com.github.mikephil.charting.charts.BarChart>
+
+        <TextView
+            android:id="@+id/textView49"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="@string/statistics_contacts"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView48" />
+
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/chrtExposuresLastN">
+
+            <RadioButton
+                android:id="@+id/exposuresToday"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/today"
+                android:onClick="@{() -> vm.updateExposures(EXPOSURE_RANGE.DAY)}"
+                android:checked="@{vm.exposureRange == EXPOSURE_RANGE.DAY}" />
+
+            <RadioButton
+                android:id="@+id/exposuresWeek"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/this_week"
+                android:onClick="@{() -> vm.updateExposures(EXPOSURE_RANGE.WEEK)}"
+                android:checked="@{vm.exposureRange == EXPOSURE_RANGE.WEEK}" />
+
+            <RadioButton
+                android:id="@+id/exposuresMonth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/this_month"
+                android:onClick="@{() -> vm.updateExposures(EXPOSURE_RANGE.MONTH)}"
+                android:checked="@{vm.exposureRange == EXPOSURE_RANGE.MONTH}" />
+
+            <RadioButton
+                android:id="@+id/exposuresAlways"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/all_time"
+                android:onClick="@{() -> vm.updateExposures(EXPOSURE_RANGE.ALWAYS)}"
+                android:checked="@{vm.exposureRange == EXPOSURE_RANGE.ALWAYS}" />
+        </RadioGroup>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

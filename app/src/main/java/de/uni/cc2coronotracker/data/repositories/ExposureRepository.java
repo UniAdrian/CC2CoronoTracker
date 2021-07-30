@@ -57,6 +57,20 @@ public class ExposureRepository {
         });
     }
 
+    private List<Exposure> getExposuresAfter(Date leastDate) {
+        return exposureDao.getExposuresAfter(leastDate);
+    }
+    public void getExposuresAfter(Date leastDate, RepositoryCallback<List<Exposure>> callback) {
+        executor.execute(() -> {
+            try {
+                callback.onComplete(new Result.Success<>(getExposuresAfter(leastDate)));
+            } catch (Exception e) {
+                callback.onComplete(new Result.Error<>(e));
+            }
+        });
+    }
+
+
     private List<Exposure> getExposuresByDate(Date date) {
         return exposureDao.getExposuresByDate(date);
     }

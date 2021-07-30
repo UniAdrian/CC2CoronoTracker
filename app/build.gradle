@@ -66,6 +66,9 @@ dependencies {
     implementation "com.augustcellars.cose:cose-java:0.9.7"
     implementation 'io.github.ehn-digital-green-development:base45:0.0.3'
 
+    // statistics, graphs, etc
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
     // Rest API requests
     implementation 'com.google.code.gson:gson:2.8.7'
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
@@ -79,6 +82,8 @@ dependencies {
     implementation 'com.google.dagger:hilt-android:2.36'
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
     annotationProcessor 'com.google.dagger:hilt-compiler:2.36'
 
     // Room persistence library

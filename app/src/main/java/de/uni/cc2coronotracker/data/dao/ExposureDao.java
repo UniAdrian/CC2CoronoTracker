@@ -26,4 +26,7 @@ public abstract class ExposureDao {
 
     @Query("SELECT * FROM exposures WHERE date = :date")
     public abstract List<Exposure> getExposuresByDate(Date date);
+
+    @Query("SELECT * FROM exposures WHERE date >= :leastDate")
+    public abstract List<Exposure> getExposuresAfter(Date leastDate);
 }
