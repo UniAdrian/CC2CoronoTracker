@@ -1,16 +1,19 @@
 package de.uni.cc2coronotracker.ui.views;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CalendarView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import java.sql.Date;
+import java.util.Calendar;
 
 import javax.inject.Inject;
 
@@ -25,6 +28,7 @@ public class CalendarFragment extends Fragment {
 
     CalendarView calendarView;
     TextView calendarText;
+    Date selectedDate;
 
     @Inject()
     public CalendarFragment() {
@@ -45,9 +49,19 @@ public class CalendarFragment extends Fragment {
 
         calendarView = (CalendarView) view.findViewById(R.id.calendarView);
         calendarText = view.findViewById(R.id.calendartext);
-        Date selectedDate = new Date(calendarView.getDate());
-        calenderViewModel.fetchExposure(selectedDate);
 
+        calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+            @Override
+            public void onSelectedDayChange(@NonNull CalendarView calendarView, int year, int mm, int dd) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.YEAR, year);
+                calendar.set(Calendar.MONTH, mm);
+                calendar.set(Calendar.DAY_OF_MONTH, dd);
+                Long date = calendar.getTimeInMillis();
+                selectedDate = new Date(date);
+                calenderViewModel.fetchExposure(selectedDate);
+            }
+        });
         return view;
     }
 }
