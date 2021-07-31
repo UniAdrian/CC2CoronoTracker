@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "895018303697",
+    "project_id": "coronatracer-12ac7",
+    "storage_bucket": "coronatracer-12ac7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:895018303697:android:e2363330fdc1d9217a45f0",
+        "android_client_info": {
+          "package_name": "de.uni.cc2coronotracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "895018303697-r1t2rcmo3sfb82jppq5mq3oh56tk9bi5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDBx4g5kPvdoNtLBmg5VldF8_J9Yesa-SE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "895018303697-r1t2rcmo3sfb82jppq5mq3oh56tk9bi5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

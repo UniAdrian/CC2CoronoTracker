@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    tools:context=".ui.views.otp.OtpScreen">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:src="@drawable/profile" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="35dp"
+        android:layout_marginRight="35dp"
+        android:layout_below="@id/imageView"
+        android:textSize="21sp"
+        android:textAlignment="center"
+        android:layout_marginTop="35dp"
+        android:gravity="center"
+        android:fontFamily="@font/poppins_medium"
+        android:text="@string/otptext" />
+    <com.chaos.view.PinView
+        android:id="@+id/pinview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/PinWidget.PinView"
+        android:textSize="18sp"
+        app:itemCount="6"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="55dp"
+        android:layout_below="@id/textView"
+        app:itemRadius="4dp"
+        android:inputType="number"
+        android:cursorVisible="true"
+        app:itemHeight="48dp"
+        app:lineColor="#f56258"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="If you didn't recieve a code."
+        android:layout_below="@+id/pinview"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="5dp"
+        android:layout_toLeftOf="@+id/resend"
+        android:textSize="16sp"/>
+    <TextView
+        android:id="@+id/resend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Resend"
+        android:textColor="#f56258"
+        android:layout_below="@id/pinview"
+        android:layout_marginRight="45dp"
+        android:textSize="16sp"
+        android:layout_marginTop="15dp"
+        android:layout_alignParentRight="true" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/verifybutton"
+        android:layout_width="170dp"
+        android:layout_height="50dp"
+        android:layout_below="@id/pinview"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp"
+        app:cardBackgroundColor="#165C81"
+        app:cardCornerRadius="20dp">
+
+        <TextView
+            android:id="@+id/textView22"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Verify"
+            android:textColor="#fff"
+            android:textSize="20sp" />
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>
