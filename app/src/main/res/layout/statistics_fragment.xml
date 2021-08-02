@@ -35,8 +35,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.555"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView49">
-        </com.github.mikephil.charting.charts.LineChart>
+            app:layout_constraintTop_toBottomOf="@+id/textView49" />
 
         <TextView
             android:id="@+id/textView49"
@@ -63,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:checked="@{vm.exposureRange == EXPOSURE_RANGE.DAY}"
                 android:minHeight="48dp"
-                android:onClick="@{() -> vm.updateExposures(EXPOSURE_RANGE.DAY)}"
+                android:onClick="@{() -> vm.updateExposuresByDay(EXPOSURE_RANGE.DAY)}"
                 android:text="@string/today" />
 
             <RadioButton
@@ -72,7 +71,7 @@
                 android:layout_height="wrap_content"
                 android:checked="@{vm.exposureRange == EXPOSURE_RANGE.WEEK}"
                 android:minHeight="48dp"
-                android:onClick="@{() -> vm.updateExposures(EXPOSURE_RANGE.WEEK)}"
+                android:onClick="@{() -> vm.updateExposuresByDay(EXPOSURE_RANGE.WEEK)}"
                 android:text="@string/this_week" />
 
             <RadioButton
@@ -82,7 +81,7 @@
                 android:layout_weight="1"
                 android:checked="@{vm.exposureRange == EXPOSURE_RANGE.MONTH}"
                 android:minHeight="48dp"
-                android:onClick="@{() -> vm.updateExposures(EXPOSURE_RANGE.MONTH)}"
+                android:onClick="@{() -> vm.updateExposuresByDay(EXPOSURE_RANGE.MONTH)}"
                 android:text="@string/this_month" />
         </RadioGroup>
 
@@ -95,22 +94,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
 
-        <TextView
-            android:id="@+id/textView51"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/chrtExposuresByContacts"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
             android:layout_marginTop="5dp"
-            android:text="@string/statistics_highest_encounter"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView50" />
-
-        <TextView
-            android:id="@+id/textView52"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="PLACEHOLDER"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textView51" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

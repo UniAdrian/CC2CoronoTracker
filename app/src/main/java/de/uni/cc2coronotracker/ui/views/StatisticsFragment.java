@@ -56,6 +56,8 @@ public class StatisticsFragment extends Fragment {
         binding.chrtExposuresLastN.getAxisRight().setEnabled(false);
         binding.chrtExposuresLastN.getDescription().setEnabled(false);
 
+        binding.chrtExposuresLastN.animateY( 750);
+
         XAxis xAxis = binding.chrtExposuresLastN.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
@@ -71,9 +73,11 @@ public class StatisticsFragment extends Fragment {
             }
         });
 
+
         mViewModel.getExposureByRangeEntries().observe(this.getViewLifecycleOwner(), exposureEntries -> {
             if (exposureEntries == null) return;
 
+            // Prevents a very, very rare NPE
             if (binding.chrtExposuresLastN == null) {
                 Log.w(TAG, "Unable to set exposure data, graph unavailable.");
                 return;
@@ -91,10 +95,21 @@ public class StatisticsFragment extends Fragment {
             ((LineDataSet)exposureEntries.data.getDataSetByIndex(0)).setMode(LineDataSet.Mode.CUBIC_BEZIER);
             binding.chrtExposuresLastN.setData(exposureEntries.data);
             binding.chrtExposuresLastN.fitScreen();
-            binding.chrtExposuresLastN.invalidate();
-
-
+            binding.chrtExposuresLastN.animateY(750);
         });
+
+        mViewModel.getExposuresByContact().observe(this.getViewLifecycleOwner(), pieDataSet -> {
+            if (pieDataSet == null) return;
+            // Prevents a very, very rare NPE
+            if (binding.chrtExposuresLastN == null) {
+                Log.w(TAG, "Unable to set exposure data, graph unavailable.");
+                return;
+            }
+            binding.chrtExposuresByContacts.setData(pieDataSet);
+            binding.chrtExposuresByContacts.invalidate();
+        });
+
+        mViewModel.updateExposuresByContact();
 
     }
 }

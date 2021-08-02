@@ -1,5 +1,6 @@
 package de.uni.cc2coronotracker.data.viewmodel;
 
+import android.graphics.Color;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -9,7 +10,11 @@ import androidx.lifecycle.ViewModel;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
 
+import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
 import java.text.SimpleDateFormat;
@@ -43,15 +48,57 @@ public class StatisticsViewModel extends ViewModel {
     MutableLiveData<EXPOSURE_RANGE> exposureRange = new MutableLiveData<>();
     MutableLiveData<ExposureRangeDataSet> exposuresByRange = new MutableLiveData<>();
 
+    MutableLiveData<PieData> exposuresByContact = new MutableLiveData<>();
+
     @Inject
     public StatisticsViewModel(StatisticsRepository statisticsRepository, ExposureRepository exposureRepository) {
         this.exposureRepository = exposureRepository;
         this.statisticsRepository = statisticsRepository;
 
-        updateExposures(EXPOSURE_RANGE.MONTH);
+        updateExposuresByDay(EXPOSURE_RANGE.MONTH);
+        updateExposuresByContact();
     }
 
-    public void updateExposures(EXPOSURE_RANGE range) {
+    public void updateExposuresByContact() {
+        statisticsRepository.getExposuresByContact(0.05f, result -> {
+            if (result instanceof Result.Success) {
+                List<StatisticsDao.NumExposuresByContact> data = ((Result.Success<List<StatisticsDao.NumExposuresByContact>>) result).data;
+                exposuresByContact.postValue(processExposuresByContact(data));
+            } else {
+                Log.e(TAG, "Failed to fetch exposures by contact", ((Result.Error)result).exception);
+                exposuresByContact.postValue(null);
+            }
+        });
+    }
+
+    private PieData processExposuresByContact(List<StatisticsDao.NumExposuresByContact> data) {
+        ArrayList<PieEntry> pieEntries = new ArrayList<>();
+        ArrayList<Integer> colors = new ArrayList<>();
+        String label = "Exposures by contact";
+
+        //input data and fit data into pie chart entry
+        long n = 0;
+        for(StatisticsDao.NumExposuresByContact entry : data){
+            n+=entry.nExposures;
+            pieEntries.add(new PieEntry(entry.nExposures, entry.label));
+
+            float hue = RandomUtils.nextFloat(206, 216);
+            float sat = RandomUtils.nextFloat(.3f,1);
+            float lightness = RandomUtils.nextFloat(.5f,1);
+            colors.add(Color.HSVToColor(new float[] {hue, sat, lightness}));
+        }
+
+        if (data.get(0).nTotalExposures - n > 0) {
+            pieEntries.add(new PieEntry(data.get(0).nTotalExposures - n, "Other"));
+        }
+
+        PieDataSet dataSet = new PieDataSet(pieEntries, label);
+        dataSet.setColors(colors);
+
+        return new PieData(dataSet);
+    }
+
+    public void updateExposuresByDay(EXPOSURE_RANGE range) {
         // Don't do unnecessary work.
         if (range == exposureRange.getValue()) return;
         exposureRange.postValue(range);
@@ -141,6 +188,10 @@ public class StatisticsViewModel extends ViewModel {
     }
     public LiveData<ExposureRangeDataSet> getExposureByRangeEntries() {
         return exposuresByRange;
+    }
+
+    public LiveData<PieData> getExposuresByContact() {
+        return exposuresByContact;
     }
 
     public static class ExposureRangeDataSet {

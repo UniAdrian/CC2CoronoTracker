@@ -37,4 +37,15 @@ public class StatisticsRepository {
             }
         });
     }
+
+    public void getExposuresByContact(float minPercent, RepositoryCallback<List<StatisticsDao.NumExposuresByContact>> callback) {
+        executor.execute(() -> {
+            try {
+                List<StatisticsDao.NumExposuresByContact> exposuresByContact = dao.getExposuresByContact(minPercent);
+                callback.onComplete(new Result.Success(exposuresByContact));
+            } catch (Exception e) {
+                callback.onComplete(new Result.Error<>(e));
+            }
+        });
+    }
 }
