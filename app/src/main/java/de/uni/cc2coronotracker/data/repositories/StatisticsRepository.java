@@ -48,4 +48,14 @@ public class StatisticsRepository {
             }
         });
     }
+
+    public void getGeneralExposureInfo(RepositoryCallback<StatisticsDao.GeneralExposureInfo> callback) {
+        executor.execute(() -> {
+            try {
+                callback.onComplete(new Result.Success<>(dao.getGeneralExposureInfo()));
+            } catch (Exception e) {
+                callback.onComplete(new Result.Error(e));
+            }
+        });
+    }
 }

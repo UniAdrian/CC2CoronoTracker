@@ -45,10 +45,10 @@ public class StatisticsViewModel extends ViewModel {
     private final ExposureRepository exposureRepository;
     private final StatisticsRepository statisticsRepository;
 
-    MutableLiveData<EXPOSURE_RANGE> exposureRange = new MutableLiveData<>();
-    MutableLiveData<ExposureRangeDataSet> exposuresByRange = new MutableLiveData<>();
-
-    MutableLiveData<PieData> exposuresByContact = new MutableLiveData<>();
+    private MutableLiveData<EXPOSURE_RANGE> exposureRange = new MutableLiveData<>();
+    private MutableLiveData<ExposureRangeDataSet> exposuresByRange = new MutableLiveData<>();
+    private MutableLiveData<PieData> exposuresByContact = new MutableLiveData<>();
+    private MutableLiveData<StatisticsDao.GeneralExposureInfo> generalExposureInfo = new MutableLiveData<>();
 
     @Inject
     public StatisticsViewModel(StatisticsRepository statisticsRepository, ExposureRepository exposureRepository) {
@@ -57,6 +57,19 @@ public class StatisticsViewModel extends ViewModel {
 
         updateExposuresByDay(EXPOSURE_RANGE.MONTH);
         updateExposuresByContact();
+        updateGeneralExposureInfo();
+    }
+
+    public void updateGeneralExposureInfo() {
+        statisticsRepository.getGeneralExposureInfo(result -> {
+            if (result instanceof Result.Success) {
+                StatisticsDao.GeneralExposureInfo data = ((Result.Success<StatisticsDao.GeneralExposureInfo>) result).data;
+                generalExposureInfo.postValue(data);
+            } else {
+                Log.e(TAG, "Failed to fetch exposures by contact", ((Result.Error)result).exception);
+                exposuresByContact.postValue(null);
+            }
+        });
     }
 
     public void updateExposuresByContact() {
@@ -82,6 +95,7 @@ public class StatisticsViewModel extends ViewModel {
             n+=entry.nExposures;
             pieEntries.add(new PieEntry(entry.nExposures, entry.label));
 
+            // TODO: Make me configureable or better yet: Themeable.
             float hue = RandomUtils.nextFloat(206, 216);
             float sat = RandomUtils.nextFloat(.3f,1);
             float lightness = RandomUtils.nextFloat(.5f,1);
@@ -192,6 +206,10 @@ public class StatisticsViewModel extends ViewModel {
 
     public LiveData<PieData> getExposuresByContact() {
         return exposuresByContact;
+    }
+
+    public LiveData<StatisticsDao.GeneralExposureInfo> getGeneralExposureInfo() {
+        return generalExposureInfo;
     }
 
     public static class ExposureRangeDataSet {

@@ -52,6 +52,8 @@ public class StatisticsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        binding.chrtExposuresByContacts.getDescription().setEnabled(false);
+
 
         binding.chrtExposuresLastN.getAxisRight().setEnabled(false);
         binding.chrtExposuresLastN.getDescription().setEnabled(false);
@@ -109,6 +111,7 @@ public class StatisticsFragment extends Fragment {
             binding.chrtExposuresByContacts.invalidate();
         });
 
+        mViewModel.updateGeneralExposureInfo();
         mViewModel.updateExposuresByContact();
 
     }

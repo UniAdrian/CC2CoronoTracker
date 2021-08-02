@@ -40,6 +40,16 @@ public abstract class StatisticsDao {
     )
     public abstract List<NumExposuresByContact> getExposuresByContact(float minPercentage);
 
+    @Query("SELECT COUNT(*) AS total,\n" +
+            "   (SELECT COUNT(*) FROM exposures WHERE NOT location IS NULL) AS totalWithLocation\n" +
+            "FROM exposures")
+    public abstract GeneralExposureInfo getGeneralExposureInfo();
+
+
+    public static class GeneralExposureInfo {
+        public long total;
+        public long totalWithLocation;
+    }
 
     public static class NumExposuresByContact {
         public String label;
