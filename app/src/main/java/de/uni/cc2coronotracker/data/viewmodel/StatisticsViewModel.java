@@ -6,24 +6,24 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 
 import org.apache.commons.lang3.time.DateUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
-import de.uni.cc2coronotracker.data.models.Exposure;
+import de.uni.cc2coronotracker.data.dao.StatisticsDao;
 import de.uni.cc2coronotracker.data.repositories.ExposureRepository;
+import de.uni.cc2coronotracker.data.repositories.StatisticsRepository;
 import de.uni.cc2coronotracker.data.repositories.async.Result;
 
 @HiltViewModel
@@ -35,21 +35,24 @@ public class StatisticsViewModel extends ViewModel {
         DAY,
         WEEK,
         MONTH,
-        ALWAYS
     }
 
     private final ExposureRepository exposureRepository;
+    private final StatisticsRepository statisticsRepository;
 
-    MutableLiveData<EXPOSURE_RANGE> exposureRange = new MutableLiveData<>(EXPOSURE_RANGE.ALWAYS);
-    MutableLiveData<BarData> exposuresByRange = new MutableLiveData<>();
+    MutableLiveData<EXPOSURE_RANGE> exposureRange = new MutableLiveData<>();
+    MutableLiveData<ExposureRangeDataSet> exposuresByRange = new MutableLiveData<>();
 
     @Inject
-    public StatisticsViewModel(ExposureRepository exposureRepository) {
+    public StatisticsViewModel(StatisticsRepository statisticsRepository, ExposureRepository exposureRepository) {
         this.exposureRepository = exposureRepository;
+        this.statisticsRepository = statisticsRepository;
+
+        updateExposures(EXPOSURE_RANGE.MONTH);
     }
 
     public void updateExposures(EXPOSURE_RANGE range) {
-        // Dont do unecessary work.
+        // Don't do unnecessary work.
         if (range == exposureRange.getValue()) return;
         exposureRange.postValue(range);
 
@@ -70,49 +73,50 @@ public class StatisticsViewModel extends ViewModel {
                 leastDate = new java.sql.Date(0);
         }
 
-        exposureRepository.getExposuresAfter(leastDate, result -> {
+        statisticsRepository.getExposuresByDay(leastDate, result -> {
             if (result instanceof Result.Success) {
-                BarData data = processExposuresToBar(((Result.Success<List<Exposure>>) result).data, leastDate);
-                exposuresByRange.postValue(data);
+                exposuresByRange.postValue(processNumExposuresByDay(((Result.Success<List<StatisticsDao.NumExposuresByDay>>) result).data, leastDate));
             } else {
-                exposuresByRange.postValue(null);
+                Log.e(TAG, "Failed querying exposuresByDay.", ((Result.Error)result).exception);
             }
         });
     }
 
-    private BarData processExposuresToBar(List<Exposure> data, Date leastDate) {
+    private ExposureRangeDataSet processNumExposuresByDay(List<StatisticsDao.NumExposuresByDay> data, Date leastDate) {
 
-        BarData result = new BarData();
+        ExposureRangeDataSet result = new ExposureRangeDataSet();
         if (data == null) {
             return result;
         }
-        SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd");
 
-        Log.d(TAG, "#Exposures: " + data.size());
+        List<Entry> barEntries = new ArrayList<>();
+        for (StatisticsDao.NumExposuresByDay entry : data) {
 
-
-        Map<String, Integer> numberOfExposuresByDay = new HashMap<>();
-        for (Exposure exposure : data) {
-            String day = formater.format(exposure.date);
-
-            int n = 0;
-            // We do not have access to getOrDefault unless we use a higher API level
-            if (numberOfExposuresByDay.containsKey(day))
-                n = numberOfExposuresByDay.get(day);
-
-            numberOfExposuresByDay.put(day, n+1);
-        }
-
-        int i=0;
-        List<BarEntry> barEntries = new ArrayList<>();
-        for (Map.Entry<String, Integer> entry : numberOfExposuresByDay.entrySet()) {
-            BarEntry barEntry = new BarEntry(i, entry.getValue());
+            Entry barEntry = new Entry(entry.dayDiff, entry.numExposures);
             barEntries.add(barEntry);
-            ++i;
         }
 
-        result.addDataSet(new BarDataSet(barEntries, "Exposures"));
+        List<String> labels = prepLabelString(leastDate);
+
+        result.data = new LineData(new LineDataSet(barEntries, "Exposures"));
+        result.labels = labels;
+
         return result;
+    }
+
+    private List<String> prepLabelString(Date leastDate) {
+        Date endDate = new Date();
+        long numDays = TimeUnit.DAYS.convert(endDate.getTime() - leastDate.getTime(), TimeUnit.MILLISECONDS);
+
+        SimpleDateFormat df = new SimpleDateFormat("yyy-MM-dd");
+
+        List<String> labels = new ArrayList<>((int) numDays);
+        for (int i = 0; i < numDays; ++i) {
+            Date current = DateUtils.addDays(leastDate, i);
+            labels.add(df.format(current));
+        }
+
+        return labels;
     }
 
 
@@ -135,8 +139,12 @@ public class StatisticsViewModel extends ViewModel {
     public LiveData<EXPOSURE_RANGE> getExposureRange() {
         return exposureRange;
     }
-
-    public LiveData<BarData> getBarEntries() {
+    public LiveData<ExposureRangeDataSet> getExposureByRangeEntries() {
         return exposuresByRange;
+    }
+
+    public static class ExposureRangeDataSet {
+        public List<String> labels;
+        public LineData data;
     }
 }

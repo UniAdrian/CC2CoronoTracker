@@ -1,6 +1,7 @@
 package de.uni.cc2coronotracker.ui.views;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,13 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import de.uni.cc2coronotracker.R;
@@ -37,11 +45,56 @@ public class StatisticsFragment extends Fragment {
         binding.setVm(mViewModel);
         binding.setFrag(this);
 
+        return binding.getRoot();
+    }
 
-        mViewModel.getBarEntries().observe(this.getViewLifecycleOwner(), barEntries -> {
-            binding.chrtExposuresLastN.setData(barEntries);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+
+        binding.chrtExposuresLastN.getAxisRight().setEnabled(false);
+        binding.chrtExposuresLastN.getDescription().setEnabled(false);
+
+        XAxis xAxis = binding.chrtExposuresLastN.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+        xAxis.setGranularity(1f);
+        xAxis.setLabelCount(5);
+
+        YAxis yAxis = binding.chrtExposuresLastN.getAxisLeft();
+        yAxis.setGranularity(1f);
+        yAxis.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                return String.valueOf((int) Math.floor(value));
+            }
         });
 
-        return binding.getRoot();
+        mViewModel.getExposureByRangeEntries().observe(this.getViewLifecycleOwner(), exposureEntries -> {
+            if (exposureEntries == null) return;
+
+            if (binding.chrtExposuresLastN == null) {
+                Log.w(TAG, "Unable to set exposure data, graph unavailable.");
+                return;
+            }
+
+            exposureEntries.data.setValueFormatter(new ValueFormatter() {
+                @Override
+                public String getPointLabel(Entry entry) {
+                    return String.valueOf((int)entry.getY());
+                }
+            });
+
+            xAxis.setValueFormatter(new IndexAxisValueFormatter(exposureEntries.labels));
+
+            ((LineDataSet)exposureEntries.data.getDataSetByIndex(0)).setMode(LineDataSet.Mode.CUBIC_BEZIER);
+            binding.chrtExposuresLastN.setData(exposureEntries.data);
+            binding.chrtExposuresLastN.fitScreen();
+            binding.chrtExposuresLastN.invalidate();
+
+
+        });
+
     }
 }

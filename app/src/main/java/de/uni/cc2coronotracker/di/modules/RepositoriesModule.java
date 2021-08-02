@@ -22,6 +22,7 @@ import de.uni.cc2coronotracker.data.db.AppDatabase;
 import de.uni.cc2coronotracker.data.repositories.AppRepository;
 import de.uni.cc2coronotracker.data.repositories.ContactRepository;
 import de.uni.cc2coronotracker.data.repositories.ExposureRepository;
+import de.uni.cc2coronotracker.data.repositories.StatisticsRepository;
 import de.uni.cc2coronotracker.data.repositories.providers.LocationProvider;
 import de.uni.cc2coronotracker.data.repositories.providers.ReadOnlySettingsProvider;
 import de.uni.cc2coronotracker.helper.ContextMediator;
@@ -53,6 +54,12 @@ public class RepositoriesModule {
 
     @Provides
     @Singleton
+    public StatisticsRepository bindStatisticsRepository(@ApplicationContext Context ctx, Executor executor, AppDatabase db)  {
+        return new StatisticsRepository(ctx, executor, db.getStatisticsDao());
+    }
+
+    @Provides
+    @Singleton
     public AppDatabase provideAppDatabase(@ApplicationContext Context appContext)  {
         // TODO: REMOVE FALLBACKTODESTRUCTIVEMIGRATION. This is only for test purposes and has no place in production.
         return Room.databaseBuilder(appContext, AppDatabase.class, "cc2-db").fallbackToDestructiveMigration().build();
@@ -69,6 +76,7 @@ public class RepositoriesModule {
     public ReadOnlySettingsProvider provideReadOnlySettings(@ApplicationContext Context appContext, SharedPreferences preferences)  {
         return new ReadOnlySettingsProvider(appContext, preferences);
     }
+
 
     @Provides
     @Singleton

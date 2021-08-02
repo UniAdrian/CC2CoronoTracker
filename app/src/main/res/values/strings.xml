@@ -126,4 +126,6 @@
     <string name="this_week">One week</string>
     <string name="this_month">One month</string>
     <string name="all_time">All time</string>
+    <string name="statistics_general">General statistics</string>
+    <string name="statistics_highest_encounter">Highest exposure</string>
 </resources>

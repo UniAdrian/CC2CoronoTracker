@@ -28,7 +28,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.github.mikephil.charting.charts.BarChart
+        <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/chrtExposuresLastN"
             android:layout_width="0dp"
             android:layout_height="200dp"
@@ -36,7 +36,7 @@
             app:layout_constraintHorizontal_bias="0.555"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView49">
-        </com.github.mikephil.charting.charts.BarChart>
+        </com.github.mikephil.charting.charts.LineChart>
 
         <TextView
             android:id="@+id/textView49"
@@ -48,6 +48,7 @@
             app:layout_constraintTop_toBottomOf="@+id/textView48" />
 
         <RadioGroup
+            android:id="@+id/radioGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -60,36 +61,56 @@
                 android:id="@+id/exposuresToday"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/today"
+                android:checked="@{vm.exposureRange == EXPOSURE_RANGE.DAY}"
+                android:minHeight="48dp"
                 android:onClick="@{() -> vm.updateExposures(EXPOSURE_RANGE.DAY)}"
-                android:checked="@{vm.exposureRange == EXPOSURE_RANGE.DAY}" />
+                android:text="@string/today" />
 
             <RadioButton
                 android:id="@+id/exposuresWeek"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/this_week"
+                android:checked="@{vm.exposureRange == EXPOSURE_RANGE.WEEK}"
+                android:minHeight="48dp"
                 android:onClick="@{() -> vm.updateExposures(EXPOSURE_RANGE.WEEK)}"
-                android:checked="@{vm.exposureRange == EXPOSURE_RANGE.WEEK}" />
+                android:text="@string/this_week" />
 
             <RadioButton
                 android:id="@+id/exposuresMonth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/this_month"
+                android:checked="@{vm.exposureRange == EXPOSURE_RANGE.MONTH}"
+                android:minHeight="48dp"
                 android:onClick="@{() -> vm.updateExposures(EXPOSURE_RANGE.MONTH)}"
-                android:checked="@{vm.exposureRange == EXPOSURE_RANGE.MONTH}" />
-
-            <RadioButton
-                android:id="@+id/exposuresAlways"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/all_time"
-                android:onClick="@{() -> vm.updateExposures(EXPOSURE_RANGE.ALWAYS)}"
-                android:checked="@{vm.exposureRange == EXPOSURE_RANGE.ALWAYS}" />
+                android:text="@string/this_month" />
         </RadioGroup>
+
+        <TextView
+            android:id="@+id/textView50"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="@string/statistics_general"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+
+        <TextView
+            android:id="@+id/textView51"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="@string/statistics_highest_encounter"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView50" />
+
+        <TextView
+            android:id="@+id/textView52"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PLACEHOLDER"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textView51" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
