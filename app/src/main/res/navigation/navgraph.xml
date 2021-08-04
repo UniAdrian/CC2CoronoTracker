@@ -136,6 +136,6 @@
     <fragment
         android:id="@+id/statistics"
         android:name="de.uni.cc2coronotracker.ui.views.StatisticsFragment"
-        android:label="statistics_fragment"
+        android:label="@string/statistics"
         tools:layout="@layout/statistics_fragment" />
 </navigation>
