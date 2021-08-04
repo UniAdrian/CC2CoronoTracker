@@ -7,12 +7,12 @@ apply plugin: 'dagger.hilt.android.plugin'
 apply plugin: 'androidx.navigation.safeargs'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
 
     defaultConfig {
         applicationId "de.uni.cc2coronotracker"
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
 
@@ -35,8 +35,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     buildFeatures {
@@ -46,20 +46,22 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.3.0'
-    implementation 'com.google.android.material:material:1.3.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
     implementation 'androidx.navigation:navigation-fragment:2.3.5'
     implementation 'androidx.navigation:navigation-ui:2.3.5'
 
+    // Play services for maps, etc.
     implementation 'com.google.android.gms:play-services-location:18.0.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.1'
 
+    // Top-sheet implementation, we really don't need to reimplement this. :P
     implementation 'com.github.techisfun:androidtopsheet:0.2'
 
     // Generating QR Codes
     implementation 'androidmads.library.qrgenearator:QRGenearator:1.0.4'
-    implementation 'com.google.zxing:core:3.3.2'
+    implementation 'com.google.zxing:core:3.3.3'
 
     // eu certificate
     implementation "com.google.iot.cbor:cbor:0.01.02"
@@ -79,12 +81,12 @@ dependencies {
     implementation 'org.apache.commons:commons-collections4:4.4'
 
     // Dependency Injection via daggers+hilt
-    implementation 'com.google.dagger:hilt-android:2.36'
-    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'com.google.dagger:hilt-android:2.38'
+    implementation 'androidx.appcompat:appcompat:1.3.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
-    annotationProcessor 'com.google.dagger:hilt-compiler:2.36'
+    // implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
+    // implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
+    annotationProcessor 'com.google.dagger:hilt-compiler:2.38'
 
     // Room persistence library
     def room_version = "2.3.0"
@@ -94,24 +96,24 @@ dependencies {
     // For runtime permissions. Why reinvent the wheel?
     implementation 'com.karumi:dexter:6.2.2'
 
+    // Generating QR Codes
+    implementation 'com.budiyev.android:code-scanner:2.1.0'
+
     // Androidx preferences
     def preference_version = "1.1.1"
     implementation "androidx.preference:preference:$preference_version"
 
 
     // For instrumentation tests
-    androidTestImplementation  'com.google.dagger:hilt-android-testing:2.36'
-    androidTestAnnotationProcessor 'com.google.dagger:hilt-compiler:2.36'
+    androidTestImplementation  'com.google.dagger:hilt-android-testing:2.38'
+    androidTestAnnotationProcessor 'com.google.dagger:hilt-compiler:2.38'
 
     // For local unit tests
-    testImplementation 'com.google.dagger:hilt-android-testing:2.36'
-    testAnnotationProcessor 'com.google.dagger:hilt-compiler:2.36'
+    testImplementation 'com.google.dagger:hilt-android-testing:2.38'
+    testAnnotationProcessor 'com.google.dagger:hilt-compiler:2.38'
 
-    testImplementation 'junit:junit:4.+'
+    testImplementation 'junit:junit:4.13.2'
     testImplementation "androidx.room:room-testing:$room_version"
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-
-    // Generating QR Codes
-    implementation 'com.budiyev.android:code-scanner:2.1.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 }

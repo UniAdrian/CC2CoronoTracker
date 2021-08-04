@@ -33,7 +33,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:contentDescription="@string/qr_image_personal"
-            android:src="@drawable/ic_baseline_qr_code_2_24"
+            app:srcCompat="@drawable/ic_baseline_qr_code_2_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.521"

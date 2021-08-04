@@ -1,6 +1,5 @@
 package de.uni.cc2coronotracker.helper;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.IntentSender;
 import android.util.Log;
@@ -48,7 +47,7 @@ public class RequestFactory {
     public static CallWithContextRequest createSnackbarRequest(int messageResId, int duration, Object... messageArgs) {
         CallWithContextRequest.ContextfulCall call = c -> {
             String message = c.getResources().getString(messageResId, messageArgs);
-            Snackbar.make(((Activity) c).findViewById(android.R.id.content),
+            Snackbar.make(((AppCompatActivity) c).findViewById(android.R.id.content),
                     message,
                     duration)
                     .show();
@@ -60,7 +59,7 @@ public class RequestFactory {
     public static CallWithContextRequest createSnackbarRequest(int messageResId, int duration, int actionResId, View.OnClickListener actionMethod, Object... messageArgs) {
         CallWithContextRequest.ContextfulCall call = c -> {
             String message = c.getResources().getString(messageResId, messageArgs);
-            Snackbar.make(((Activity) c).findViewById(android.R.id.content),
+            Snackbar.make(((AppCompatActivity) c).findViewById(android.R.id.content),
                     message,
                     duration)
                     .setAction(actionResId, actionMethod)
@@ -85,13 +84,13 @@ public class RequestFactory {
     }
 
     public static CallWithContextRequest createNavigationRequest(@NonNull NavDirections where) {
-        CallWithContextRequest.ContextfulCall call = c -> Navigation.findNavController((Activity) c, R.id.nav_host_fragment).navigate(where);
+        CallWithContextRequest.ContextfulCall call = c -> Navigation.findNavController((AppCompatActivity) c, R.id.nav_host_fragment).navigate(where);
 
         return new CallWithContextRequest(call);
     }
 
     public static CallWithContextRequest createNavigationRequest(@IdRes int where) {
-        CallWithContextRequest.ContextfulCall call = c -> Navigation.findNavController((Activity) c, R.id.nav_host_fragment).navigate(where);
+        CallWithContextRequest.ContextfulCall call = c -> Navigation.findNavController((AppCompatActivity) c, R.id.nav_host_fragment).navigate(where);
 
         return new CallWithContextRequest(call);
     }
@@ -118,7 +117,7 @@ public class RequestFactory {
                 callback.onComplete(new Result.Success(null));
             });
 
-            task.addOnFailureListener(((Activity)c), e -> {
+            task.addOnFailureListener(((AppCompatActivity)c), e -> {
                 if (e instanceof ResolvableApiException) {
                     // Location settings are not satisfied, but this can be fixed
                     // by showing the user a dialog.
@@ -126,7 +125,7 @@ public class RequestFactory {
                         // Show the dialog by calling startResolutionForResult(),
                         // and check the result in onActivityResult().
                         ResolvableApiException resolvable = (ResolvableApiException) e;
-                        resolvable.startResolutionForResult((Activity)c, MainActivity.LOCATION_AVAILABILITY_REQUEST);
+                        resolvable.startResolutionForResult((AppCompatActivity)c, MainActivity.LOCATION_AVAILABILITY_REQUEST);
                     } catch (IntentSender.SendIntentException sendEx) {
                         Log.e("ActivateLocationRequest", "Failed to prompt settings change", sendEx);
                     }

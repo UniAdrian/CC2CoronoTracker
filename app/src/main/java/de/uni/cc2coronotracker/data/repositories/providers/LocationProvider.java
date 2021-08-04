@@ -2,7 +2,6 @@ package de.uni.cc2coronotracker.data.repositories.providers;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -10,6 +9,7 @@ import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.MutableLiveData;
 
@@ -141,7 +141,7 @@ public class LocationProvider implements LifecycleObserver {
 
     @SuppressLint("MissingPermission")
     public void onSettingsResult(int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
+        if (resultCode == AppCompatActivity.RESULT_OK) {
             Log.d(TAG, "Starting to track location...");
             fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
         } else {
