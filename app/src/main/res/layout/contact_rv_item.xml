@@ -51,6 +51,8 @@
         android:layout_marginEnd="4dp"
         android:background="#00FFFFFF"
         android:contentDescription="@string/contact_favorite_desc"
+        android:minWidth="48dp"
+        android:minHeight="48dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/crvDisplayName"
