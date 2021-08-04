@@ -1,5 +1,6 @@
 package de.uni.cc2coronotracker.data.adapters;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -21,15 +23,15 @@ import de.uni.cc2coronotracker.data.models.Contact;
 
 public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHolder> implements Filterable {
 
-    private final String TAG = "ContactAdapter";
+    private static final String TAG = "ContactAdapter";
 
     public interface OnItemClickListener {
         void onItemClick(Contact item);
     }
 
-    private List<ContactDao.ContactWithExposures> allContacts;
+    private final List<ContactDao.ContactWithExposures> allContacts;
     private List<ContactDao.ContactWithExposures> filteredContacts;
-    private OnItemClickListener clickListener;
+    private final OnItemClickListener clickListener;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView displayNameView;
@@ -71,6 +73,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
         clickListener = listener;
     }
 
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.contact_rv_item, viewGroup, false);
@@ -138,11 +141,13 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
                 return filterResults;
             }
 
+            @SuppressLint({"NotifyDataSetChanged", "unchecked"})
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
                 filteredContacts = (ArrayList<ContactDao.ContactWithExposures>) filterResults.values;
                 notifyDataSetChanged();
             }
+
         };
     }
 

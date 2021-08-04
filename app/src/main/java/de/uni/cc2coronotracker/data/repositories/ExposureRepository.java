@@ -40,8 +40,7 @@ public class ExposureRepository {
                 List<Exposure> c = getExposures(forContact);
                 callback.onComplete(new Result.Success<>(c));
             } catch (Exception e) {
-                Result errorResult = new Result.Error<>(e);
-                callback.onComplete(errorResult);
+                callback.onComplete(new Result.Error<>(e));
             }
         });
     }
@@ -80,8 +79,7 @@ public class ExposureRepository {
                 List<Exposure> c = getExposuresByDate(date);
                 callback.onComplete(new Result.Success<>(c));
             } catch (Exception e) {
-                Result errorResult = new Result.Error<>(e);
-                callback.onComplete(errorResult);
+                callback.onComplete(new Result.Error<>(e));
             }
         });
     }
