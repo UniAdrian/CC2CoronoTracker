@@ -61,7 +61,6 @@ public class ReadQRViewModel extends ViewModel {
     }
 
     public void handleQRIntent(QrIntent.Intent intent) {
-        // TODO: Consider pulling this into an interface method and let java handle the work...
         if (intent instanceof QrIntent.AddExposure) {
             handleAddExposureIntent((QrIntent.AddExposure) intent);
         } else if (intent instanceof QrIntent.ImportSettings) {

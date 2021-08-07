@@ -66,7 +66,7 @@ public class NewContactDialogFragment extends DialogFragment implements TextWatc
         binding.setContactVM(contactCreationViewModel);
         binding.setLifecycleOwner(this);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.AlertDialogTheme);
         builder.setView(view)
                 .setPositiveButton(R.string.confirm_create_contact, this::onConfirm)
                 .setNegativeButton(R.string.dialog_cancel, (dialogInterface, i) -> dialogInterface.cancel())

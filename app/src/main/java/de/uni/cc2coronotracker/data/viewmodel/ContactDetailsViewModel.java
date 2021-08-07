@@ -50,8 +50,6 @@ public class ContactDetailsViewModel extends ViewModel {
     public void setContactId(long contactId) {
         isLoading.postValue(true);
 
-        // TODO: Add null check and fire error/navigation event if needed.
-
         contactRepository.getContact(contactId, queryResult -> {
             if (queryResult instanceof Result.Success) {
                 Log.d(LOG_TAG, "Fetched contact: " + ((Result.Success<Contact>) queryResult).data);
@@ -75,7 +73,7 @@ public class ContactDetailsViewModel extends ViewModel {
             } else {
                 Exception e = ((Result.Error<Contact>) queryResult).exception;
                 Log.e(LOG_TAG, "Failed to fetch contact.", e);
-                // Todo: Handle error by e.g. navigating back to overview
+                ctxMediator.request(RequestFactory.createNavigationRequest(R.id.action_contactDetailsFragment_to_contacts));
                 isLoading.postValue(false);
             }
         });

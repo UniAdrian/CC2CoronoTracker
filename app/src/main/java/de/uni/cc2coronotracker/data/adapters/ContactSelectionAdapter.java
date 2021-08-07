@@ -83,17 +83,17 @@ public class ContactSelectionAdapter extends RecyclerView.Adapter<ContactSelecti
             viewHolder.itemView.setBackgroundResource(R.color.design_default_color_secondary);
             viewHolder.itemView.setElevation(10);
         } else {
-            viewHolder.itemView.setBackgroundResource(R.color.design_default_color_background);
+            viewHolder.itemView.setBackgroundResource(R.color.primaryLightColor);
             viewHolder.itemView.setElevation(0);
         }
 
         viewHolder.itemView.setOnClickListener((view) -> {
             if (selected.contains(contact)) {
-                viewHolder.itemView.setBackgroundResource(R.color.design_default_color_background);
+                viewHolder.itemView.setBackgroundResource(R.color.primaryLightColor);
                 viewHolder.itemView.setElevation(0);
                 selected.remove(contact);
             } else {
-                viewHolder.itemView.setBackgroundResource(R.color.design_default_color_secondary);
+                viewHolder.itemView.setBackgroundResource(R.color.secondaryLightColor);
                 viewHolder.itemView.setElevation(10);
                 selected.add(contact);
             }

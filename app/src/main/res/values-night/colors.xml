@@ -9,8 +9,28 @@
     <color name="primaryTextColor">#ffffff</color>
     <color name="secondaryTextColor">#ffffff</color>
 
+    <color name="positiveButtonColor">#79B98F</color>
+    <color name="positiveButtonRippleColor">#94c7a5</color>
+
+    <color name="negativeButtonColor">@color/secondaryLightColor</color>
+    <color name="negativeButtonRippleColor">#a7a7a7</color>
+
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
     <color name="qr_black">#000000</color>
     <color name="qr_white">#FFFFFF</color>
+
+    <array name="statistics_colors">
+        <item>#81B2C9</item>
+        <item>#657A85</item>
+        <item>#3D2A3B</item>
+        <item>#6C586A</item>
+        <item>#6B6480</item>
+        <item>#617393</item>
+        <item>#4F829F</item>
+        <item>#3E91A3</item>
+        <item>#429F9C</item>
+        <item>#79B98F</item>
+    </array>
 </resources>

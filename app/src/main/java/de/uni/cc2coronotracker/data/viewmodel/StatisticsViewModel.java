@@ -1,6 +1,5 @@
 package de.uni.cc2coronotracker.data.viewmodel;
 
-import android.graphics.Color;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -14,7 +13,6 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 
-import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
 import java.text.SimpleDateFormat;
@@ -26,10 +24,11 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
+import de.uni.cc2coronotracker.R;
 import de.uni.cc2coronotracker.data.dao.StatisticsDao;
-import de.uni.cc2coronotracker.data.repositories.ExposureRepository;
 import de.uni.cc2coronotracker.data.repositories.StatisticsRepository;
 import de.uni.cc2coronotracker.data.repositories.async.Result;
+import de.uni.cc2coronotracker.data.repositories.providers.ResourceProvider;
 
 @HiltViewModel
 public class StatisticsViewModel extends ViewModel {
@@ -42,8 +41,8 @@ public class StatisticsViewModel extends ViewModel {
         MONTH,
     }
 
-    private final ExposureRepository exposureRepository;
     private final StatisticsRepository statisticsRepository;
+    private final ResourceProvider resourceProvider;
 
     private MutableLiveData<EXPOSURE_RANGE> exposureRange = new MutableLiveData<>();
     private MutableLiveData<ExposureRangeDataSet> exposuresByRange = new MutableLiveData<>();
@@ -51,9 +50,9 @@ public class StatisticsViewModel extends ViewModel {
     private MutableLiveData<StatisticsDao.GeneralExposureInfo> generalExposureInfo = new MutableLiveData<>();
 
     @Inject
-    public StatisticsViewModel(StatisticsRepository statisticsRepository, ExposureRepository exposureRepository) {
-        this.exposureRepository = exposureRepository;
+    public StatisticsViewModel(StatisticsRepository statisticsRepository, ResourceProvider resourceProvider) {
         this.statisticsRepository = statisticsRepository;
+        this.resourceProvider = resourceProvider;
 
         updateExposuresByDay(EXPOSURE_RANGE.MONTH);
         updateExposuresByContact();
@@ -86,20 +85,17 @@ public class StatisticsViewModel extends ViewModel {
 
     private PieData processExposuresByContact(List<StatisticsDao.NumExposuresByContact> data) {
         ArrayList<PieEntry> pieEntries = new ArrayList<>();
-        ArrayList<Integer> colors = new ArrayList<>();
         String label = "Exposures by contact";
+
+        // We fetch those anew every time so we do not have to react actively to night-mode changes.
+        // This call happens infrequently enough to not be a performance hit.
+        int[] colors = resourceProvider.getColors(R.array.statistics_colors);
 
         //input data and fit data into pie chart entry
         long n = 0;
         for(StatisticsDao.NumExposuresByContact entry : data){
             n+=entry.nExposures;
             pieEntries.add(new PieEntry(entry.nExposures, entry.label));
-
-            // TODO: Make me configureable or better yet: Themeable.
-            float hue = RandomUtils.nextFloat(206, 216);
-            float sat = RandomUtils.nextFloat(.3f,1);
-            float lightness = RandomUtils.nextFloat(.5f,1);
-            colors.add(Color.HSVToColor(new float[] {hue, sat, lightness}));
         }
 
         if (data.get(0).nTotalExposures - n > 0) {

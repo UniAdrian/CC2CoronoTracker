@@ -83,7 +83,7 @@ public class SelectContactDialogFragment extends DialogFragment {
             binding.rvContactList.setAdapter(new ContactSelectionAdapter(contactList, this::onSingleSelect));
         });
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.AlertDialogTheme);
         builder.setView(view)
                 .setNegativeButton(R.string.dialog_cancel, (dialogInterface, i) -> dialogInterface.cancel())
                 .setTitle(R.string.pick_contact);

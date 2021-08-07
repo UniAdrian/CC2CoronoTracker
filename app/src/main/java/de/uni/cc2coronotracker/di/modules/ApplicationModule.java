@@ -16,6 +16,7 @@ import dagger.Provides;
 import dagger.hilt.InstallIn;
 import dagger.hilt.android.qualifiers.ApplicationContext;
 import dagger.hilt.components.SingletonComponent;
+import de.uni.cc2coronotracker.data.repositories.providers.ResourceProvider;
 import de.uni.cc2coronotracker.helper.ContextMediator;
 
 @Module
@@ -44,5 +45,11 @@ public class ApplicationModule {
     @Singleton
     public SharedPreferences providePreferences(@ApplicationContext Context appCtx) {
         return PreferenceManager.getDefaultSharedPreferences(appCtx);
+    }
+
+    @Provides
+    @Singleton
+    public ResourceProvider provideResources(@ApplicationContext Context appCtx) {
+        return new ResourceProvider(appCtx);
     }
 }

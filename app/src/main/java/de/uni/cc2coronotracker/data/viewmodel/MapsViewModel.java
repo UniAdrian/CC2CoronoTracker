@@ -116,7 +116,7 @@ public class MapsViewModel extends ViewModel {
 
         @Override
         public void onLocationUnavailable() {
-            // TODO: Maybe inform the user?
+            ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.no_location_available, Snackbar.LENGTH_SHORT));
         }
     };
 
@@ -179,35 +179,6 @@ public class MapsViewModel extends ViewModel {
      */
     private void processExposures(List<ContactDao.ContactWithExposures> contactsWithExposures) {
         Log.d(TAG, "Processing CWE...");
-
-
-        // TODO: REMOVE ME. I AM DEBUG CODE
-        /*
-        for (int i=0; i<10; ++i) {
-            ContactDao.ContactWithExposures cwe = new ContactDao.ContactWithExposures();
-            cwe.contact = new Contact();
-            cwe.contact.displayName = "Test Account #" + i;
-            cwe.contact.id = 0;
-
-            Random rng = new Random();
-
-            int n = 0 + (int)(Math.random() * 30);
-            cwe.exposures = new ArrayList<>(n);
-            for (int j=0; j<n; ++j) {
-                double rndLat = rng.nextDouble() * .05 - .025;
-                double rndLng = rng.nextDouble() * .05 - .025;
-                LatLng kassel = new LatLng(51.312801 + rndLat, 9.481544 + rndLng);
-
-                Exposure exp = new Exposure();
-                exp.location = kassel;
-                exp.date = new Date(new java.util.Date().getTime());
-
-                cwe.exposures.add(exp);
-            }
-
-            contactsWithExposures.add(cwe);
-        }
-        */
 
         List<MarkerOptions> newOptions = new ArrayList<>();
 
