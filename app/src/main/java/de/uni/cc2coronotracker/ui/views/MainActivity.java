@@ -1,9 +1,8 @@
 package de.uni.cc2coronotracker.ui.views;
 
-import static androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -47,11 +46,30 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setupThemeMode();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         // Referencing the view model here is actually enough already to assure the UUID is assigned on startup.
         preferencesViewModel = new ViewModelProvider(this).get(PreferencesViewModel.class);
+    }
+
+    /**
+     * Checks user preferences for night mode settings. Follows the preferences if they exist,
+     * defaults to nightmode otherwise.
+     */
+    private void setupThemeMode() {
+        int currentNightMode = AppCompatDelegate.getDefaultNightMode();
+        switch (currentNightMode) {
+            case Configuration.UI_MODE_NIGHT_NO:
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                break;
+            case Configuration.UI_MODE_NIGHT_YES:// Night mode is active, we're at night!
+            case Configuration.UI_MODE_NIGHT_UNDEFINED:// We don't know what mode we're in, assume notnight
+                // Use Day/Night mode according to the system settings.
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }
     }
 
     @SuppressLint("NonConstantResourceId")
@@ -91,9 +109,6 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
         });
-
-        // Use Day/Night mode according to the system settings.
-        AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_FOLLOW_SYSTEM);
     }
 
 

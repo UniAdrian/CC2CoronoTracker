@@ -131,4 +131,5 @@
     <string name="statistics_by_contact">Highest exposures by contact</string>
     <string name="statistics_total_exposures">#Exposures total</string>
     <string name="statistics_total_with_coordinates">#Exposures with location</string>
+    <string name="maps_goto_own_location">Jump to your current location</string>
 </resources>

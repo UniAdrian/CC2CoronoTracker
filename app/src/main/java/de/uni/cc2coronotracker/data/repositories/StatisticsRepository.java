@@ -42,7 +42,7 @@ public class StatisticsRepository {
         executor.execute(() -> {
             try {
                 List<StatisticsDao.NumExposuresByContact> exposuresByContact = dao.getExposuresByContact(minPercent);
-                callback.onComplete(new Result.Success(exposuresByContact));
+                callback.onComplete(new Result.Success<>(exposuresByContact));
             } catch (Exception e) {
                 callback.onComplete(new Result.Error<>(e));
             }
@@ -54,7 +54,7 @@ public class StatisticsRepository {
             try {
                 callback.onComplete(new Result.Success<>(dao.getGeneralExposureInfo()));
             } catch (Exception e) {
-                callback.onComplete(new Result.Error(e));
+                callback.onComplete(new Result.Error<>(e));
             }
         });
     }

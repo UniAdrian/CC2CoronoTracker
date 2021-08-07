@@ -70,7 +70,8 @@
             app:layout_constraintEnd_toEndOf="@+id/fabAddImport"
             app:layout_constraintStart_toStartOf="@+id/fabAddImport"
             app:layout_constraintTop_toTopOf="@+id/fabAddImport"
-            app:srcCompat="@drawable/ic_baseline_group_add_24" />
+            app:srcCompat="@drawable/ic_baseline_group_add_24"
+            tools:ignore="DuplicateClickableBoundsCheck" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabImportSingle"
@@ -134,10 +135,11 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
             android:alpha="0"
-            android:background="@color/design_default_color_secondary"
+            android:background="@color/secondaryLightColor"
+            android:padding="2dp"
             android:text="@string/add_contact"
             android:textAlignment="textEnd"
-            android:textColor="@color/design_default_color_on_primary"
+            android:textColor="@color/secondaryTextColor"
             app:layout_constraintBottom_toBottomOf="@+id/fabAddContact"
             app:layout_constraintEnd_toStartOf="@+id/fabAddContact"
             app:layout_constraintTop_toTopOf="@+id/fabAddContact" />
@@ -148,10 +150,11 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
             android:alpha="0"
-            android:background="@color/design_default_color_secondary"
+            android:background="@color/secondaryLightColor"
+            android:padding="2dp"
             android:text="@string/import_single"
             android:textAlignment="textEnd"
-            android:textColor="@color/design_default_color_on_primary"
+            android:textColor="@color/secondaryTextColor"
             app:layout_constraintBottom_toBottomOf="@+id/fabImportSingle"
             app:layout_constraintEnd_toStartOf="@+id/fabImportSingle"
             app:layout_constraintTop_toTopOf="@+id/fabImportSingle" />
@@ -162,10 +165,11 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
             android:alpha="0"
-            android:background="@color/design_default_color_secondary"
+            android:background="@color/secondaryLightColor"
+            android:padding="2dp"
             android:text="@string/import_contacts"
             android:textAlignment="textEnd"
-            android:textColor="@color/design_default_color_on_primary"
+            android:textColor="@color/secondaryTextColor"
             app:layout_constraintBottom_toBottomOf="@+id/fabImportContacts"
             app:layout_constraintEnd_toStartOf="@+id/fabImportContacts"
             app:layout_constraintTop_toTopOf="@+id/fabImportContacts" />
