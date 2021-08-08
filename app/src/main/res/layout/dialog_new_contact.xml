@@ -22,7 +22,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/display_name"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <ImageView
@@ -30,6 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:contentDescription="@string/avatarDescription"
+            app:tint="@color/secondaryTextColor"
             app:srcCompat="@drawable/ic_no_avatar_128" />
 
         <Button

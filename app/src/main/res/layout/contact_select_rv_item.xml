@@ -14,7 +14,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_no_avatar_128"
-        app:tint="@color/secondaryTextColor"
         tools:srcCompat="@drawable/ic_no_avatar_128" />
 
     <TextView

@@ -15,7 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_no_avatar_128"
-        tools:srcCompat="@tools:sample/avatars" />
+        tools:srcCompat="@drawable/ic_no_avatar_128" />
 
     <TextView
         android:id="@+id/crvDisplayName"

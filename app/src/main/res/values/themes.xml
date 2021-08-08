@@ -16,7 +16,7 @@
     </style>
 
     <style name="AlertDialogTheme" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
-        <item name="colorSurface">@color/primaryLightColor</item>
+        <item name="colorSurface">@color/primaryDarkColor</item>
         <item name="materialAlertDialogTitleTextStyle">@style/TitleTextStyle</item>
         <item name="materialAlertDialogBodyTextStyle">@style/BodyTextStyle</item>
         <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
@@ -24,7 +24,7 @@
     </style>
 
     <style name="TitleTextStyle" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
-        <item name="android:textColor">@color/primaryTextColor</item>
+        <item name="android:textColor">@color/secondaryTextColor</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">20sp</item>
     </style>

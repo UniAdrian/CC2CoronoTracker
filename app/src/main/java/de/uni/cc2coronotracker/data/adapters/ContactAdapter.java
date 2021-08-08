@@ -1,6 +1,7 @@
 package de.uni.cc2coronotracker.data.adapters;
 
 import android.annotation.SuppressLint;
+import android.graphics.PorterDuff;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -98,12 +100,15 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
         if (contact.photoUri != null) {
             try {
                 viewHolder.getAvatarView().setImageURI(contact.photoUri);
+                viewHolder.getAvatarView().setColorFilter(null);
             } catch (Exception e) {
                 Log.e(TAG, "Failed to set image uri: ", e);
                 viewHolder.getAvatarView().setImageResource(R.drawable.ic_no_avatar_128);
+                viewHolder.getAvatarView().setColorFilter(ContextCompat.getColor(viewHolder.avatarView.getContext(), R.color.secondaryTextColor), PorterDuff.Mode.SRC_IN);
             }
         } else {
             viewHolder.getAvatarView().setImageResource(R.drawable.ic_no_avatar_128);
+            viewHolder.getAvatarView().setColorFilter(ContextCompat.getColor(viewHolder.avatarView.getContext(), R.color.secondaryTextColor), PorterDuff.Mode.SRC_IN);
         }
 
         viewHolder.itemView.setOnClickListener((view) -> clickListener.onItemClick(contact));

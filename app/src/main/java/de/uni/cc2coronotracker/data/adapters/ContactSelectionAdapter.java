@@ -1,5 +1,6 @@
 package de.uni.cc2coronotracker.data.adapters;
 
+import android.graphics.PorterDuff;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -71,25 +73,28 @@ public class ContactSelectionAdapter extends RecyclerView.Adapter<ContactSelecti
         if (contact.photoUri != null) {
             try {
                 viewHolder.getAvatarView().setImageURI(contact.photoUri);
+                viewHolder.getAvatarView().setColorFilter(null);
             } catch (Exception e) {
                 Log.e(TAG, "Failed to set image uri: ", e);
                 viewHolder.getAvatarView().setImageResource(R.drawable.ic_no_avatar_128);
+                viewHolder.getAvatarView().setColorFilter(ContextCompat.getColor(viewHolder.avatarView.getContext(), R.color.secondaryTextColor), PorterDuff.Mode.SRC_IN);
             }
         } else {
             viewHolder.getAvatarView().setImageResource(R.drawable.ic_no_avatar_128);
+            viewHolder.getAvatarView().setColorFilter(ContextCompat.getColor(viewHolder.avatarView.getContext(), R.color.secondaryTextColor), PorterDuff.Mode.SRC_IN);
         }
 
         if (selected.contains(contact)) {
-            viewHolder.itemView.setBackgroundResource(R.color.design_default_color_secondary);
+            viewHolder.itemView.setBackgroundResource(R.color.secondaryLightColor);
             viewHolder.itemView.setElevation(10);
         } else {
-            viewHolder.itemView.setBackgroundResource(R.color.primaryLightColor);
+            viewHolder.itemView.setBackground(null);
             viewHolder.itemView.setElevation(0);
         }
 
         viewHolder.itemView.setOnClickListener((view) -> {
             if (selected.contains(contact)) {
-                viewHolder.itemView.setBackgroundResource(R.color.primaryLightColor);
+                viewHolder.itemView.setBackground(null);
                 viewHolder.itemView.setElevation(0);
                 selected.remove(contact);
             } else {

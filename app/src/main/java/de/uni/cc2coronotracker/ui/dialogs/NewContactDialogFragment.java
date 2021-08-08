@@ -3,6 +3,7 @@ package de.uni.cc2coronotracker.ui.dialogs;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -97,15 +99,18 @@ public class NewContactDialogFragment extends DialogFragment implements TextWatc
 
         if (imgUri == null) {
             binding.imgAvatar.setImageResource(R.drawable.ic_no_avatar_128);
+            binding.imgAvatar.setColorFilter(ContextCompat.getColor(getContext(), R.color.primaryTextColor), PorterDuff.Mode.SRC_IN);
             return;
         }
 
         try {
             getActivity().getContentResolver().takePersistableUriPermission(imgUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
             binding.imgAvatar.setImageURI(imgUri);
+            binding.imgAvatar.setColorFilter(null);
         } catch (Exception e) {
             imageUri = null;
             binding.imgAvatar.setImageResource(R.drawable.ic_no_avatar_128);
+            binding.imgAvatar.setColorFilter(ContextCompat.getColor(getContext(), R.color.primaryTextColor), PorterDuff.Mode.SRC_IN);
             Toast.makeText(getContext(), R.string.persist_uri_failed, Toast.LENGTH_LONG);
         }
     }
