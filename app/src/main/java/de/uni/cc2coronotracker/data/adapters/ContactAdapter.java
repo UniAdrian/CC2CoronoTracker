@@ -2,6 +2,7 @@ package de.uni.cc2coronotracker.data.adapters;
 
 import android.annotation.SuppressLint;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +35,8 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
     private final List<ContactDao.ContactWithExposures> allContacts;
     private List<ContactDao.ContactWithExposures> filteredContacts;
     private final OnItemClickListener clickListener;
+
+    private Drawable defaultAvatar = null;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView displayNameView;
@@ -73,12 +76,19 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
         allContacts = dataSet;
         filteredContacts = new ArrayList<>(allContacts);
         clickListener = listener;
+
+        Log.d(TAG, "Got " + allContacts.size() + " contacts...");
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.contact_rv_item, viewGroup, false);
+
+        if (defaultAvatar == null) {
+            defaultAvatar = viewGroup.getContext().getResources().getDrawable(R.drawable.ic_no_avatar_128);
+        }
+
         return new ViewHolder(view);
     }
 
@@ -103,11 +113,11 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
                 viewHolder.getAvatarView().setColorFilter(null);
             } catch (Exception e) {
                 Log.e(TAG, "Failed to set image uri: ", e);
-                viewHolder.getAvatarView().setImageResource(R.drawable.ic_no_avatar_128);
+                viewHolder.getAvatarView().setImageDrawable(defaultAvatar);
                 viewHolder.getAvatarView().setColorFilter(ContextCompat.getColor(viewHolder.avatarView.getContext(), R.color.secondaryTextColor), PorterDuff.Mode.SRC_IN);
             }
         } else {
-            viewHolder.getAvatarView().setImageResource(R.drawable.ic_no_avatar_128);
+            viewHolder.getAvatarView().setImageDrawable(defaultAvatar);
             viewHolder.getAvatarView().setColorFilter(ContextCompat.getColor(viewHolder.avatarView.getContext(), R.color.secondaryTextColor), PorterDuff.Mode.SRC_IN);
         }
 

@@ -10,15 +10,16 @@ import android.view.ViewGroup;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
-import androidx.core.view.MenuItemCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import de.uni.cc2coronotracker.R;
@@ -50,9 +51,7 @@ public class ContactsFragment extends Fragment implements SearchView.OnQueryText
         contactsViewModel = new ViewModelProvider(this.getActivity()).get(ContactViewModel.class);
         contactCreationViewModel = new ViewModelProvider(this.getActivity()).get(ContactCreationDialogViewModel.class);
 
-        getContactLauncher = registerForActivityResult(new ActivityResultContracts.PickContact(), uri -> {
-            contactsViewModel.onContactPick(uri);
-        });
+        getContactLauncher = registerForActivityResult(new ActivityResultContracts.PickContact(), uri -> contactsViewModel.onContactPick(uri));
 
         setHasOptionsMenu(true);
     }
@@ -62,12 +61,13 @@ public class ContactsFragment extends Fragment implements SearchView.OnQueryText
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_contacts, container, false);
 
         binding.setContactVM(contactsViewModel);
         binding.setLifecycleOwner(getViewLifecycleOwner());
 
+        binding.contactListRV.setHasFixedSize(true);
         binding.contactListRV.setAdapter(new ContactAdapter(new ArrayList<>(), this::onContactClicked));
 
         binding.fabAddImport.setOnClickListener(view -> {
@@ -88,7 +88,7 @@ public class ContactsFragment extends Fragment implements SearchView.OnQueryText
 
         contactsViewModel.getAllContactsWithExposures().observe(getViewLifecycleOwner(), contacts -> {
             binding.contactListRV.setAdapter(new ContactAdapter(contacts, this::onContactClicked));
-            binding.contactListRV.getAdapter().notifyDataSetChanged();
+            Objects.requireNonNull(binding.contactListRV.getAdapter()).notifyDataSetChanged();
         });
 
 
@@ -99,24 +99,22 @@ public class ContactsFragment extends Fragment implements SearchView.OnQueryText
             }
         });
 
-
-        View view = binding.getRoot();
-        return view;
+        return binding.getRoot();
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.search_menu, menu);
 
         final MenuItem searchItem = menu.findItem(R.id.action_search);
-        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        final SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setOnQueryTextListener(this);
     }
 
     @Override
     public boolean onQueryTextChange(String query) {
-        ((ContactAdapter)binding.contactListRV.getAdapter()).getFilter().filter(query);
+        ((ContactAdapter) Objects.requireNonNull(binding.contactListRV.getAdapter())).getFilter().filter(query);
         return false;
     }
 
