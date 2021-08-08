@@ -41,7 +41,7 @@ public class StatisticsFragment extends Fragment {
         mViewModel = new ViewModelProvider(this).get(StatisticsViewModel.class);
 
         binding = DataBindingUtil.inflate(inflater, R.layout.statistics_fragment, container, false);
-        binding.setLifecycleOwner(this);
+        binding.setLifecycleOwner(getViewLifecycleOwner());
         binding.setVm(mViewModel);
         binding.setFrag(this);
 

@@ -66,7 +66,7 @@ public class ContactsFragment extends Fragment implements SearchView.OnQueryText
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_contacts, container, false);
 
         binding.setContactVM(contactsViewModel);
-        binding.setLifecycleOwner(this);
+        binding.setLifecycleOwner(getViewLifecycleOwner());
 
         binding.contactListRV.setAdapter(new ContactAdapter(new ArrayList<>(), this::onContactClicked));
 

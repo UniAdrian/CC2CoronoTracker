@@ -66,7 +66,7 @@ public class NewContactDialogFragment extends DialogFragment implements TextWatc
         binding = DataBindingUtil.bind(view);
 
         binding.setContactVM(contactCreationViewModel);
-        binding.setLifecycleOwner(this);
+        binding.setLifecycleOwner(getViewLifecycleOwner());
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.AlertDialogTheme);
         builder.setView(view)
