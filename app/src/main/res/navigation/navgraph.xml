@@ -7,11 +7,19 @@
 
     <action
         android:id="@+id/action_global_preferences"
-        app:destination="@id/preferencesFragment" />
+        app:destination="@id/preferencesFragment"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:popEnterAnim="@anim/slide_in_left"
+        app:popExitAnim="@anim/slide_out_right" />
 
     <action
         android:id="@+id/action_goto_certificates"
-        app:destination="@id/certificateFragment" />
+        app:destination="@id/certificateFragment"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:popEnterAnim="@anim/slide_in_left"
+        app:popExitAnim="@anim/slide_out_right" />
 
 
     <fragment
@@ -21,7 +29,11 @@
         tools:layout="@layout/fragment_contacts">
         <action
             android:id="@+id/action_contacts_to_contactDetailsFragment"
-            app:destination="@id/contactDetailsFragment" />
+            app:destination="@id/contactDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <argument
             android:name="addExposureUUID"
             app:argType="java.util.UUID"
@@ -35,22 +47,46 @@
         tools:layout="@layout/fragment_start_screen">
         <action
             android:id="@+id/action_startScreen_to_contacts"
-            app:destination="@id/contacts" />
+            app:destination="@id/contacts"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_startScreen_to_showQR"
-            app:destination="@id/showQR" />
+            app:destination="@id/showQR"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_startScreen_to_readQR"
-            app:destination="@id/readQR" />
+            app:destination="@id/readQR"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_startScreen_to_mapsFragment"
-            app:destination="@id/mapsFragment" />
+            app:destination="@id/mapsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
         <action
-        android:id="@+id/action_startScreen_to_calendarFragment"
-        app:destination="@id/calendar"/>
+            android:id="@+id/action_startScreen_to_calendarFragment"
+            app:destination="@id/calendar"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_startScreen_to_statistics"
-            app:destination="@id/statistics" />
+            app:destination="@id/statistics"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/showQR"
@@ -64,10 +100,18 @@
         tools:layout="@layout/fragment_read_qr">
         <action
             android:id="@+id/action_readQR_to_contactDetails"
-            app:destination="@id/contactDetailsFragment" />
+            app:destination="@id/contactDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_readQR_to_certificateFragment"
-            app:destination="@id/certificateFragment" />
+            app:destination="@id/certificateFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/contactDetailsFragment"
@@ -82,7 +126,11 @@
             android:id="@+id/action_contactDetailsFragment_to_contacts"
             app:destination="@id/contacts"
             app:popUpTo="@id/contacts"
-            app:popUpToInclusive="true" />
+            app:popUpToInclusive="true"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
     <fragment
         android:id="@+id/preferencesFragment"
@@ -97,12 +145,20 @@
             android:id="@+id/action_splashFragment_to_startScreen"
             app:destination="@id/startScreen"
             app:popUpTo="@id/splashFragment"
-            app:popUpToInclusive="true" />
+            app:popUpToInclusive="true"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_splashFragment_to_onBoardingFragment"
             app:destination="@id/onBoardingFragment"
             app:popUpTo="@id/splashFragment"
-            app:popUpToInclusive="true" />
+            app:popUpToInclusive="true"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/onBoardingFragment"
@@ -113,7 +169,11 @@
             android:id="@+id/action_onBoardingFragment_to_startScreen"
             app:destination="@id/startScreen"
             app:popUpTo="@id/onBoardingFragment"
-            app:popUpToInclusive="true" />
+            app:popUpToInclusive="true"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/mapsFragment"
