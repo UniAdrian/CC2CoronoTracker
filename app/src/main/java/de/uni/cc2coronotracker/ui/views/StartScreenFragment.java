@@ -4,18 +4,21 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import de.uni.cc2coronotracker.R;
+import de.uni.cc2coronotracker.databinding.FragmentStartScreenBinding;
 
 /**
  * A simple {@link Fragment} subclass.
  * create an instance of this fragment.
  */
 public class StartScreenFragment extends Fragment {
+
+    private FragmentStartScreenBinding binding;
 
     public StartScreenFragment() {
         // Required empty public constructor
@@ -29,24 +32,12 @@ public class StartScreenFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_start_screen, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_start_screen, container, false);
 
-        Button gtContacts = (Button) view.findViewById(R.id.btnGotoContacts);
-        Button gtRQR = (Button) view.findViewById(R.id.btnGotoReadQR);
-        Button gtCQR = (Button) view.findViewById(R.id.btnGotoCreateQR);
-        Button gtMaps = (Button) view.findViewById(R.id.btnGotoMaps);
-        Button gtStatistics = (Button) view.findViewById(R.id.btnGotoStatistics);
-        Button gtCalendar = (Button) view.findViewById(R.id.btnGotoCalendar);
+        binding.setLifecycleOwner(getViewLifecycleOwner());
+        binding.setFrag(this);
 
-        gtContacts.setOnClickListener(this::gotoContacts);
-        gtRQR.setOnClickListener(this::gotoReadQR);
-        gtCQR.setOnClickListener(this::gotoCreateQR);
-        gtMaps.setOnClickListener(this::gotoMaps);
-        gtStatistics.setOnClickListener(this::gotoStatistics);
-        gtCalendar.setOnClickListener(this::gotoCalendar);
-
-        return view;
+        return binding.getRoot();
     }
 
     public void gotoContacts(View view) {

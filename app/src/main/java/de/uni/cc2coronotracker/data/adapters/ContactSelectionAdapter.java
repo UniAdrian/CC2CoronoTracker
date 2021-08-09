@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class ContactSelectionAdapter extends RecyclerView.Adapter<ContactSelecti
 
     private Drawable defaultAvatar = null;
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView displayNameView;
         private final ImageView avatarView;
 
@@ -67,7 +68,7 @@ public class ContactSelectionAdapter extends RecyclerView.Adapter<ContactSelecti
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.contact_select_rv_item, viewGroup, false);
 
         if (defaultAvatar == null) {
-            defaultAvatar = viewGroup.getContext().getResources().getDrawable(R.drawable.ic_no_avatar_128);
+            defaultAvatar = ResourcesCompat.getDrawable(viewGroup.getContext().getResources(), R.drawable.ic_no_avatar_128, viewGroup.getContext().getTheme());
         }
 
         return new ViewHolder(view);
@@ -77,6 +78,7 @@ public class ContactSelectionAdapter extends RecyclerView.Adapter<ContactSelecti
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         Contact contact = contacts.get(position);
         viewHolder.getDisplayNameView().setText(contact.displayName);
+
         if (contact.photoUri != null) {
             try {
                 viewHolder.getAvatarView().setImageURI(contact.photoUri);

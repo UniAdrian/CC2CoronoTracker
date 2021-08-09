@@ -133,4 +133,6 @@
     <string name="statistics_total_with_coordinates">#Exposures with location</string>
     <string name="maps_goto_own_location">Jump to your current location</string>
     <string name="no_location_available">Unfortunately location data is currently not available.</string>
+    <string name="app_icon_desc">App Icon</string>
+    <string name="LinkCalendar">Calendar</string>
 </resources>

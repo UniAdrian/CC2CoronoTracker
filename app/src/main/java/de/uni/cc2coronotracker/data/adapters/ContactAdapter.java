@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -44,6 +45,8 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
         private final ImageView avatarView;
         private final ImageButton favoriteView;
 
+        private Contact contact;
+
         public ViewHolder(View view) {
             super(view);
             displayNameView = view.findViewById(R.id.crvDisplayName);
@@ -64,6 +67,9 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
         public ImageButton getFavoriteView() {
             return favoriteView;
         }
+
+        public Contact getContact() {return contact;}
+        public void setContact(Contact contact) {this.contact = contact;}
     }
 
     /**
@@ -77,7 +83,12 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
         filteredContacts = new ArrayList<>(allContacts);
         clickListener = listener;
 
-        Log.d(TAG, "Got " + allContacts.size() + " contacts...");
+        setHasStableIds(true);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return filteredContacts.get(position).contact.id;
     }
 
     @NonNull
@@ -86,10 +97,13 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.contact_rv_item, viewGroup, false);
 
         if (defaultAvatar == null) {
-            defaultAvatar = viewGroup.getContext().getResources().getDrawable(R.drawable.ic_no_avatar_128);
+            defaultAvatar = ResourcesCompat.getDrawable(viewGroup.getContext().getResources(), R.drawable.ic_no_avatar_128, viewGroup.getContext().getTheme());
         }
 
-        return new ViewHolder(view);
+        ViewHolder viewHolder = new ViewHolder(view);
+        viewHolder.itemView.setOnClickListener((v) -> clickListener.onItemClick(viewHolder.getContact()));
+
+        return viewHolder;
     }
 
     // Replace the contents of a view (invoked by the layout manager)
@@ -97,6 +111,8 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         ContactDao.ContactWithExposures contactWithExposures = filteredContacts.get(position);
         Contact contact = contactWithExposures.contact;
+
+        viewHolder.setContact(contact);
 
         long numberOfExposures = contactWithExposures.exposures.size();
         String description = viewHolder.getFavoriteView().getContext().getResources().getString(R.string.contact_description_some, numberOfExposures);
@@ -120,8 +136,6 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
             viewHolder.getAvatarView().setImageDrawable(defaultAvatar);
             viewHolder.getAvatarView().setColorFilter(ContextCompat.getColor(viewHolder.avatarView.getContext(), R.color.secondaryTextColor), PorterDuff.Mode.SRC_IN);
         }
-
-        viewHolder.itemView.setOnClickListener((view) -> clickListener.onItemClick(contact));
     }
 
     @Override
