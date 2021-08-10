@@ -18,8 +18,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="qr_black">#000000</color>
-    <color name="qr_white">#FFFFFF</color>
+    <color name="qr_black">@color/primaryTextColor</color>
+    <color name="qr_white">@color/primaryLightColor</color>
 
     <array name="statistics_colors">
         <item>#81B2C9</item>
