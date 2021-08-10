@@ -16,11 +16,14 @@ import java.util.ArrayList;
 import dagger.hilt.android.AndroidEntryPoint;
 import de.uni.cc2coronotracker.R;
 import de.uni.cc2coronotracker.data.adapters.CertificateAdapter;
+import de.uni.cc2coronotracker.data.models.CertEntity;
 import de.uni.cc2coronotracker.data.viewmodel.CertificateListViewModel;
 import de.uni.cc2coronotracker.databinding.CertificateListFragmentBinding;
 
 @AndroidEntryPoint
 public class CertificateListFragment extends Fragment {
+
+    private static final String TAG = "CertificateList";
 
     private CertificateListViewModel viewModel;
     private CertificateListFragmentBinding binding;
@@ -44,4 +47,16 @@ public class CertificateListFragment extends Fragment {
         return binding.getRoot();
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        viewModel.getCerts().observe(getViewLifecycleOwner(), certEntities -> {
+            binding.rvCerts.setAdapter(new CertificateAdapter(certEntities, this::onCertPicked));
+        });
+    }
+
+    public void onCertPicked(CertEntity cert) {
+        viewModel.gotoDetails(cert);
+    }
 }

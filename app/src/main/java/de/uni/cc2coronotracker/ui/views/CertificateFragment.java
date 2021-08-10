@@ -45,5 +45,6 @@ public class CertificateFragment extends Fragment {
 
         certViewModel = new ViewModelProvider(this.getActivity()).get(CertificateViewModel.class);
         certViewModel.setCurrentCertificate(binding.getEgc());
+        certViewModel.getQr().observe(getViewLifecycleOwner(), bitmap -> binding.certQR.setImageBitmap(bitmap));
     }
 }
