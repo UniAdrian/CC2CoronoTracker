@@ -1,20 +1,29 @@
 package de.uni.cc2coronotracker.data.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
-import androidx.room.Transaction;
 
 import java.util.List;
 
-import de.uni.cc2coronotracker.data.qr.EGC;
+import de.uni.cc2coronotracker.data.models.CertEntity;
 
 @Dao
 public abstract class CertificateDao {
-    @Transaction
+    @Query("SELECT * FROM certificates")
+    public abstract LiveData<List<CertEntity>> getAll();
+
     @Query("SELECT * FROM certificates WHERE id = :id")
-    public abstract List<EGC> getOne(long id);
+    public abstract CertEntity getCert(long id);
+
+    @Query("SELECT * FROM certificates WHERE identifier = :identifier")
+    public abstract CertEntity getCert(String identifier);
 
     @Insert
-    public abstract long add(EGC toAdd);
+    public abstract long insertCert(CertEntity ent);
+
+    @Delete
+    public abstract int deleteCert(CertEntity ent);
 }

@@ -2,10 +2,7 @@ package de.uni.cc2coronotracker.data.qr;
 
 import android.text.TextUtils;
 
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.Ignore;
-import androidx.room.PrimaryKey;
+import androidx.annotation.NonNull;
 
 import com.google.iot.cbor.CborConversionException;
 import com.google.iot.cbor.CborParseException;
@@ -18,21 +15,15 @@ import COSE.CoseException;
 import de.uni.cc2coronotracker.data.models.EUCertificate;
 import de.uni.cc2coronotracker.helper.EGCHelper;
 
-@Entity(tableName="certificates")
 public class EGC implements QrIntent.Intent {
-
-    @PrimaryKey(autoGenerate = true)
-    public long id;
 
     // Raw string as received by scanning the QR code
     public String raw;
 
     public String issuer;
     public String expiration;
-    @ColumnInfo(name = "issued_at")
     public String issuedAt;
 
-    @Ignore()
     public List<EUCertificate> certificates;
 
     public EGC() {
@@ -42,6 +33,7 @@ public class EGC implements QrIntent.Intent {
         return EGCHelper.parse(toParse);
     }
 
+    @NonNull
     @Override
     public String toString() {
         return TextUtils.join(QrIntent.SEPARATOR, new String[]{

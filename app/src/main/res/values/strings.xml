@@ -136,4 +136,12 @@
     <string name="app_icon_desc">App Icon</string>
     <string name="LinkCalendar">Calendar</string>
     <string name="Lobby">Lobby</string>
+    <string name="insert_certificate_failed">Oops. Failed to store your certificate.</string>
+    <string name="insert_certificate_failed_already_exists">The certificate already is stored on your device.</string>
+    <string name="goto_certificate_on_exists">Show</string>
+    <string name="goto_certificate_failed">Oops, something went wrong navigating to your certificate.</string>
+    <string name="certificates">Certificates</string>
+    <string name="no_certificates_yet">You did not store any certificates on this device yet.</string>
+    <string name="cert_holder">Certificate holder</string>
+    <string name="cert_issued_at">Issued at</string>
 </resources>

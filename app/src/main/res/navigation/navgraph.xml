@@ -94,6 +94,13 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_startScreen_to_certificateListFragment"
+            app:destination="@id/certificateListFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/showQR"
@@ -210,4 +217,20 @@
         android:name="de.uni.cc2coronotracker.ui.views.LobbyFragment"
         android:label="@string/Lobby"
         tools:layout="@layout/lobby_fragment" />
+    <fragment
+        android:id="@+id/certificateListFragment"
+        android:name="de.uni.cc2coronotracker.ui.views.CertificateListFragment"
+        android:label="@string/certificates"
+        tools:layout="@layout/certificate_list_fragment">
+        <action
+            android:id="@+id/action_certificateListFragment_to_certificateFragment"
+            app:destination="@id/certificateFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_certificateListFragment_to_readQR"
+            app:destination="@id/readQR" />
+    </fragment>
 </navigation>

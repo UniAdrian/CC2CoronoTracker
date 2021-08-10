@@ -13,13 +13,15 @@
         <entry key="..\:/Users/Adrian/Desktop/Uni/CC2CoronoTracker/app/src/main/res/drawable/ic_virus_outline.xml" value="0.5708333333333333" />
         <entry key="..\:/Users/Adrian/Desktop/Uni/CC2CoronoTracker/app/src/main/res/layout/activity_main.xml" value="0.325" />
         <entry key="..\:/Users/Adrian/Desktop/Uni/CC2CoronoTracker/app/src/main/res/layout/bottom_sheet_maps_configuration.xml" value="0.325" />
+        <entry key="..\:/Users/Adrian/Desktop/Uni/CC2CoronoTracker/app/src/main/res/layout/cert_rv_item.xml" value="0.4041666666666667" />
+        <entry key="..\:/Users/Adrian/Desktop/Uni/CC2CoronoTracker/app/src/main/res/layout/certificate_list_fragment.xml" value="0.4041666666666667" />
         <entry key="..\:/Users/Adrian/Desktop/Uni/CC2CoronoTracker/app/src/main/res/layout/contact_rv_item.xml" value="0.6" />
         <entry key="..\:/Users/Adrian/Desktop/Uni/CC2CoronoTracker/app/src/main/res/layout/contact_select_rv_item.xml" value="0.33177083333333335" />
         <entry key="..\:/Users/Adrian/Desktop/Uni/CC2CoronoTracker/app/src/main/res/layout/dialog_contact_picker.xml" value="0.325" />
         <entry key="..\:/Users/Adrian/Desktop/Uni/CC2CoronoTracker/app/src/main/res/layout/dialog_new_contact.xml" value="0.3333333333333333" />
         <entry key="..\:/Users/Adrian/Desktop/Uni/CC2CoronoTracker/app/src/main/res/layout/fragment_contacts.xml" value="0.365625" />
         <entry key="..\:/Users/Adrian/Desktop/Uni/CC2CoronoTracker/app/src/main/res/layout/fragment_on_boarding_second.xml" value="0.36822916666666666" />
-        <entry key="..\:/Users/Adrian/Desktop/Uni/CC2CoronoTracker/app/src/main/res/layout/fragment_splash.xml" value="0.5546875" />
+        <entry key="..\:/Users/Adrian/Desktop/Uni/CC2CoronoTracker/app/src/main/res/layout/fragment_splash.xml" value="0.3333333333333333" />
         <entry key="..\:/Users/Adrian/Desktop/Uni/CC2CoronoTracker/app/src/main/res/layout/fragment_start_screen.xml" value="0.5" />
         <entry key="..\:/Users/Adrian/Desktop/Uni/CC2CoronoTracker/app/src/main/res/layout/statistics_fragment.xml" value="0.32864583333333336" />
         <entry key="..\:/Users/Adrian/Desktop/Uni/CC2CoronoTracker/app/src/main/res/layout/top_sheet_maps_info.xml" value="0.325" />

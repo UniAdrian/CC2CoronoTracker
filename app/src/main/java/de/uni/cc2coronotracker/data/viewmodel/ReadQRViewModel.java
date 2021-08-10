@@ -1,6 +1,7 @@
 package de.uni.cc2coronotracker.data.viewmodel;
 
 
+import android.database.sqlite.SQLiteConstraintException;
 import android.location.Location;
 import android.util.Log;
 
@@ -23,6 +24,7 @@ import de.uni.cc2coronotracker.data.models.Contact;
 import de.uni.cc2coronotracker.data.models.Exposure;
 import de.uni.cc2coronotracker.data.qr.EGC;
 import de.uni.cc2coronotracker.data.qr.QrIntent;
+import de.uni.cc2coronotracker.data.repositories.CertificateRepository;
 import de.uni.cc2coronotracker.data.repositories.ContactRepository;
 import de.uni.cc2coronotracker.data.repositories.ExposureRepository;
 import de.uni.cc2coronotracker.data.repositories.async.Result;
@@ -45,6 +47,7 @@ public class ReadQRViewModel extends ViewModel {
 
     private final ContactRepository contactRepository;
     private final ExposureRepository exposureRepository;
+    private final CertificateRepository certificateRepository;
 
     private MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private MutableLiveData<String> isLoadingText = new MutableLiveData<>();
@@ -52,12 +55,13 @@ public class ReadQRViewModel extends ViewModel {
     @Inject
     public ReadQRViewModel(ContextMediator ctxMediator, ContactRepository contactRepository,
                            ExposureRepository exposureRepository, LocationProvider locationProvider,
-                           ReadOnlySettingsProvider settingsProvider) {
+                           ReadOnlySettingsProvider settingsProvider, CertificateRepository certificateRepository) {
         this.ctxMediator = ctxMediator;
         this.locationprovider = locationProvider;
         this.settingsProvider = settingsProvider;
         this.contactRepository = contactRepository;
         this.exposureRepository = exposureRepository;
+        this.certificateRepository = certificateRepository;
     }
 
     public void handleQRIntent(QrIntent.Intent intent) {
@@ -74,8 +78,41 @@ public class ReadQRViewModel extends ViewModel {
     }
 
     private void handleEGCIntent(EGC intent) {
-        ReadQRFragmentDirections.ActionReadQRToCertificateFragment actionGotoCertificates = ReadQRFragmentDirections.actionReadQRToCertificateFragment(intent);
-        ctxMediator.request(RequestFactory.createNavigationRequest(actionGotoCertificates));
+        isLoading.postValue(true);
+        certificateRepository.addEGC(intent, result -> {
+            if (result instanceof Result.Success) {
+                long generatedId = ((Result.Success<Long>) result).data;
+
+                ReadQRFragmentDirections.ActionReadQRToCertificateFragment actionGotoCertificates = ReadQRFragmentDirections.actionReadQRToCertificateFragment(intent);
+                ctxMediator.request(RequestFactory.createNavigationRequest(actionGotoCertificates));
+
+                Log.d(TAG, "Inserted new Certificate with id " + generatedId);
+            } else {
+                Exception e = ((Result.Error<Long>)result).exception;
+                // if it is just a unique constraint violation we simply already have this cert stored
+                // in this case we give the user the option to go there via the snackbar.
+                if (e instanceof SQLiteConstraintException) {
+                    ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.insert_certificate_failed_already_exists, Snackbar.LENGTH_LONG, R.string.goto_certificate_on_exists, v -> gotoCert(intent)));
+                } else {
+                    Log.e(TAG, "Failed to insert new Certificate.", e);
+                    ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.insert_certificate_failed, Snackbar.LENGTH_LONG, R.string.retry, v -> handleEGCIntent(intent)));
+                }
+            }
+            isLoading.postValue(false);
+        });
+    }
+
+    private void gotoCert(EGC intent) {
+        isLoading.postValue(true);
+        certificateRepository.getByIdentifier("", result -> {
+            if (result instanceof Result.Success) {
+                ReadQRFragmentDirections.ActionReadQRToCertificateFragment actionGotoCertificates = ReadQRFragmentDirections.actionReadQRToCertificateFragment(intent);
+                ctxMediator.request(RequestFactory.createNavigationRequest(actionGotoCertificates));
+            } else {
+                ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.goto_certificate_failed, Snackbar.LENGTH_LONG, R.string.retry, v -> gotoCert(intent)));
+            }
+            isLoading.postValue(false);
+        });
     }
 
     public void handleAddExposureIntent(QrIntent.AddExposure intent) {

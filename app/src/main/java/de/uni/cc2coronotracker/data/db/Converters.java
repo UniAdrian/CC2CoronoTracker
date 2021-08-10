@@ -65,4 +65,5 @@ public class Converters {
         double longitude = Double.valueOf(components[1]);
         return new LatLng(latitude, longitude);
     }
+
 }

@@ -20,7 +20,7 @@ import dagger.hilt.components.SingletonComponent;
 import de.uni.cc2coronotracker.data.api.RKIApiInterface;
 import de.uni.cc2coronotracker.data.db.AppDatabase;
 import de.uni.cc2coronotracker.data.repositories.AppRepository;
-import de.uni.cc2coronotracker.data.repositories.CertificateRepoistory;
+import de.uni.cc2coronotracker.data.repositories.CertificateRepository;
 import de.uni.cc2coronotracker.data.repositories.ContactRepository;
 import de.uni.cc2coronotracker.data.repositories.ExposureRepository;
 import de.uni.cc2coronotracker.data.repositories.StatisticsRepository;
@@ -55,8 +55,8 @@ public class RepositoriesModule {
 
     @Provides
     @Singleton
-    public CertificateRepoistory bindCertificateRepository(@ApplicationContext Context ctx, Executor executor, AppDatabase db) {
-        return new CertificateRepoistory(ctx, executor, db.getCertificateDao());
+    public CertificateRepository bindCertificateRepository(@ApplicationContext Context ctx, Executor executor, AppDatabase db) {
+        return new CertificateRepository(ctx, executor, db.getCertificateDao());
     }
 
     @Provides
@@ -68,7 +68,8 @@ public class RepositoriesModule {
     @Provides
     @Singleton
     public AppDatabase provideAppDatabase(@ApplicationContext Context appContext)  {
-        return Room.databaseBuilder(appContext, AppDatabase.class, "cc2-db").build();
+        // TODO: REMOVE fallbackToDestructiveMigration! THIS HAS NOTHING TO DO IN PROD.
+        return Room.databaseBuilder(appContext, AppDatabase.class, "cc2-db").fallbackToDestructiveMigration().build();
     }
 
     @Provides

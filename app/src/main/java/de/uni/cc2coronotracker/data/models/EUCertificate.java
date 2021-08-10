@@ -23,7 +23,7 @@ public class EUCertificate implements Serializable {
     public TestGroup testGroup;
     public RecoveryGroup recoveryGroup;
 
-    public static class VaccinationGroup {
+    public static class VaccinationGroup implements Serializable {
         public String disease;
         public String prophylaxis;
         public String product;
@@ -36,7 +36,7 @@ public class EUCertificate implements Serializable {
         public String identifier;
     }
 
-    public static class TestGroup {
+    public static class TestGroup implements Serializable {
         public String disease;
         public String testProvider;
         public String issuer;
@@ -50,7 +50,7 @@ public class EUCertificate implements Serializable {
         public String facility;
     }
 
-    public static class RecoveryGroup {
+    public static class RecoveryGroup implements Serializable {
         public String disease;
         public String firstPositiveTest;
         public String testProvider;

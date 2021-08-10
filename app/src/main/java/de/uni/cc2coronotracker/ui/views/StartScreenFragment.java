@@ -67,4 +67,8 @@ public class StartScreenFragment extends Fragment {
     public void gotoLobby(View view) {
         Navigation.findNavController(view).navigate(R.id.action_startScreen_to_lobbyFragment);
     }
+
+    public void gotoCertificates(View view) {
+        Navigation.findNavController(view).navigate(R.id.action_startScreen_to_certificateListFragment);
+    }
 }

@@ -150,10 +150,25 @@
             android:minWidth="48dp"
             android:minHeight="48dp"
             android:onClick="@{(v) -> frag.gotoLobby(v)}"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnStatistics"
             app:srcCompat="@drawable/ic_baseline_connect_without_contact_24"
+            app:tint="@color/primaryDarkColor" />
+
+        <ImageButton
+            android:id="@+id/imageButton2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/certificates"
+            android:focusable="true"
+            android:minWidth="48dp"
+            android:minHeight="48dp"
+            android:onClick="@{(v) -> frag.gotoCertificates(v)}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintTop_toTopOf="@+id/imageButton"
+            app:srcCompat="@drawable/ic_baseline_screenshot_24"
             app:tint="@color/primaryDarkColor" />
 
         <androidx.constraintlayout.widget.Guideline
@@ -234,6 +249,16 @@
             app:layout_constraintEnd_toEndOf="@+id/imageButton"
             app:layout_constraintStart_toStartOf="@+id/imageButton"
             app:layout_constraintTop_toBottomOf="@+id/imageButton" />
+
+        <TextView
+            android:id="@+id/textView64"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/certificates"
+            android:textColor="@color/secondaryTextColor"
+            app:layout_constraintEnd_toEndOf="@+id/imageButton2"
+            app:layout_constraintStart_toStartOf="@+id/imageButton2"
+            app:layout_constraintTop_toBottomOf="@+id/imageButton2" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
