@@ -135,4 +135,5 @@
     <string name="no_location_available">Unfortunately location data is currently not available.</string>
     <string name="app_icon_desc">App Icon</string>
     <string name="LinkCalendar">Calendar</string>
+    <string name="Lobby">Lobby</string>
 </resources>

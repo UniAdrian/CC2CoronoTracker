@@ -107,14 +107,14 @@ public class RequestFactory {
         return new CallWithContextRequest(call);
     }
 
-    public static CallWithContextRequest createActivateLocationRequest(LocationRequest request, @NonNull RepositoryCallback callback) {
+    public static CallWithContextRequest createActivateLocationRequest(LocationRequest request, @NonNull RepositoryCallback<?> callback) {
         CallWithContextRequest.ContextfulCall call = c -> {
             LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(request);
 
             SettingsClient settingsClient = LocationServices.getSettingsClient(c);
             Task<LocationSettingsResponse> task = settingsClient.checkLocationSettings(builder.build());
             task.addOnSuccessListener(locationSettingsResponse -> {
-                callback.onComplete(new Result.Success(null));
+                callback.onComplete(new Result.Success<>(null));
             });
 
             task.addOnFailureListener(((AppCompatActivity)c), e -> {
@@ -131,11 +131,11 @@ public class RequestFactory {
                     }
                 } else {
                     Log.e("ActivateLocationRequest", "Failed to prompt settings change", e);
-                    callback.onComplete(new Result.Error(new UnsupportedOperationException("The location service is unavailable.")));
+                    callback.onComplete(new Result.Error<>(new UnsupportedOperationException("The location service is unavailable.")));
                 }
             });
 
-            task.addOnCanceledListener(() -> callback.onComplete(new Result.Error(new CancellationException("The user did not activate the location service."))));
+            task.addOnCanceledListener(() -> callback.onComplete(new Result.Error<>(new CancellationException("The user did not activate the location service."))));
         };
 
 

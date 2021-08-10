@@ -140,6 +140,22 @@
             app:layout_constraintTop_toTopOf="@+id/btnStatistics"
             app:tint="@color/primaryDarkColor" />
 
+        <ImageButton
+            android:id="@+id/imageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="45dp"
+            android:contentDescription="@string/Lobby"
+            android:focusable="true"
+            android:minWidth="48dp"
+            android:minHeight="48dp"
+            android:onClick="@{(v) -> frag.gotoLobby(v)}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnStatistics"
+            app:srcCompat="@drawable/ic_baseline_connect_without_contact_24"
+            app:tint="@color/primaryDarkColor" />
+
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline2"
             android:layout_width="wrap_content"
@@ -208,6 +224,16 @@
             app:layout_constraintEnd_toEndOf="@+id/btnCalendar"
             app:layout_constraintStart_toStartOf="@+id/btnCalendar"
             app:layout_constraintTop_toBottomOf="@+id/btnCalendar" />
+
+        <TextView
+            android:id="@+id/textView63"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Lobby"
+            android:textColor="@color/secondaryTextColor"
+            app:layout_constraintEnd_toEndOf="@+id/imageButton"
+            app:layout_constraintStart_toStartOf="@+id/imageButton"
+            app:layout_constraintTop_toBottomOf="@+id/imageButton" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

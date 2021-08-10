@@ -63,4 +63,8 @@ public class StartScreenFragment extends Fragment {
     public void gotoCalendar(View view) {
         Navigation.findNavController(view).navigate(R.id.action_startScreen_to_calendarFragment);
     }
+
+    public void gotoLobby(View view) {
+        Navigation.findNavController(view).navigate(R.id.action_startScreen_to_lobbyFragment);
+    }
 }

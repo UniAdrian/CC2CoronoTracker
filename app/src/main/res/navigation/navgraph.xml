@@ -87,6 +87,13 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_startScreen_to_lobbyFragment"
+            app:destination="@id/lobbyFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/showQR"
@@ -198,4 +205,9 @@
         android:name="de.uni.cc2coronotracker.ui.views.StatisticsFragment"
         android:label="@string/statistics"
         tools:layout="@layout/statistics_fragment" />
+    <fragment
+        android:id="@+id/lobbyFragment"
+        android:name="de.uni.cc2coronotracker.ui.views.LobbyFragment"
+        android:label="@string/Lobby"
+        tools:layout="@layout/lobby_fragment" />
 </navigation>

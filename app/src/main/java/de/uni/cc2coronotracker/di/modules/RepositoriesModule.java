@@ -20,6 +20,7 @@ import dagger.hilt.components.SingletonComponent;
 import de.uni.cc2coronotracker.data.api.RKIApiInterface;
 import de.uni.cc2coronotracker.data.db.AppDatabase;
 import de.uni.cc2coronotracker.data.repositories.AppRepository;
+import de.uni.cc2coronotracker.data.repositories.CertificateRepoistory;
 import de.uni.cc2coronotracker.data.repositories.ContactRepository;
 import de.uni.cc2coronotracker.data.repositories.ExposureRepository;
 import de.uni.cc2coronotracker.data.repositories.StatisticsRepository;
@@ -50,6 +51,12 @@ public class RepositoriesModule {
     @Singleton
     public ExposureRepository bindExposureRepository(@ApplicationContext Context ctx, Executor executor, AppDatabase db) {
         return new ExposureRepository(ctx, executor, db.getExposureDao());
+    }
+
+    @Provides
+    @Singleton
+    public CertificateRepoistory bindCertificateRepository(@ApplicationContext Context ctx, Executor executor, AppDatabase db) {
+        return new CertificateRepoistory(ctx, executor, db.getCertificateDao());
     }
 
     @Provides
