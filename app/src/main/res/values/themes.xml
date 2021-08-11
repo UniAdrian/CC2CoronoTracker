@@ -35,7 +35,7 @@
     </style>
 
     <style name="PositiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
-        <item name="android:textColor">@color/positiveButtonColor</item>
+        <item name="android:textColor">@color/dialog_positive_button_color</item>
         <item name="rippleColor">@color/positiveButtonRippleColor</item>
     </style>
 

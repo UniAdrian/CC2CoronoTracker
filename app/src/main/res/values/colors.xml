@@ -10,6 +10,7 @@
     <color name="secondaryTextColor">#000000</color>
 
     <color name="positiveButtonColor">@color/secondaryColor</color>
+    <color name="positiveButtonDisabledColor">#22000000</color>
     <color name="positiveButtonRippleColor">#86c09a</color>
 
     <color name="negativeButtonColor">@color/secondaryTextColor</color>
