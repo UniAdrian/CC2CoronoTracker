@@ -1,34 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/design_default_color_primary_dark"
     android:orientation="vertical"
     tools:context=".ui.views.CalendarFragment">
 
     <TextView
         android:id="@+id/calendartext"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="120dp"
-        android:layout_marginTop="48dp"
-        android:text="Calendar"
-        android:textColor="#fff"
+        android:layout_height="wrap_content"
+        android:text="Calender"
+        android:textAlignment="center"
+        android:textColor="#111"
         android:textSize="23sp" />
 
-    <LinearLayout
-        android:background="#FFF"
-        android:layout_width="300dp"
+    <CalendarView
+        android:id="@+id/calendarView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/exposureListTitle"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="55dp"
-        android:layout_marginTop="88dp">
+        android:layout_marginTop="1sp"
+        android:textAlignment="center" />
 
-        <CalendarView
-            android:id="@+id/calendarView"
-            android:layout_width="wrap_content"
-            android:layout_height="320dp">
-        </CalendarView>
-    </LinearLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/exposureListRV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/exposureView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>
+
+</LinearLayout>
