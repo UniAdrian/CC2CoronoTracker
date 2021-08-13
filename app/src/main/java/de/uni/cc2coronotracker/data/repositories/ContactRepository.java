@@ -74,6 +74,9 @@ public class ContactRepository{
     private Contact getContact(long id) {
         return contactDao.getByIdSync(id);
     }
+    public Contact getContactSync(long id) {
+        return getContact(id);
+    }
     public void getContact(long id, RepositoryCallback<Contact> callback) {
         executor.execute(() -> {
             try {
@@ -258,4 +261,5 @@ public class ContactRepository{
             }
         });
     }
+
 }
