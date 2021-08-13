@@ -144,4 +144,12 @@
     <string name="no_certificates_yet">You did not store any certificates on this device yet.</string>
     <string name="cert_holder">Certificate holder</string>
     <string name="cert_issued_at">Issued at</string>
+    <string name="lobby_icon">Lobby Icon</string>
+    <string name="lobby_welcome">Many people around?</string>
+    <string name="lobby_decsription">By joining the lobby you automatically check in when other people around you are detected.\nDon\'t worry, we do not share your personal information. Other people only see your personal UUID!</string>
+    <string name="lobby_checked_in">Checked in</string>
+    <string name="lobby_checked_out">Swipe to check in</string>
+    <string name="lobby_no_contacts">You did not encounter anyone yet.</string>
+    <string name="lobby_exposure_start">Contact started</string>
+    <string name="lobby_exposure_end">Contact ended</string>
 </resources>

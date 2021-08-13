@@ -61,9 +61,12 @@ dependencies {
     // Play services for maps, etc.
     implementation 'com.google.android.gms:play-services-location:18.0.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.1'
+    implementation 'com.google.android.gms:play-services-nearby:18.0.0'
 
     // Top-sheet implementation, we really don't need to reimplement this. :P
     implementation 'com.github.techisfun:androidtopsheet:0.2'
+    // Swipeable button for lobby
+    implementation 'com.github.stfalcon:swipeable-button:0.1.0'
 
     // Generating QR Codes
     implementation 'androidmads.library.qrgenearator:QRGenearator:1.0.4'
@@ -92,8 +95,6 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
-    // implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
-    // implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
     annotationProcessor 'com.google.dagger:hilt-compiler:2.38'
 
     // Room persistence library
