@@ -61,7 +61,7 @@ public class ExposureAdapter extends RecyclerView.Adapter<ExposureAdapter.ViewHo
     }
 
     private String getExposureDesc(int position) {
-        Date date = exposures.get(position).date;
+        Date date = exposures.get(position).startDate;
         return context.getResources().getString(R.string.exposure_description, DateFormat.getDateTimeInstance().format(date));
     }
 

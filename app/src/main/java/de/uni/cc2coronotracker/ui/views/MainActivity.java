@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,11 +30,12 @@ import de.uni.cc2coronotracker.helper.ContextMediator;
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
 
+    public static final String TAG = "CC2MainActivity";
+
     /**
      * Identifies a single location availability request. Mainly used by the LocationProvider.
      */
     public static final int LOCATION_AVAILABILITY_REQUEST = 1337;
-
 
     @Inject
     public ContextMediator ctxMediator;
@@ -61,14 +63,11 @@ public class MainActivity extends AppCompatActivity {
      */
     private void setupThemeMode() {
         int currentNightMode = AppCompatDelegate.getDefaultNightMode();
-        switch (currentNightMode) {
-            case Configuration.UI_MODE_NIGHT_NO:
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                break;
-            case Configuration.UI_MODE_NIGHT_YES:// Night mode is active, we're at night!
-            case Configuration.UI_MODE_NIGHT_UNDEFINED:// We don't know what mode we're in, assume notnight
-                // Use Day/Night mode according to the system settings.
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        // Default to night.
+        if (currentNightMode == Configuration.UI_MODE_NIGHT_NO) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         }
     }
 
@@ -127,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
     @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -174,5 +174,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == LOCATION_AVAILABILITY_REQUEST) {
             locationProvider.onSettingsResult(resultCode, data);
         }
+
+        Log.d(TAG, "Code: " + requestCode + ". Result: " + resultCode);
     }
 }

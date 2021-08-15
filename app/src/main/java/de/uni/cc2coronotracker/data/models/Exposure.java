@@ -33,9 +33,12 @@ public class Exposure {
     @NonNull
     public long contactId;
 
-    @ColumnInfo(name = "date")
+    @ColumnInfo(name = "start_date")
     @NonNull
-    public Date date;
+    public Date startDate;
+
+    @ColumnInfo(name = "end_date")
+    public Date endDate;
 
     @ColumnInfo(name = "location", defaultValue = "NULL")
     public LatLng location;

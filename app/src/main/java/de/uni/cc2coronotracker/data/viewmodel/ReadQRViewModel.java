@@ -1,10 +1,12 @@
 package de.uni.cc2coronotracker.data.viewmodel;
 
 
+import android.content.Intent;
 import android.database.sqlite.SQLiteConstraintException;
 import android.location.Location;
 import android.util.Log;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -31,9 +33,11 @@ import de.uni.cc2coronotracker.data.repositories.async.Result;
 import de.uni.cc2coronotracker.data.repositories.providers.LocationProvider;
 import de.uni.cc2coronotracker.data.repositories.providers.ReadOnlySettingsProvider;
 import de.uni.cc2coronotracker.data.viewmodel.shared.ContactSelectionDialogViewModel;
+import de.uni.cc2coronotracker.helper.CallWithContextRequest;
 import de.uni.cc2coronotracker.helper.ContextMediator;
 import de.uni.cc2coronotracker.helper.Event;
 import de.uni.cc2coronotracker.helper.RequestFactory;
+import de.uni.cc2coronotracker.ui.views.OngoingExposureActivity;
 import de.uni.cc2coronotracker.ui.views.ReadQRFragmentDirections;
 
 @HiltViewModel
@@ -150,11 +154,15 @@ public class ReadQRViewModel extends ViewModel {
             isLoading.postValue(false);
 
             if (result instanceof Result.Success) {
-                // Navigate to the contact that was changed.
-                ReadQRFragmentDirections.ActionReadQRToContactDetails actionReadQRToContacts = ReadQRFragmentDirections.actionReadQRToContactDetails();
-                actionReadQRToContacts.setContactId(toAdd.contactId);
 
-                ctxMediator.request(RequestFactory.createNavigationRequest(actionReadQRToContacts));
+                // Start the ongoing exposure Activity. As usual simply request it.
+                ctxMediator.request(new CallWithContextRequest(c -> {
+                    AppCompatActivity activity = (AppCompatActivity)c;
+                    Intent intent = new Intent(activity, OngoingExposureActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("exposure_id", ((Result.Success<Long>) result).data);
+                    activity.startActivity(intent);
+                }));
             } else {
                 Log.e(TAG, "Failed to insert exposure for contact.", ((Result.Error)result).exception);
                 ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.insert_exposure_failed, Snackbar.LENGTH_LONG, R.string.retry, v -> addExposure(toAdd)));
@@ -169,7 +177,7 @@ public class ReadQRViewModel extends ViewModel {
         Exposure toAdd = new Exposure();
         toAdd.contactId = contact.id;
         toAdd.location = null;
-        toAdd.date = new java.sql.Date(new Date().getTime());
+        toAdd.startDate = new java.sql.Date(new Date().getTime());
 
         if (!allowTracking || !settingsProvider.getTrackExposures()) {
             addExposure(toAdd);

@@ -40,12 +40,14 @@ public class Converters {
     }
 
     @TypeConverter
-    public static long timestampFromDate(Date date) {
+    public static Long timestampFromDate(Date date) {
+        if (date == null) return null;
         return date.getTime();
     }
 
     @TypeConverter
-    public static Date dateFromTimestamp(long timestamp) {
+    public static Date dateFromTimestamp(Long timestamp) {
+        if (timestamp == null) return null;
         return new Date(timestamp);
     }
 

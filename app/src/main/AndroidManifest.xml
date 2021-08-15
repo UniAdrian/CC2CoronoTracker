@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.uni.cc2coronotracker">
 
-
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -25,7 +25,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CC2CoronoTracker">
-
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -37,12 +36,15 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_apis_key" />
-
         <meta-data
             android:name="com.google.android.nearby.messages.API_KEY"
             android:value="@string/google_apis_key" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".ui.views.MainActivity">
+
+        <activity android:name=".ui.views.MainActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -50,9 +52,22 @@
             </intent-filter>
         </activity>
 
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
+        <activity
+            android:name=".ui.views.OngoingExposureActivity"
+            android:exported="true"
+            android:label="@string/ongoing_exposure_svc_title_long"
+            android:parentActivityName=".ui.views.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.views.MainActivity" />
+        </activity>
+
+        <service
+            android:name=".services.OngoingExposureService"
+            android:enabled="true"
+            android:exported="false" />
+
+
     </application>
 
 </manifest>

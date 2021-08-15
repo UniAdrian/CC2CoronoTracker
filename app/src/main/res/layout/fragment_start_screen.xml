@@ -7,258 +7,265 @@
             name="frag"
             type="de.uni.cc2coronotracker.ui.views.StartScreenFragment" />
     </data>
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/frameLayout"
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="top|center_vertical"
-        android:orientation="vertical"
-        tools:context=".ui.views.StartScreenFragment">
+        android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="0dp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/frameLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:contentDescription="@string/app_icon_desc"
-            android:src="@mipmap/ic_launcher_foreground"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/secondaryDarkColor"
-            tools:ignore="ImageContrastCheck" />
-
-        <TextView
-            android:id="@+id/textView56"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/app_name"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-            android:textColor="@color/secondaryTextColor"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView2" />
-
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/btnContacts"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
-            android:clickable="true"
-            android:contentDescription="@string/LinkContacts"
-            android:focusable="true"
-            android:minWidth="56dp"
-            android:minHeight="56dp"
-            android:onClick="@{(v) -> frag.gotoContacts(v)}"
-            android:src="@drawable/ic_baseline_import_contacts_24"
-            app:layout_constraintEnd_toStartOf="@+id/guideline2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView56"
-            app:tint="@color/primaryDarkColor" />
-
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/btnMaps"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:contentDescription="@string/LinkMaps"
-            android:focusable="true"
-            android:minWidth="56dp"
-            android:minHeight="56dp"
-            android:onClick="@{(v) -> frag.gotoMaps(v)}"
-            android:src="@android:drawable/ic_dialog_map"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
-            app:layout_constraintTop_toTopOf="@+id/btnContacts"
-            app:srcCompat="@drawable/ic_baseline_map_24"
-            app:tint="@color/primaryDarkColor" />
-
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/btnStatistics"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="45dp"
-            android:clickable="true"
-            android:contentDescription="@string/statistics"
-            android:focusable="true"
-            android:minWidth="56dp"
-            android:minHeight="56dp"
-            android:onClick="@{(v) -> frag.gotoStatistics(v)}"
-            android:src="@drawable/ic_statistics_24"
-            app:layout_constraintEnd_toStartOf="@+id/guideline2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnShareQR"
-            app:tint="@color/primaryDarkColor" />
-
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/btnReadQR"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:contentDescription="@string/LinkReadQR"
-            android:focusable="true"
-            android:minWidth="56dp"
-            android:minHeight="56dp"
-            android:onClick="@{(v) -> frag.gotoReadQR(v)}"
-            android:src="@drawable/ic_code_scanner_auto_focus_on"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
-            app:layout_constraintTop_toTopOf="@+id/btnShareQR"
-            app:tint="@color/primaryDarkColor" />
-
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/btnShareQR"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="45dp"
-            android:clickable="true"
-            android:contentDescription="@string/LinkCreateQR"
-            android:focusable="true"
-            android:minWidth="56dp"
-            android:minHeight="56dp"
-            android:onClick="@{(v) -> frag.gotoCreateQR(v)}"
-            android:src="@drawable/ic_baseline_qr_code_2_24"
-            app:layout_constraintEnd_toStartOf="@+id/guideline2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnContacts"
-            app:tint="@color/primaryDarkColor" />
-
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/btnCalendar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:contentDescription="@string/LinkCalendar"
-            android:focusable="true"
-            android:minWidth="56dp"
-            android:minHeight="56dp"
-            android:onClick="@{(v) -> frag.gotoCalendar(v)}"
-            android:src="@drawable/ic_baseline_calendar_today_24"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
-            app:layout_constraintTop_toTopOf="@+id/btnStatistics"
-            app:tint="@color/primaryDarkColor" />
-
-        <ImageButton
-            android:id="@+id/imageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="45dp"
-            android:contentDescription="@string/Lobby"
-            android:focusable="true"
-            android:minWidth="56dp"
-            android:minHeight="56dp"
-            android:onClick="@{(v) -> frag.gotoLobby(v)}"
-            app:layout_constraintEnd_toStartOf="@+id/guideline2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnStatistics"
-            app:srcCompat="@drawable/ic_baseline_connect_without_contact_24"
-            app:tint="@color/primaryDarkColor" />
-
-        <ImageButton
-            android:id="@+id/imageButton2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/certificates"
-            android:focusable="true"
-            android:minWidth="56dp"
-            android:minHeight="56dp"
-            android:onClick="@{(v) -> frag.gotoCertificates(v)}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
-            app:layout_constraintTop_toTopOf="@+id/imageButton"
-            app:srcCompat="@drawable/ic_baseline_screenshot_24"
-            app:tint="@color/primaryDarkColor" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:gravity="top|center_vertical"
             android:orientation="vertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintGuide_percent="0.5"
-            app:layout_constraintStart_toStartOf="parent" />
+            tools:context=".ui.views.StartScreenFragment">
 
-        <TextView
-            android:id="@+id/textView57"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/LinkContacts"
-            android:textColor="@color/secondaryTextColor"
-            app:layout_constraintEnd_toEndOf="@+id/btnContacts"
-            app:layout_constraintStart_toStartOf="@+id/btnContacts"
-            app:layout_constraintTop_toBottomOf="@+id/btnContacts" />
 
-        <TextView
-            android:id="@+id/textView58"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/LinkMaps"
-            android:textColor="@color/secondaryTextColor"
-            app:layout_constraintEnd_toEndOf="@+id/btnMaps"
-            app:layout_constraintStart_toStartOf="@+id/btnMaps"
-            app:layout_constraintTop_toBottomOf="@+id/btnMaps" />
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:contentDescription="@string/app_icon_desc"
+                android:src="@mipmap/ic_launcher_foreground"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/secondaryDarkColor"
+                tools:ignore="ImageContrastCheck" />
 
-        <TextView
-            android:id="@+id/textView59"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/LinkCreateQR"
-            android:textColor="@color/secondaryTextColor"
-            app:layout_constraintEnd_toEndOf="@+id/btnShareQR"
-            app:layout_constraintStart_toStartOf="@+id/btnShareQR"
-            app:layout_constraintTop_toBottomOf="@+id/btnShareQR" />
+            <TextView
+                android:id="@+id/textView56"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                android:textColor="@color/secondaryTextColor"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
-        <TextView
-            android:id="@+id/textView60"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/LinkReadQR"
-            android:textColor="@color/secondaryTextColor"
-            app:layout_constraintEnd_toEndOf="@+id/btnReadQR"
-            app:layout_constraintStart_toStartOf="@+id/btnReadQR"
-            app:layout_constraintTop_toBottomOf="@+id/btnReadQR" />
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/btnContacts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:clickable="true"
+                android:contentDescription="@string/LinkContacts"
+                android:focusable="true"
+                android:minWidth="56dp"
+                android:minHeight="56dp"
+                android:onClick="@{(v) -> frag.gotoContacts(v)}"
+                android:src="@drawable/ic_baseline_import_contacts_24"
+                app:layout_constraintEnd_toStartOf="@+id/guideline2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView56"
+                app:tint="@color/primaryDarkColor" />
 
-        <TextView
-            android:id="@+id/textView61"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/statistics"
-            android:textColor="@color/secondaryTextColor"
-            app:layout_constraintEnd_toEndOf="@+id/btnStatistics"
-            app:layout_constraintStart_toStartOf="@+id/btnStatistics"
-            app:layout_constraintTop_toBottomOf="@+id/btnStatistics" />
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/btnMaps"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:contentDescription="@string/LinkMaps"
+                android:focusable="true"
+                android:minWidth="56dp"
+                android:minHeight="56dp"
+                android:onClick="@{(v) -> frag.gotoMaps(v)}"
+                android:src="@android:drawable/ic_dialog_map"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline2"
+                app:layout_constraintTop_toTopOf="@+id/btnContacts"
+                app:srcCompat="@drawable/ic_baseline_map_24"
+                app:tint="@color/primaryDarkColor" />
 
-        <TextView
-            android:id="@+id/textView62"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/LinkCalendar"
-            android:textColor="@color/secondaryTextColor"
-            app:layout_constraintEnd_toEndOf="@+id/btnCalendar"
-            app:layout_constraintStart_toStartOf="@+id/btnCalendar"
-            app:layout_constraintTop_toBottomOf="@+id/btnCalendar" />
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/btnStatistics"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="45dp"
+                android:clickable="true"
+                android:contentDescription="@string/statistics"
+                android:focusable="true"
+                android:minWidth="56dp"
+                android:minHeight="56dp"
+                android:onClick="@{(v) -> frag.gotoStatistics(v)}"
+                android:src="@drawable/ic_statistics_24"
+                app:layout_constraintEnd_toStartOf="@+id/guideline2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btnShareQR"
+                app:tint="@color/primaryDarkColor" />
 
-        <TextView
-            android:id="@+id/textView63"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/Lobby"
-            android:textColor="@color/secondaryTextColor"
-            app:layout_constraintEnd_toEndOf="@+id/imageButton"
-            app:layout_constraintStart_toStartOf="@+id/imageButton"
-            app:layout_constraintTop_toBottomOf="@+id/imageButton" />
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/btnReadQR"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:contentDescription="@string/LinkReadQR"
+                android:focusable="true"
+                android:minWidth="56dp"
+                android:minHeight="56dp"
+                android:onClick="@{(v) -> frag.gotoReadQR(v)}"
+                android:src="@drawable/ic_code_scanner_auto_focus_on"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline2"
+                app:layout_constraintTop_toTopOf="@+id/btnShareQR"
+                app:tint="@color/primaryDarkColor" />
 
-        <TextView
-            android:id="@+id/textView64"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/certificates"
-            android:textColor="@color/secondaryTextColor"
-            app:layout_constraintEnd_toEndOf="@+id/imageButton2"
-            app:layout_constraintStart_toStartOf="@+id/imageButton2"
-            app:layout_constraintTop_toBottomOf="@+id/imageButton2" />
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/btnShareQR"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="45dp"
+                android:clickable="true"
+                android:contentDescription="@string/LinkCreateQR"
+                android:focusable="true"
+                android:minWidth="56dp"
+                android:minHeight="56dp"
+                android:onClick="@{(v) -> frag.gotoCreateQR(v)}"
+                android:src="@drawable/ic_baseline_qr_code_2_24"
+                app:layout_constraintEnd_toStartOf="@+id/guideline2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btnContacts"
+                app:tint="@color/primaryDarkColor" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/btnCalendar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:contentDescription="@string/LinkCalendar"
+                android:focusable="true"
+                android:minWidth="56dp"
+                android:minHeight="56dp"
+                android:onClick="@{(v) -> frag.gotoCalendar(v)}"
+                android:src="@drawable/ic_baseline_calendar_today_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline2"
+                app:layout_constraintTop_toTopOf="@+id/btnStatistics"
+                app:tint="@color/primaryDarkColor" />
+
+            <ImageButton
+                android:id="@+id/imageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="45dp"
+                android:contentDescription="@string/Lobby"
+                android:focusable="true"
+                android:minWidth="56dp"
+                android:minHeight="56dp"
+                android:onClick="@{(v) -> frag.gotoLobby(v)}"
+                app:layout_constraintEnd_toStartOf="@+id/guideline2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btnStatistics"
+                app:srcCompat="@drawable/ic_baseline_connect_without_contact_24"
+                app:tint="@color/primaryDarkColor" />
+
+            <ImageButton
+                android:id="@+id/imageButton2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/certificates"
+                android:focusable="true"
+                android:minWidth="56dp"
+                android:minHeight="56dp"
+                android:onClick="@{(v) -> frag.gotoCertificates(v)}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline2"
+                app:layout_constraintTop_toTopOf="@+id/imageButton"
+                app:srcCompat="@drawable/ic_baseline_screenshot_24"
+                app:tint="@color/primaryDarkColor" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintGuide_percent="0.5"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/textView57"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/LinkContacts"
+                android:textColor="@color/secondaryTextColor"
+                app:layout_constraintEnd_toEndOf="@+id/btnContacts"
+                app:layout_constraintStart_toStartOf="@+id/btnContacts"
+                app:layout_constraintTop_toBottomOf="@+id/btnContacts" />
+
+            <TextView
+                android:id="@+id/textView58"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/LinkMaps"
+                android:textColor="@color/secondaryTextColor"
+                app:layout_constraintEnd_toEndOf="@+id/btnMaps"
+                app:layout_constraintStart_toStartOf="@+id/btnMaps"
+                app:layout_constraintTop_toBottomOf="@+id/btnMaps" />
+
+            <TextView
+                android:id="@+id/textView59"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/LinkCreateQR"
+                android:textColor="@color/secondaryTextColor"
+                app:layout_constraintEnd_toEndOf="@+id/btnShareQR"
+                app:layout_constraintStart_toStartOf="@+id/btnShareQR"
+                app:layout_constraintTop_toBottomOf="@+id/btnShareQR" />
+
+            <TextView
+                android:id="@+id/textView60"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/LinkReadQR"
+                android:textColor="@color/secondaryTextColor"
+                app:layout_constraintEnd_toEndOf="@+id/btnReadQR"
+                app:layout_constraintStart_toStartOf="@+id/btnReadQR"
+                app:layout_constraintTop_toBottomOf="@+id/btnReadQR" />
+
+            <TextView
+                android:id="@+id/textView61"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/statistics"
+                android:textColor="@color/secondaryTextColor"
+                app:layout_constraintEnd_toEndOf="@+id/btnStatistics"
+                app:layout_constraintStart_toStartOf="@+id/btnStatistics"
+                app:layout_constraintTop_toBottomOf="@+id/btnStatistics" />
+
+            <TextView
+                android:id="@+id/textView62"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/LinkCalendar"
+                android:textColor="@color/secondaryTextColor"
+                app:layout_constraintEnd_toEndOf="@+id/btnCalendar"
+                app:layout_constraintStart_toStartOf="@+id/btnCalendar"
+                app:layout_constraintTop_toBottomOf="@+id/btnCalendar" />
+
+            <TextView
+                android:id="@+id/textView63"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Lobby"
+                android:textColor="@color/secondaryTextColor"
+                app:layout_constraintEnd_toEndOf="@+id/imageButton"
+                app:layout_constraintStart_toStartOf="@+id/imageButton"
+                app:layout_constraintTop_toBottomOf="@+id/imageButton" />
+
+            <TextView
+                android:id="@+id/textView64"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/certificates"
+                android:textColor="@color/secondaryTextColor"
+                app:layout_constraintEnd_toEndOf="@+id/imageButton2"
+                app:layout_constraintStart_toStartOf="@+id/imageButton2"
+                app:layout_constraintTop_toBottomOf="@+id/imageButton2" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 </layout>

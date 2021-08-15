@@ -152,4 +152,24 @@
     <string name="lobby_no_contacts">You did not encounter anyone yet.</string>
     <string name="lobby_exposure_start">Contact started</string>
     <string name="lobby_exposure_end">Contact ended</string>
+    <string name="ongoing_exposure_title">You are currently engaged with %s</string>
+    <string name="exposure_fetch_failed">Failed to fetch the corresponding exposure.</string>
+    <string name="fetch_contact_failed">Failed to fetch corresponding contact data.</string>
+    <string name="OngoingExposure">Ongoing exposure</string>
+    <string name="update_exposure_failed">Failed to update exposure.</string>
+    <string name="exposure_update_success">Your exposure was recorded successfuly.</string>
+    <string name="ongoing_exposure_svc_desc_short">Click to check out.</string>
+    <string name="ongoing_exposure_svc_desc_long">You are currently engaged with another person. This engagement started at %s.\nTo checkout simply click this notification.</string>
+    <string name="ongoing_exposure_svc_title_short">Currently checked-in</string>
+    <string name="ongoing_exposure_svc_title_long">Currently checked-in</string>
+    <string name="exposure_update_already_done">This exposure is already finalized.</string>
+    <string name="title_activity_ongoing_exposure">OngoingExposureActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 </resources>

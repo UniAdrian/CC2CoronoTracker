@@ -85,4 +85,26 @@ public class ExposureRepository {
     }
 
 
+    public void getExposure(long exposureId, RepositoryCallback<Exposure> callback) {
+        executor.execute(() -> {
+            try {
+                callback.onComplete(new Result.Success<>(exposureDao.getById(exposureId)));
+            } catch (Exception e) {
+                callback.onComplete(new Result.Error<>(e));
+            }
+        });
+    }
+
+    public void updateExposure(Exposure exposure, RepositoryCallback<Void> callback) {
+        executor.execute(() -> {
+            try {
+                if (exposure.id < 1)
+                    throw new IllegalArgumentException("Exposure must have valid ID.");
+                exposureDao.update(exposure);
+                callback.onComplete(new Result.Success<>(null));
+            } catch (Exception e) {
+                callback.onComplete(new Result.Error<>(e));
+            }
+        });
+    }
 }

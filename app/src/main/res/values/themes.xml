@@ -43,4 +43,13 @@
         <item name="android:textColor">@color/negativeButtonColor</item>
         <item name="rippleColor">@color/negativeButtonRippleColor</item>
     </style>
+
+    <style name="Theme.CC2CoronoTracker.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.CC2CoronoTracker.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.CC2CoronoTracker.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

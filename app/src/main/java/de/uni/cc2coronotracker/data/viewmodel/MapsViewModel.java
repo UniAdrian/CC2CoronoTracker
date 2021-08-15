@@ -201,7 +201,7 @@ public class MapsViewModel extends ViewModel {
                 MarkerOptions options = new MarkerOptions()
                         .draggable(false)
                         .position(exposure.location)
-                        .title(cwe.contact.displayName + " - " + exposure.date)
+                        .title(cwe.contact.displayName + " - " + exposure.startDate)
                         .icon(descriptor);
 
                 newOptions.add(options);

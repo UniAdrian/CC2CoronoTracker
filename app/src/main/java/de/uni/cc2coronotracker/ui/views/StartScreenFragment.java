@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
@@ -18,15 +20,12 @@ import de.uni.cc2coronotracker.databinding.FragmentStartScreenBinding;
  */
 public class StartScreenFragment extends Fragment {
 
+    private static final String TAG = "StartScreen";
+
     private FragmentStartScreenBinding binding;
 
     public StartScreenFragment() {
         // Required empty public constructor
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -38,6 +37,11 @@ public class StartScreenFragment extends Fragment {
         binding.setFrag(this);
 
         return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 
     public void gotoContacts(View view) {

@@ -12,7 +12,7 @@ import de.uni.cc2coronotracker.data.dao.StatisticsDao;
 import de.uni.cc2coronotracker.data.models.Contact;
 import de.uni.cc2coronotracker.data.models.Exposure;
 
-@Database(entities = {Contact.class, Exposure.class, CertEntity.class}, version = 4)
+@Database(entities = {Contact.class, Exposure.class, CertEntity.class}, version = 5)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
     public abstract ContactDao getContactDao();

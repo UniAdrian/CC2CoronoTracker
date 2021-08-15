@@ -1,8 +1,6 @@
 package de.uni.cc2coronotracker.data.adapters;
 
 import android.content.Context;
-import android.media.Image;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +16,6 @@ import java.util.List;
 import java.util.Locale;
 
 import de.uni.cc2coronotracker.R;
-import de.uni.cc2coronotracker.data.models.Exposure;
 import de.uni.cc2coronotracker.data.viewmodel.CalendarViewModel;
 
 public class ExposureListAdapter extends RecyclerView.Adapter<ExposureListAdapter.ExposureViewHolder> {
@@ -68,7 +65,7 @@ public class ExposureListAdapter extends RecyclerView.Adapter<ExposureListAdapte
     }
     private String computeInfo(CalendarViewModel.ExposureDisplayInfo exposureInfo) {
         return String.format("Time: %s, Location: %s",
-                computeTimeForm(exposureInfo.exposureData.date),
+                computeTimeForm(exposureInfo.exposureData.startDate),
                 exposureInfo.exposureData.location == null ? "Not available" : exposureInfo.exposureData.location.toString());
     }
     private String computeTimeForm(Date date) {
