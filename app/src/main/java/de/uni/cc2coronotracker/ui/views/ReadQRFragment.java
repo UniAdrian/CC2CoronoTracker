@@ -2,6 +2,8 @@ package de.uni.cc2coronotracker.ui.views;
 
 import android.Manifest;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -83,7 +85,8 @@ public class ReadQRFragment extends Fragment {
 
         codeScanner.setErrorCallback(error -> {
             Log.e("err", "Read QR Error: " + error.getMessage());
-            codeScanner.startPreview();
+            final Handler mainHandler = new Handler(Looper.getMainLooper());
+            mainHandler.post(() -> codeScanner.startPreview());
         });
 
         codeScanner.setDecodeCallback(result -> requireActivity().runOnUiThread(() -> {
