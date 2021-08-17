@@ -176,4 +176,6 @@
     <string name="exposure_duration_description">The exposure lasted %s.</string>
     <string name="exposure_duration_not_finished_description">The exposure has no end date yet.</string>
     <string name="exposure_duration_format_string">H\' hours \'m\' minutes \'s\' seconds\'</string>
+    <string name="start_exposure_manual">Check-in</string>
+    <string name="manual_checkin_failed">Check-in failed.</string>
 </resources>
