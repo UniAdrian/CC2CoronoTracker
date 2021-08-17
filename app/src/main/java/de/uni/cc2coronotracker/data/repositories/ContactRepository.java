@@ -25,7 +25,7 @@ import de.uni.cc2coronotracker.data.repositories.async.Result;
 
 public class ContactRepository{
 
-    private Context applicationContext;
+    private final Context applicationContext;
     private final Executor executor;
 
     private final ContactDao contactDao;

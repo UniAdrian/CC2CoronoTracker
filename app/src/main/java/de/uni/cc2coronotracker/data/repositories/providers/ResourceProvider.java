@@ -15,7 +15,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext;
  */
 public class ResourceProvider {
 
-    private Context context;
+    private final Context context;
 
     @Inject
     public ResourceProvider(@ApplicationContext Context context) {

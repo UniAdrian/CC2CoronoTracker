@@ -41,7 +41,7 @@ public class ContactViewModel extends ViewModel {
     private final ContactRepository contactRepository;
     private final ContextMediator ctxMediator;
 
-    private LiveData<List<ContactDao.ContactWithExposures>> allContactsWithExposures;
+    private final LiveData<List<ContactDao.ContactWithExposures>> allContactsWithExposures;
     private final MutableLiveData<Boolean> loading = new MutableLiveData<>();
     private final MutableLiveData<Event<Void>> requestContactPick = new MutableLiveData<>();
 
@@ -145,7 +145,7 @@ public class ContactViewModel extends ViewModel {
     public void addContact(Contact newContact) {
         Log.d(TAG, "Creating new contact: " + newContact);
 
-        contactRepository.insertContact(newContact, (RepositoryCallback<Long>) result -> {
+        contactRepository.insertContact(newContact, result -> {
             if (result instanceof Result.Success) {
                 Log.d(TAG, "Successfully entered new contact.");
 

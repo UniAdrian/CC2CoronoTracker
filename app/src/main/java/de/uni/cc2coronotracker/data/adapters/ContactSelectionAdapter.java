@@ -27,9 +27,9 @@ public class ContactSelectionAdapter extends RecyclerView.Adapter<ContactSelecti
         void onItemClick(Contact item);
     }
 
-    private List<Contact> contacts;
-    private List<Contact> selected;
-    private OnItemClickListener clickListener;
+    private final List<Contact> contacts;
+    private final List<Contact> selected;
+    private final OnItemClickListener clickListener;
 
     private Drawable defaultAvatar = null;
 

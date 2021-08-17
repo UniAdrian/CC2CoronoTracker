@@ -45,15 +45,15 @@ public class MapsViewModel extends ViewModel {
 
     private final String TAG = "MapsViewModel";
 
-    private MutableLiveData<LatLng> requestPosition = new MutableLiveData<>();
-    private MutableLiveData<List<MarkerOptions>> markers = new MutableLiveData<>();
+    private final MutableLiveData<LatLng> requestPosition = new MutableLiveData<>();
+    private final MutableLiveData<List<MarkerOptions>> markers = new MutableLiveData<>();
 
     public MutableLiveData<LatLng> ownLocation = new MutableLiveData<>(null);
-    private MutableLiveData<LocationInfo> locationInfos = new MutableLiveData<>(null);
+    private final MutableLiveData<LocationInfo> locationInfos = new MutableLiveData<>(null);
 
-    private MutableLiveData<List<Contact>> selectedContacts = new MutableLiveData<>();
+    private final MutableLiveData<List<Contact>> selectedContacts = new MutableLiveData<>();
 
-    private MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
 
     private final LocationProvider locationProvider;
     private final ContactRepository contactRepository;
@@ -104,7 +104,7 @@ public class MapsViewModel extends ViewModel {
         locationProvider.removeLocationListener(ownLocationListener);
     }
 
-    private LocationProvider.LocationListener ownLocationListener = new LocationProvider.LocationListener() {
+    private final LocationProvider.LocationListener ownLocationListener = new LocationProvider.LocationListener() {
         @Override
         public void onLocation(LocationResult location) {
             Location loc = location.getLastLocation();

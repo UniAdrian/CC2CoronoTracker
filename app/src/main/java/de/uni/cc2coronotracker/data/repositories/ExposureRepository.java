@@ -19,7 +19,7 @@ import de.uni.cc2coronotracker.data.repositories.async.Result;
 
 public class ExposureRepository {
 
-    private Context applicationContext;
+    private final Context applicationContext;
     private final Executor executor;
 
     private final ExposureDao exposureDao;

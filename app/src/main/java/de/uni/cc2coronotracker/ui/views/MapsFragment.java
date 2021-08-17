@@ -58,7 +58,7 @@ public class MapsFragment extends Fragment {
     private MarkerOptions defaultMarkerOptions;
     private Marker ownPosition;
 
-    private List<Marker> currentMarkers = new ArrayList<>();
+    private final List<Marker> currentMarkers = new ArrayList<>();
 
     private MapsViewModel mapsViewModel;
     private ContactSelectionDialogViewModel contactSelectionViewModel;
@@ -68,7 +68,7 @@ public class MapsFragment extends Fragment {
     @Inject
     public ContextMediator ctxMediator;
 
-    private OnMapReadyCallback callback = new OnMapReadyCallback() {
+    private final OnMapReadyCallback callback = new OnMapReadyCallback() {
 
         /**
          * Manipulates the map once available.

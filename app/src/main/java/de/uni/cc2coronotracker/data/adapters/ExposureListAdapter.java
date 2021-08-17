@@ -53,9 +53,9 @@ public class ExposureListAdapter extends RecyclerView.Adapter<ExposureListAdapte
         ImageView avatarView;
         public ExposureViewHolder(@NonNull View itemView) {
             super(itemView);
-            titleTextView = (TextView) itemView.findViewById(R.id.exposureListRVName);
-            infoTextView = (TextView) itemView.findViewById(R.id.exposureListRVInfo);
-            avatarView = (ImageView) itemView.findViewById(R.id.exposureListRVAvatar);
+            titleTextView = itemView.findViewById(R.id.exposureListRVName);
+            infoTextView = itemView.findViewById(R.id.exposureListRVInfo);
+            avatarView = itemView.findViewById(R.id.exposureListRVAvatar);
         }
     }
 

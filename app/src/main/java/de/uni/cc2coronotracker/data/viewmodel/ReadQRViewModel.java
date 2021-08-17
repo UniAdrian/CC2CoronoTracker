@@ -53,8 +53,8 @@ public class ReadQRViewModel extends ViewModel {
     private final ExposureRepository exposureRepository;
     private final CertificateRepository certificateRepository;
 
-    private MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
-    private MutableLiveData<String> isLoadingText = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
+    private final MutableLiveData<String> isLoadingText = new MutableLiveData<>();
 
     @Inject
     public ReadQRViewModel(ContextMediator ctxMediator, ContactRepository contactRepository,

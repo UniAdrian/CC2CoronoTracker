@@ -28,10 +28,10 @@ public class PreferencesViewModel extends ViewModel {
     private final ContextMediator contextMediator;
     private final AppRepository appRepository;
 
-    private MutableLiveData<Bitmap> qrCode = new MutableLiveData<>();
-    private LiveData<UUID> uuidLD;
+    private final MutableLiveData<Bitmap> qrCode = new MutableLiveData<>();
+    private final LiveData<UUID> uuidLD;
 
-    private MutableLiveData<Boolean> loading = new MutableLiveData<>(false);
+    private final MutableLiveData<Boolean> loading = new MutableLiveData<>(false);
 
     @Inject
     public PreferencesViewModel(ContextMediator ctxMediator, AppRepository appRepository) {

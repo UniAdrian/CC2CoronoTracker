@@ -171,6 +171,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
             }
 
             @SuppressLint({"NotifyDataSetChanged", "unchecked"})
+            @SuppressWarnings("unchecked")
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
                 filteredContacts = (ArrayList<ContactDao.ContactWithExposures>) filterResults.values;

@@ -52,8 +52,8 @@ public class Field implements Serializable, Parcelable {
         this.type = ((String) in.readValue((String.class.getClassLoader())));
         this.alias = ((String) in.readValue((String.class.getClassLoader())));
         this.sqlType = ((String) in.readValue((String.class.getClassLoader())));
-        this.domain = ((Object) in.readValue((Object.class.getClassLoader())));
-        this.defaultValue = ((Object) in.readValue((Object.class.getClassLoader())));
+        this.domain = in.readValue((Object.class.getClassLoader()));
+        this.defaultValue = in.readValue((Object.class.getClassLoader()));
         this.length = ((Integer) in.readValue((Integer.class.getClassLoader())));
     }
 

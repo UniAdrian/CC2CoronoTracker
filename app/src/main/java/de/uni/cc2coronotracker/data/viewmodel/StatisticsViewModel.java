@@ -44,10 +44,10 @@ public class StatisticsViewModel extends ViewModel {
     private final StatisticsRepository statisticsRepository;
     private final ResourceProvider resourceProvider;
 
-    private MutableLiveData<EXPOSURE_RANGE> exposureRange = new MutableLiveData<>();
-    private MutableLiveData<ExposureRangeDataSet> exposuresByRange = new MutableLiveData<>();
-    private MutableLiveData<PieData> exposuresByContact = new MutableLiveData<>();
-    private MutableLiveData<StatisticsDao.GeneralExposureInfo> generalExposureInfo = new MutableLiveData<>();
+    private final MutableLiveData<EXPOSURE_RANGE> exposureRange = new MutableLiveData<>();
+    private final MutableLiveData<ExposureRangeDataSet> exposuresByRange = new MutableLiveData<>();
+    private final MutableLiveData<PieData> exposuresByContact = new MutableLiveData<>();
+    private final MutableLiveData<StatisticsDao.GeneralExposureInfo> generalExposureInfo = new MutableLiveData<>();
 
     @Inject
     public StatisticsViewModel(StatisticsRepository statisticsRepository, ResourceProvider resourceProvider) {

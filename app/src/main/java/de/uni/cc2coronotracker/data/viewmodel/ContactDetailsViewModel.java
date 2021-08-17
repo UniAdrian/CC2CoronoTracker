@@ -46,10 +46,10 @@ public class ContactDetailsViewModel extends ViewModel {
     private final LocationProvider locationprovider;
     private final ReadOnlySettingsProvider settingsProvider;
 
-    private MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
 
-    private MutableLiveData<Contact> contact = new MutableLiveData<>();
-    private MutableLiveData<List<Exposure>> exposures = new MutableLiveData<>();
+    private final MutableLiveData<Contact> contact = new MutableLiveData<>();
+    private final MutableLiveData<List<Exposure>> exposures = new MutableLiveData<>();
 
 
     @Inject

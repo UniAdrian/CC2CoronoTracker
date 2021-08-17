@@ -76,8 +76,8 @@ public class RequestFactory {
                     .setTitle(titleResId)
                     .setMessage(message)
                     .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setPositiveButton(android.R.string.yes, yesAction)
-                    .setNegativeButton(android.R.string.no, noAction).show();
+                    .setPositiveButton(android.R.string.ok, yesAction)
+                    .setNegativeButton(android.R.string.cancel, noAction).show();
         };
 
         return new CallWithContextRequest(call);

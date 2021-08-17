@@ -25,7 +25,7 @@ public class CertificateAdapter extends RecyclerView.Adapter<CertificateAdapter.
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements LifecycleOwner {
         private final CertRvItemBinding binding;
-        private LifecycleRegistry lifecycleRegistry = new LifecycleRegistry(this);
+        private final LifecycleRegistry lifecycleRegistry = new LifecycleRegistry(this);
 
         public ViewHolder(CertRvItemBinding binding) {
             super(binding.getRoot());
