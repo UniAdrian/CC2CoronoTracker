@@ -24,7 +24,7 @@
             android:padding="2dp"
             android:paddingStart="4dp"
             android:paddingEnd="4dp"
-            app:layout_constraintBottom_toTopOf="@+id/btnDeleteContact"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -83,29 +83,28 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/contactDetailsExposures"
                 android:layout_width="match_parent"
-                android:layout_height="419dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
                 android:visibility="@{detailsVM.exposures.size > 0 ? View.VISIBLE : View.GONE}"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-        </LinearLayout>
+            <Button
+                android:id="@+id/btnDeleteContact"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:backgroundTint="@color/common_google_signin_btn_text_light_default"
+                android:minHeight="48dp"
+                android:onClick="@{() -> detailsVM.deleteContact()}"
+                android:text="@string/delete_contact"
+                android:textColor="@color/design_default_color_error"
+                android:textSize="20sp"
+                app:icon="@drawable/ic_baseline_delete_forever_24"
+                app:iconTint="@color/design_default_color_error" />
 
-        <Button
-            android:id="@+id/btnDeleteContact"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
-            android:backgroundTint="@color/common_google_signin_btn_text_light_default"
-            android:onClick="@{() -> detailsVM.deleteContact()}"
-            android:text="@string/delete_contact"
-            android:textColor="@color/design_default_color_error"
-            android:textSize="18sp"
-            app:icon="@drawable/ic_baseline_delete_forever_24"
-            app:iconTint="@color/design_default_color_error"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+        </LinearLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/detailsLoadingContainer"

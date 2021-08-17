@@ -60,7 +60,7 @@
     <string name="on_boarding_topic_description2">Description2</string>
     <string name="on_boarding_topic_description3">Description3</string>
     <string name="insert_exposure_failed">Whoops! We failed to insert a new exposure.</string>
-    <string name="exposure_description">You met on  the %s</string>
+    <string name="exposure_description">%s</string>
     <string name="action_search">Search</string>
     <string name="display_name">Displayname</string>
     <string name="select_from_gallery">Select from gallery</string>
@@ -172,4 +172,8 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="is_location_enabled">Location Enabled?</string>
+    <string name="exposure_duration_description">The exposure lasted %s.</string>
+    <string name="exposure_duration_not_finished_description">The exposure has no end date yet.</string>
+    <string name="exposure_duration_format_string">H\' hours \'m\' minutes \'s\' seconds\'</string>
 </resources>

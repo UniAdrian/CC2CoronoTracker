@@ -1,12 +1,16 @@
 package de.uni.cc2coronotracker.data.adapters;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
+
+import org.apache.commons.lang3.time.DurationFormatUtils;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -21,15 +25,25 @@ public class ExposureAdapter extends RecyclerView.Adapter<ExposureAdapter.ViewHo
     private final Context context;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView textView;
+        private final TextView dateDescTxt;
+        private final TextView durationDescTxt;
+        private final ImageView locEnabledImg;
 
         public ViewHolder(View view) {
             super(view);
-            textView = (TextView) view.findViewById(R.id.txtDate);
+            dateDescTxt = view.findViewById(R.id.txtDate);
+            durationDescTxt = view.findViewById(R.id.txtDuration);
+            locEnabledImg = view.findViewById(R.id.imgLocationEnabled);
         }
 
-        public TextView getTextView() {
-            return textView;
+        public TextView getDateDescTxt() {
+            return dateDescTxt;
+        }
+        public TextView getDurationDescTxt() {
+            return durationDescTxt;
+        }
+        public ImageView getLocationIcon() {
+            return locEnabledImg;
         }
     }
 
@@ -57,15 +71,37 @@ public class ExposureAdapter extends RecyclerView.Adapter<ExposureAdapter.ViewHo
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        viewHolder.getTextView().setText(getExposureDesc(position));
+        Exposure exp = exposures.get(position);
+
+        int iconResource = R.drawable.ic_baseline_location_on_24;
+        if (exp.location == null) {
+            iconResource = R.drawable.ic_baseline_location_off_24;
+        }
+
+        viewHolder.getDateDescTxt().setText(getExposureDesc(exp));
+        viewHolder.getDurationDescTxt().setText(getDurationDesc(exp));
+        viewHolder.getLocationIcon().setImageResource(iconResource);
     }
 
-    private String getExposureDesc(int position) {
-        Date date = exposures.get(position).startDate;
+    private String getDurationDesc(Exposure exp) {
+        if (exp.endDate == null) {
+            return context.getResources().getString(R.string.exposure_duration_not_finished_description);
+        }
+
+        Resources res = context.getResources();
+
+        long durInMillis = exp.endDate.getTime() - exp.startDate.getTime();
+        String format = res.getString(R.string.exposure_duration_format_string);
+        String dur = DurationFormatUtils.formatDuration(durInMillis, format);
+        return res.getString(R.string.exposure_duration_description, dur);
+    }
+
+    private String getExposureDesc(Exposure exp) {
+        Date date = exp.startDate;
         return context.getResources().getString(R.string.exposure_description, DateFormat.getDateTimeInstance().format(date));
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
+    // Return the size of the dataset
     @Override
     public int getItemCount() {
         return exposures.size();

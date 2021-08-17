@@ -1,18 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="@dimen/margin_medium"
     android:layout_marginRight="@dimen/margin_medium"
-    android:gravity="center_vertical"
-    android:padding="2dp"
-    android:paddingTop="2dp"
-    android:paddingBottom="2dp">
+    android:gravity="center_vertical">
+
+    <ImageView
+        android:id="@+id/imgLocationEnabled"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/is_location_enabled"
+        android:minWidth="32dp"
+        android:minHeight="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_baseline_location_on_24"
+        app:tint="@color/secondaryTextColor" />
 
     <TextView
         android:id="@+id/txtDate"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text=""
-        android:textSize="@dimen/mediumFontSize" />
-</LinearLayout>
+        android:textColor="@color/secondaryTextColor"
+        android:textSize="@dimen/mediumFontSize"
+        app:layout_constraintBottom_toTopOf="@+id/txtDuration"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imgLocationEnabled"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="You met XYZ on the 5. March 2020" />
+
+    <TextView
+        android:id="@+id/txtDuration"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imgLocationEnabled"
+        app:layout_constraintTop_toBottomOf="@+id/txtDate"
+        tools:text="The contact lasted for 2hours and 5 minutes." />
+</androidx.constraintlayout.widget.ConstraintLayout>
