@@ -117,13 +117,13 @@
             android:id="@+id/detailsLoadingContainer"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:background="@color/white"
+            android:background="?android:attr/colorBackground"
             android:visibility="@{detailsVM.loading ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="@+id/contactContainer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="invisible">
+            tools:visibility="visible">
 
             <ProgressBar
                 android:id="@+id/progressBar"
