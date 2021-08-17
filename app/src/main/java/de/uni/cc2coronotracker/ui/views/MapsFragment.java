@@ -49,11 +49,8 @@ public class MapsFragment extends Fragment {
 
     private final String TAG = "Maps";
 
-    private final float ZOOM_WORLD = 1.0f;
-    private final float ZOOM_CONTINENT = 5.0f;
     private final float ZOOM_CITY = 10.0f;
     private final float ZOOM_STREETS = 15.0f;
-    private final float ZOOM_BUILDINGS = 20.0f;
 
     private MarkerOptions defaultMarkerOptions;
     private Marker ownPosition;
@@ -154,7 +151,7 @@ public class MapsFragment extends Fragment {
     }
 
     private void setupBottomSheet() {
-        BottomSheetBehavior sheetBehavior = BottomSheetBehavior.from(binding.bottomSheetInclude.mapsBottomSheet);
+        BottomSheetBehavior<?> sheetBehavior = BottomSheetBehavior.from(binding.bottomSheetInclude.mapsBottomSheet);
         sheetBehavior.setHideable(false);
 
         binding.bottomSheetInclude.mapsConfigTitle.setOnClickListener(v -> {
@@ -165,9 +162,7 @@ public class MapsFragment extends Fragment {
             }
         });
 
-        binding.bottomSheetInclude.mapsSelectContacts.setOnClickListener(v-> {
-            selectContacts();
-        });
+        binding.bottomSheetInclude.mapsSelectContacts.setOnClickListener(v-> selectContacts());
     }
 
     @Override

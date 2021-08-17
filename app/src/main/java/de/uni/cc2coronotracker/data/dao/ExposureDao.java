@@ -25,9 +25,6 @@ public abstract class ExposureDao {
     @Insert()
     public abstract long insert(Exposure exposure);
 
-    @Query("SELECT COUNT(*) FROM exposures WHERE contact_id = :contactId")
-    public abstract long getNumberOfExposuresFor(long contactId);
-
     @Query("SELECT * FROM exposures WHERE start_date >= :date AND start_date < (:date + 86400000)")
     public abstract List<Exposure> getExposuresByDate(Date date);
 

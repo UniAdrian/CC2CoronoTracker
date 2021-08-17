@@ -69,7 +69,7 @@ dependencies {
 
     // Top-sheet implementation, we really don't need to reimplement this. :P
     implementation 'com.github.techisfun:androidtopsheet:0.2'
-    // Swipeable button for lobby
+    // Swipe-able button for lobby
     implementation 'com.github.stfalcon:swipeable-button:0.1.0'
 
     // Generating QR Codes

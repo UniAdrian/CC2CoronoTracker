@@ -26,7 +26,6 @@ import de.uni.cc2coronotracker.R;
 import de.uni.cc2coronotracker.data.dao.ContactDao;
 import de.uni.cc2coronotracker.data.models.Contact;
 import de.uni.cc2coronotracker.data.repositories.ContactRepository;
-import de.uni.cc2coronotracker.data.repositories.async.RepositoryCallback;
 import de.uni.cc2coronotracker.data.repositories.async.Result;
 import de.uni.cc2coronotracker.helper.ContextMediator;
 import de.uni.cc2coronotracker.helper.Event;
@@ -101,12 +100,11 @@ public class ContactViewModel extends ViewModel {
                 contactRepository.importContacts( result -> {
                     if (result instanceof Result.Success) {
                         Log.d(TAG, "Imported all contacts!");
-                        loading.postValue(false);
                     } else {
-                        Log.e(TAG, "Failed to import phone contacts", ((Result.Error)result).exception);
+                        Log.e(TAG, "Failed to import phone contacts", ((Result.Error<?>)result).exception);
                         showImportError();
-                        loading.postValue(false);
                     }
+                    loading.postValue(false);
                 });
             }
 
@@ -153,9 +151,7 @@ public class ContactViewModel extends ViewModel {
                 action.setContactId(((Result.Success<Long>) result).data);
                 ctxMediator.request(RequestFactory.createNavigationRequest(action));
             } else {
-                ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.create_contact_failed, Snackbar.LENGTH_LONG, R.string.retry, v -> {
-                    addContact(newContact);
-                }));
+                ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.create_contact_failed, Snackbar.LENGTH_LONG, R.string.retry, v -> addContact(newContact)));
             }
         });
     }
@@ -175,13 +171,13 @@ public class ContactViewModel extends ViewModel {
                     if (result instanceof Result.Success) {
                         ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.contact_import_success, Snackbar.LENGTH_SHORT));
                     } else {
-                        Log.e("Contacts", "DB Insert failed.", ((Result.Error)result).exception);
+                        Log.e("Contacts", "DB Insert failed.", ((Result.Error<?>)result).exception);
                         ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.import_contact_failed, Snackbar.LENGTH_SHORT));
                     }
                     this.loading.postValue(false);
                 });
             } else {
-                Log.e("Contacts", "Import failed.", ((Result.Error)result).exception);
+                Log.e("Contacts", "Import failed.", ((Result.Error<?>)result).exception);
                 this.loading.postValue(false);
                 ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.import_contact_failed, Snackbar.LENGTH_SHORT));
             }

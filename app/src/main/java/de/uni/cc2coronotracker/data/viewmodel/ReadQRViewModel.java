@@ -129,7 +129,7 @@ public class ReadQRViewModel extends ViewModel {
                     prepareAndAddExposure(c, intent.allowTracking);
                 }
             } else {
-                Log.e(TAG, "Failed to fetch contact with uuid " + intent.uuid, ((Result.Error)result).exception);
+                Log.e(TAG, "Failed to fetch contact with uuid " + intent.uuid, ((Result.Error<?>)result).exception);
             }
         });
     }
@@ -164,7 +164,7 @@ public class ReadQRViewModel extends ViewModel {
                     activity.startActivity(intent);
                 }));
             } else {
-                Log.e(TAG, "Failed to insert exposure for contact.", ((Result.Error)result).exception);
+                Log.e(TAG, "Failed to insert exposure for contact.", ((Result.Error<?>)result).exception);
                 ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.insert_exposure_failed, Snackbar.LENGTH_LONG, R.string.retry, v -> addExposure(toAdd)));
             }
         });
@@ -213,7 +213,7 @@ public class ReadQRViewModel extends ViewModel {
             if (result instanceof Result.Success) {
                 prepareAndAddExposure(contact, allowTracking);
             } else {
-                Log.e(TAG, "Failed to update contact.", ((Result.Error)result).exception);
+                Log.e(TAG, "Failed to update contact.", ((Result.Error<?>)result).exception);
                 ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.upsert_contact_failed, Snackbar.LENGTH_LONG, R.string.retry, v -> connectContactAndAddExposure(contact, uuid, allowTracking), contact.displayName));
             }
         });

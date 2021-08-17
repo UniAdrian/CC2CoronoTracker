@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
+import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -30,13 +31,11 @@ public class ShowQRFragment extends Fragment {
 
         preferencesViewModel = new ViewModelProvider(this).get(PreferencesViewModel.class);
 
-        preferencesViewModel.getQRCode().observe(this, bitmap -> {
-            binding.imgQR.setImageBitmap(bitmap);
-        });
+        preferencesViewModel.getQRCode().observe(this, bitmap -> binding.imgQR.setImageBitmap(bitmap));
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_show_qr, container, false);
 
         binding.setQrVM(preferencesViewModel);
@@ -52,8 +51,7 @@ public class ShowQRFragment extends Fragment {
             }
         });
 
-        View view = binding.getRoot();
-        return view;
+        return binding.getRoot();
     }
 
 }

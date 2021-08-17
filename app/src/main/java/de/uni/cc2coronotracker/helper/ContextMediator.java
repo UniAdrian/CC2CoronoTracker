@@ -27,11 +27,6 @@ public class ContextMediator {
     }
 
     public void request(CallWithContextRequest request) {
-        mainHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                requests.setValue(new Event<>(request));
-            }
-        });
+        mainHandler.post(() -> requests.setValue(new Event<>(request)));
     }
 }

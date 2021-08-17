@@ -26,11 +26,9 @@ import java.sql.Date;
 )
 public class Exposure {
     @PrimaryKey(autoGenerate = true)
-    @NonNull
     public long id;
 
     @ColumnInfo(name = "contact_id", index = true)
-    @NonNull
     public long contactId;
 
     @ColumnInfo(name = "start_date")

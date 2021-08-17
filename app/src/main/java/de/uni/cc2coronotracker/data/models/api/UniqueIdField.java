@@ -2,6 +2,8 @@ package de.uni.cc2coronotracker.data.models.api;
 
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -15,7 +17,7 @@ public class UniqueIdField implements Serializable, Parcelable {
     @SerializedName("isSystemMaintained")
     @Expose
     private Boolean isSystemMaintained;
-    public final static Creator<UniqueIdField> CREATOR = new Creator<UniqueIdField>() {
+    public final static Creator<UniqueIdField> CREATOR = new Creator<>() {
 
 
         @SuppressWarnings({
@@ -37,25 +39,7 @@ public class UniqueIdField implements Serializable, Parcelable {
         this.isSystemMaintained = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
     }
 
-    public UniqueIdField() {
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Boolean getIsSystemMaintained() {
-        return isSystemMaintained;
-    }
-
-    public void setIsSystemMaintained(Boolean isSystemMaintained) {
-        this.isSystemMaintained = isSystemMaintained;
-    }
-
+    @NonNull
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

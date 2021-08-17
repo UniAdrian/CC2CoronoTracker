@@ -52,16 +52,13 @@ public class PreferencesViewModel extends ViewModel {
             if (result instanceof Result.Success) {
                 qrCode.postValue(((Result.Success<Bitmap>) result).data);
             } else {
-                Log.e(TAG, "Failed to create or get QR code.", ((Result.Error)result).exception);
-                contextMediator.request(RequestFactory.createSnackbarRequest(R.string.qr_generation_failed, Snackbar.LENGTH_LONG, R.string.retry, (v) -> {
-                    createOrGetPersonalQRCode(dimension);
-                }));
+                Log.e(TAG, "Failed to create or get QR code.", ((Result.Error<?>)result).exception);
+                contextMediator.request(RequestFactory.createSnackbarRequest(R.string.qr_generation_failed, Snackbar.LENGTH_LONG, R.string.retry, (v) -> createOrGetPersonalQRCode(dimension)));
             }
         });
     }
 
 
     public LiveData<Bitmap> getQRCode() { return qrCode; }
-    public LiveData<UUID> getUUID() { return uuidLD; }
     public LiveData<Boolean> getLoading() {return loading; }
 }

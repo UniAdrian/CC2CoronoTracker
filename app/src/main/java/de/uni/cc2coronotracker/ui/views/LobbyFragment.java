@@ -41,10 +41,6 @@ public class LobbyFragment extends Fragment {
     public LobbyFragment() {
     }
 
-    public static LobbyFragment newInstance() {
-        return new LobbyFragment();
-    }
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -52,12 +48,12 @@ public class LobbyFragment extends Fragment {
 
         messageListener = new MessageListener() {
             @Override
-            public void onFound(Message message) {
+            public void onFound(@NonNull Message message) {
                 Log.d(TAG, "Found message: " + new String(message.getContent()));
             }
 
             @Override
-            public void onLost(Message message) {
+            public void onLost(@NonNull Message message) {
                 Log.d(TAG, "Lost sight of message: " + new String(message.getContent()));
             }
         };

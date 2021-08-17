@@ -21,9 +21,6 @@ public class CertificateFragment extends Fragment {
     CertificateFragmentBinding binding;
 
     private CertificateViewModel certViewModel;
-    public static CertificateFragment newInstance() {
-        return new CertificateFragment();
-    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -43,6 +40,7 @@ public class CertificateFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        if (this.getActivity() == null) return;
         certViewModel = new ViewModelProvider(this.getActivity()).get(CertificateViewModel.class);
         certViewModel.setCurrentCertificate(binding.getEgc());
         certViewModel.getQr().observe(getViewLifecycleOwner(), bitmap -> binding.certQR.setImageBitmap(bitmap));

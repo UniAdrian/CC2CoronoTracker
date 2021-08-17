@@ -2,6 +2,8 @@ package de.uni.cc2coronotracker.data.models.api;
 
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -15,7 +17,7 @@ public class SpatialReference implements Serializable, Parcelable {
     @SerializedName("latestWkid")
     @Expose
     private Integer latestWkid;
-    public final static Creator<SpatialReference> CREATOR = new Creator<SpatialReference>() {
+    public final static Creator<SpatialReference> CREATOR = new Creator<>() {
 
 
         @SuppressWarnings({
@@ -37,25 +39,7 @@ public class SpatialReference implements Serializable, Parcelable {
         this.latestWkid = ((Integer) in.readValue((Integer.class.getClassLoader())));
     }
 
-    public SpatialReference() {
-    }
-
-    public Integer getWkid() {
-        return wkid;
-    }
-
-    public void setWkid(Integer wkid) {
-        this.wkid = wkid;
-    }
-
-    public Integer getLatestWkid() {
-        return latestWkid;
-    }
-
-    public void setLatestWkid(Integer latestWkid) {
-        this.latestWkid = latestWkid;
-    }
-
+    @NonNull
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

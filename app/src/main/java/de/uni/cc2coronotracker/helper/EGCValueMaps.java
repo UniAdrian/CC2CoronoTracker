@@ -11,17 +11,17 @@ import java.util.Map;
  */
 public class EGCValueMaps {
 
-    public static final Map<String, String> DISEASE_AGENT_TARGETED = new HashMap<String, String>() {{
+    public static final Map<String, String> DISEASE_AGENT_TARGETED = new HashMap<>() {{
         put("840539006", "COVID-19");
     }};
 
-    public static final Map<String, String> VACCINE_PROPHYLAXIS = new HashMap<String, String>() {{
+    public static final Map<String, String> VACCINE_PROPHYLAXIS = new HashMap<>() {{
         put("1119349007", "SARS-CoV-2 mRNA vaccine");
         put("1119305005", "CSARS-CoV-2 antigen vaccine");
         put("J07BX03", "covid-19 vaccines");
     }};
 
-    public static final Map<String, String> VACCINE_MEDICINAL_PRODUCT = new HashMap<String, String>() {{
+    public static final Map<String, String> VACCINE_MEDICINAL_PRODUCT = new HashMap<>() {{
         put("EU/1/20/1528", "Comirnaty");
         put("EU/1/20/1507", "COVID-19 Vaccine Moderna");
         put("EU/1/21/1529", "Vaxzevria");
@@ -36,7 +36,7 @@ public class EGCValueMaps {
         put("Covaxin", "Covaxin (also known as BBV152 A, B, C)");
     }};
 
-    public static final Map<String, String> VACCINE_MAH_MANF = new HashMap<String, String>() {{
+    public static final Map<String, String> VACCINE_MAH_MANF = new HashMap<>() {{
         put("ORG-100001699", "AstraZeneca AB");
         put("ORG-100030215", "Biontech Manufacturing GmbH");
         put("ORG-100001417", "Janssen-Cilag International");
@@ -53,7 +53,7 @@ public class EGCValueMaps {
         put("Bharat-Biotech", "Bharat Biotech");
     }};
 
-    public static final Map<String, String> COUNTRY_2_CODES_EN = new HashMap<String, String>() {{
+    public static final Map<String, String> COUNTRY_2_CODES_EN = new HashMap<>() {{
         put("0", "Switzerland");
         put("1", "Afghanistan");
         put("2", "Egypt");
@@ -306,17 +306,17 @@ public class EGCValueMaps {
         put("249", "Cyprus");
     }};
 
-    public static final Map<String, String> TEST_TYPE = new HashMap<String, String>() {{
+    public static final Map<String, String> TEST_TYPE = new HashMap<>() {{
         put("LP6464-4", "Nucleic acid amplification with probe detection");
         put("LP217198-3", "Rapid immunoassay");
     }};
 
-    public static final Map<String, String> TEST_RESULT = new HashMap<String, String>() {{
+    public static final Map<String, String> TEST_RESULT = new HashMap<>() {{
         put("260373001", "Detected");
         put("260415000", "Not detected");
     }};
 
-    public static final Map<String, String> TEST_DEVICES = new HashMap<String, String>() {{
+    public static final Map<String, String> TEST_DEVICES = new HashMap<>() {{
         put("1833", "COVID-VIRO");
         put("1232", "Panbio Covid-19 Ag Rapid Test");
         put("1457", "SARS-CoV-2 Antigen Rapid Test");

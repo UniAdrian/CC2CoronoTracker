@@ -22,7 +22,4 @@ public class CallWithContextRequest {
     public void run(Context c) {
         this.toCall.run(c);
     }
-    public ContextfulCall getCall() {
-        return toCall;
-    }
 }

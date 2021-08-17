@@ -46,10 +46,6 @@ public class ContactRepository{
     }
 
 
-    public LiveData<List<Contact>> getContacts() {
-        return contactDao.getAll();
-    }
-
     public LiveData<List<ContactDao.ContactWithExposures>> getContactsWithExposures() {
         return contactDao.getAllContactsWithExposures();
     }
@@ -109,33 +105,6 @@ public class ContactRepository{
                 callback.onComplete(result);
             } catch (Exception e) {
                 Result<Contact> errorResult = new Result.Error<>(e);
-                callback.onComplete(errorResult);
-            }
-        });
-    }
-
-    /**
-     * NUKES The table. Make sure to ask the user if he really wants this before calling this.
-     */
-    private void deleteAll() {
-        contactDao.nukeTable();
-    }
-
-    /**
-     * NUKES The table. Make sure to ask the user if he really wants this before calling this.
-     * Calls the synchronous deleteAll method on the executor and utilizes a callback to communicate
-     * with the caller when done.
-     * @param callback The callback to be called when done.
-     */
-    public void deleteAll(RepositoryCallback<Void> callback) {
-        executor.execute(() -> {
-            try {
-                deleteAll();
-                Result<Void> result = new Result.Success<>(null);
-                callback.onComplete(result);
-            } catch (Exception e) {
-                Log.e("ContactRepository", "Failed to nuke table", e);
-                Result<Void> errorResult = new Result.Error<>(e);
                 callback.onComplete(errorResult);
             }
         });
@@ -214,8 +183,6 @@ public class ContactRepository{
             }
 
             return contactFromCursor(cursor);
-        } catch (Exception e) {
-            throw e;
         }
     }
 

@@ -2,14 +2,12 @@ package de.uni.cc2coronotracker.ui.views;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CalendarView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -48,6 +46,7 @@ public class CalendarFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (this.getActivity() == null) return;
         calenderViewModel = new ViewModelProvider(this.getActivity()).get(CalendarViewModel.class);
 
     }
@@ -85,19 +84,16 @@ public class CalendarFragment extends Fragment {
         cal.set(Calendar.DAY_OF_MONTH, day);
         calenderViewModel.fetchExposure(new Date(cal.getTimeInMillis()));
 
-        calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-            @Override
-            public void onSelectedDayChange(@NonNull CalendarView calendarView, int year, int mm, int dd) {
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTimeInMillis(0);
-                calendar.set(Calendar.YEAR, year);
-                calendar.set(Calendar.MONTH, mm);
-                calendar.set(Calendar.DAY_OF_MONTH, dd);
-                Long date = calendar.getTimeInMillis();
-                selectedDate = new Date(date);
-                exposureListTitle.setText(String.format("Exposures on: %s", selectedDate.toString()));
-                calenderViewModel.fetchExposure(selectedDate);
-            }
+        calendarView.setOnDateChangeListener((calendarView, year1, mm, dd) -> {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(0);
+            calendar.set(Calendar.YEAR, year1);
+            calendar.set(Calendar.MONTH, mm);
+            calendar.set(Calendar.DAY_OF_MONTH, dd);
+            Long date = calendar.getTimeInMillis();
+            selectedDate = new Date(date);
+            exposureListTitle.setText(String.format("Exposures on: %s", selectedDate.toString()));
+            calenderViewModel.fetchExposure(selectedDate);
         });
         return view;
     }

@@ -2,6 +2,8 @@ package de.uni.cc2coronotracker.data.models.api;
 
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -21,7 +23,7 @@ public class Attributes implements Serializable, Parcelable {
     @SerializedName("last_update")
     @Expose
     private String lastUpdate;
-    public final static Creator<Attributes> CREATOR = new Creator<Attributes>() {
+    public final static Creator<Attributes> CREATOR = new Creator<>() {
 
 
         @SuppressWarnings({
@@ -45,41 +47,19 @@ public class Attributes implements Serializable, Parcelable {
         this.lastUpdate = ((String) in.readValue((String.class.getClassLoader())));
     }
 
-    public Attributes() {
-    }
-
     public Double getCases7Per100k() {
         return cases7Per100k;
-    }
-
-    public void setCases7Per100k(Double cases7Per100k) {
-        this.cases7Per100k = cases7Per100k;
     }
 
     public String getBl() {
         return bl;
     }
 
-    public void setBl(String bl) {
-        this.bl = bl;
-    }
-
     public String getCounty() {
         return county;
     }
 
-    public void setCounty(String county) {
-        this.county = county;
-    }
-
-    public String getLastUpdate() {
-        return lastUpdate;
-    }
-
-    public void setLastUpdate(String lastUpdate) {
-        this.lastUpdate = lastUpdate;
-    }
-
+    @NonNull
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

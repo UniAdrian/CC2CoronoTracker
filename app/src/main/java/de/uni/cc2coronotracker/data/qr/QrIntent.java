@@ -45,6 +45,7 @@ public class QrIntent {
      * It is recommended to use this approach over an enum to keep dex sizes smalls.
      * Doesnt matter much for one enum but i like to stick with good practices.
      */
+    @SuppressWarnings("unused")
     @IntDef({QR_ADD_EXPOSURE, QR_IMPORT, QR_EGC})
     @Retention(RetentionPolicy.SOURCE)
     public @interface QR_INTENT { }
@@ -102,6 +103,7 @@ public class QrIntent {
             return new AddExposure(uuid, allowTracking);
         }
 
+        @NonNull
         @Override
         public String toString() {
             return TextUtils.join(SEPARATOR, new String[] {
@@ -142,6 +144,7 @@ public class QrIntent {
             return new ImportSettings(uuid, allowTracking, doTrack);
         }
 
+        @NonNull
         @Override
         public String toString() {
             return TextUtils.join(SEPARATOR, new String[] {

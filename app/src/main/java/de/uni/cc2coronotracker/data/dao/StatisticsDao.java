@@ -26,7 +26,7 @@ public abstract class StatisticsDao {
     /**
      *
      * @param minPercentage minimal percentage a contact has to have to be included as its own entry instead of 'other'
-     * @return
+     * @return The list of exposures by contact (fulfilling the requirements)
      */
     @Query("SELECT display_name AS label,\n" +
             "COUNT(exposures.id) AS nExposures,\n" +

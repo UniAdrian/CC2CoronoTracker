@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
@@ -24,8 +25,6 @@ import de.uni.cc2coronotracker.data.viewmodel.shared.ContactSelectionDialogViewM
 import de.uni.cc2coronotracker.databinding.DialogContactPickerBinding;
 
 public class SelectContactDialogFragment extends DialogFragment {
-
-    public static String TAG = "SelectContactDialog";
 
     private boolean isMultiSelect = false;
     private QrIntent.Intent callerIntent = null;
@@ -59,6 +58,7 @@ public class SelectContactDialogFragment extends DialogFragment {
         contactSelectionViewModel = new ViewModelProvider(this.getActivity()).get(ContactSelectionDialogViewModel.class);
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         LayoutInflater inflater = LayoutInflater.from(getActivity());

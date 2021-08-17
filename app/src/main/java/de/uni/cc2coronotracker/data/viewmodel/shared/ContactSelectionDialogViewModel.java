@@ -22,7 +22,7 @@ import de.uni.cc2coronotracker.helper.Event;
 @HiltViewModel
 public class ContactSelectionDialogViewModel extends ViewModel {
 
-    MutableLiveData<Event<ContactIntentTuple>> onContactSelection = new MutableLiveData<>();
+    final MutableLiveData<Event<ContactIntentTuple>> onContactSelection = new MutableLiveData<>();
 
     @Inject
     public ContactSelectionDialogViewModel() {
@@ -37,8 +37,8 @@ public class ContactSelectionDialogViewModel extends ViewModel {
     }
 
     public static class ContactIntentTuple {
-        public List<Contact> contactList;
-        public QrIntent.Intent intent;
+        public final List<Contact> contactList;
+        public final QrIntent.Intent intent;
 
         public ContactIntentTuple(List<Contact> contactList, QrIntent.Intent intent) {
             this.contactList = contactList;

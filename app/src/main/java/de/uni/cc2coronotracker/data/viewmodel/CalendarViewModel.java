@@ -29,11 +29,11 @@ public class CalendarViewModel extends ViewModel {
     private final ExposureRepository exposureRepository;
     private final ContactRepository contactRepository;
     private List<Exposure> _exposures = new ArrayList<>();
-    private MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
     public class ExposureDisplayInfo {
-        public Exposure exposureData;
-        public String contactName;
-        public Uri contactPhotoUri;
+        public final Exposure exposureData;
+        public final String contactName;
+        public final Uri contactPhotoUri;
         public ExposureDisplayInfo(Exposure exposure, String contactName, Uri contactPhotoUri) {
             this.exposureData = exposure;
             this.contactName = contactName;
@@ -41,7 +41,7 @@ public class CalendarViewModel extends ViewModel {
         }
     }
 
-    private MutableLiveData<List<ExposureDisplayInfo>> exposureInfo = new MutableLiveData<>();
+    private final MutableLiveData<List<ExposureDisplayInfo>> exposureInfo = new MutableLiveData<>();
     public MutableLiveData<List<ExposureDisplayInfo>> getExposureInfo() {
         return exposureInfo;
     }
@@ -72,7 +72,7 @@ public class CalendarViewModel extends ViewModel {
                 isLoading.postValue(false);
             } else {
                 _exposures = new ArrayList<>();
-                Exception e = ((Result.Error) queryResult).exception;
+                Exception e = ((Result.Error<?>) queryResult).exception;
                 Log.e(TAG, "Failed to fetch exposures.", e);
                 exposureInfo.postValue(new ArrayList<>());
             }

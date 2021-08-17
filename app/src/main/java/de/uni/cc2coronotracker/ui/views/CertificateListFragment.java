@@ -22,20 +22,14 @@ import de.uni.cc2coronotracker.databinding.CertificateListFragmentBinding;
 
 @AndroidEntryPoint
 public class CertificateListFragment extends Fragment {
-
-    private static final String TAG = "CertificateList";
-
     private CertificateListViewModel viewModel;
     private CertificateListFragmentBinding binding;
-
-
-    public static CertificateListFragment newInstance() {
-        return new CertificateListFragment();
-    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        if (this.getActivity() == null) return null;
+
         viewModel = new ViewModelProvider(this.getActivity()).get(CertificateListViewModel.class);
 
         binding = DataBindingUtil.inflate(inflater, R.layout.certificate_list_fragment, container, false);
@@ -51,9 +45,7 @@ public class CertificateListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        viewModel.getCerts().observe(getViewLifecycleOwner(), certEntities -> {
-            binding.rvCerts.setAdapter(new CertificateAdapter(certEntities, this::onCertPicked));
-        });
+        viewModel.getCerts().observe(getViewLifecycleOwner(), certEntities -> binding.rvCerts.setAdapter(new CertificateAdapter(certEntities, this::onCertPicked)));
     }
 
     public void onCertPicked(CertEntity cert) {

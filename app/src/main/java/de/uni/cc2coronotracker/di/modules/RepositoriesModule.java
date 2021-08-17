@@ -49,8 +49,8 @@ public class RepositoriesModule {
 
     @Provides
     @Singleton
-    public ExposureRepository bindExposureRepository(@ApplicationContext Context ctx, Executor executor, AppDatabase db) {
-        return new ExposureRepository(ctx, executor, db.getExposureDao());
+    public ExposureRepository bindExposureRepository(Executor executor, AppDatabase db) {
+        return new ExposureRepository(executor, db.getExposureDao());
     }
 
     @Provides
@@ -61,8 +61,8 @@ public class RepositoriesModule {
 
     @Provides
     @Singleton
-    public StatisticsRepository bindStatisticsRepository(@ApplicationContext Context ctx, Executor executor, AppDatabase db)  {
-        return new StatisticsRepository(ctx, executor, db.getStatisticsDao());
+    public StatisticsRepository bindStatisticsRepository(Executor executor, AppDatabase db)  {
+        return new StatisticsRepository(executor, db.getStatisticsDao());
     }
 
     @Provides

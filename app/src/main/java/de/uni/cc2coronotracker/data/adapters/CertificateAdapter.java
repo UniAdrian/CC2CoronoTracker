@@ -66,6 +66,7 @@ public class CertificateAdapter extends RecyclerView.Adapter<CertificateAdapter.
     }
 
     // Create new views (invoked by the layout manager)
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(viewGroup.getContext());

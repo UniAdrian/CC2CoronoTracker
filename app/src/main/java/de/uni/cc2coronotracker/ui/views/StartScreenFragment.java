@@ -15,12 +15,11 @@ import de.uni.cc2coronotracker.R;
 import de.uni.cc2coronotracker.databinding.FragmentStartScreenBinding;
 
 /**
- * A simple {@link Fragment} subclass.
- * create an instance of this fragment.
+ * Very~ simple start fragment.
+ * I did not implement any fancy architecture here, since there was simply no reason.
+ * Keep it simple, stupid. :)
  */
 public class StartScreenFragment extends Fragment {
-
-    private static final String TAG = "StartScreen";
 
     private FragmentStartScreenBinding binding;
 
@@ -29,7 +28,7 @@ public class StartScreenFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_start_screen, container, false);
 

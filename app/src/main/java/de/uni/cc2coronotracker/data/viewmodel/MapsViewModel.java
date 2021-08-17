@@ -3,6 +3,7 @@ package de.uni.cc2coronotracker.data.viewmodel;
 import android.location.Location;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -48,7 +49,7 @@ public class MapsViewModel extends ViewModel {
     private final MutableLiveData<LatLng> requestPosition = new MutableLiveData<>();
     private final MutableLiveData<List<MarkerOptions>> markers = new MutableLiveData<>();
 
-    public MutableLiveData<LatLng> ownLocation = new MutableLiveData<>(null);
+    public final MutableLiveData<LatLng> ownLocation = new MutableLiveData<>(null);
     private final MutableLiveData<LocationInfo> locationInfos = new MutableLiveData<>(null);
 
     private final MutableLiveData<List<Contact>> selectedContacts = new MutableLiveData<>();
@@ -90,7 +91,7 @@ public class MapsViewModel extends ViewModel {
                 Location loc = ((Result.Success<Location>) result).data;
                 requestPosition.postValue(new LatLng(loc.getLatitude(), loc.getLongitude()));
             } else {
-                Log.e(TAG, "Failed to fetch location data", ((Result.Error)result).exception);
+                Log.e(TAG, "Failed to fetch location data", ((Result.Error<?>)result).exception);
                 // ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.location_not_available, Snackbar.LENGTH_LONG));
             }
         });
@@ -133,7 +134,7 @@ public class MapsViewModel extends ViewModel {
                     executor.execute(() -> processExposures(((Result.Success<List<ContactDao.ContactWithExposures>>) result).data));
                 } else {
                     // isLoading.postValue(false);
-                    Log.e(TAG, "Failed to fetch contacts with exposures.", ((Result.Error)result).exception);
+                    Log.e(TAG, "Failed to fetch contacts with exposures.", ((Result.Error<?>)result).exception);
                 }
             });
         }
@@ -142,13 +143,12 @@ public class MapsViewModel extends ViewModel {
     public void updateLocationInfo(LatLng forLocation) {
         Call<RKIApiResult> incidenceByLocation = api.getIncidenceByLocation(String.format(Locale.US,"%f,%f,", forLocation.longitude, forLocation.latitude));
         isLoading.postValue(true);
-        incidenceByLocation.enqueue(new Callback<RKIApiResult>() {
+        incidenceByLocation.enqueue(new Callback<>() {
             @Override
-            public void onResponse(Call<RKIApiResult> call, Response<RKIApiResult> response) {
+            public void onResponse(@NonNull Call<RKIApiResult> call, @NonNull Response<RKIApiResult> response) {
                 isLoading.postValue(false);
 
-                if (response.body().getFeatures().isEmpty())
-                {
+                if (response.body() == null || response.body().getFeatures().isEmpty()) {
                     locationInfos.postValue(null);
                     return;
                 }
@@ -159,7 +159,7 @@ public class MapsViewModel extends ViewModel {
             }
 
             @Override
-            public void onFailure(Call<RKIApiResult> call, Throwable t) {
+            public void onFailure(@NonNull Call<RKIApiResult> call, @NonNull Throwable t) {
                 isLoading.postValue(false);
                 locationInfos.postValue(null);
                 Log.e(TAG, "Failed to fetch incidence by location", t);
@@ -175,7 +175,7 @@ public class MapsViewModel extends ViewModel {
     /**
      * Processes the received list and posts a new list of MarkerOptions once done.
      * Should always be called on a background thread using the injected executor.
-     * @param contactsWithExposures
+     * @param contactsWithExposures the retrieved list
      */
     private void processExposures(List<ContactDao.ContactWithExposures> contactsWithExposures) {
         Log.d(TAG, "Processing CWE...");

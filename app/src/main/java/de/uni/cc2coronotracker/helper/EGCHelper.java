@@ -79,7 +79,7 @@ public class EGCHelper {
                 euCert.dateOfBirth = getString(cert, "dob");
 
 
-                /**
+                /*
                  * Each certificate must have exactly one group:
                  * v: vaccination group
                  * t: test group
@@ -240,8 +240,7 @@ public class EGCHelper {
             outputStream.write(buffer, 0, count);
         }
         outputStream.close();
-        byte[] output = outputStream.toByteArray();
-        return output;
+        return outputStream.toByteArray();
     }
 
 }

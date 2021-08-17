@@ -133,7 +133,7 @@ public class LocationProvider implements LifecycleObserver {
                 Log.d(TAG, "Starting to track location...");
                 fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
             } else {
-                Log.e(TAG, "Location unavailable...", ((Result.Error)result).exception);
+                Log.e(TAG, "Location unavailable...", ((Result.Error<?>)result).exception);
                 notifyAndStop();
             }
         }));

@@ -32,7 +32,6 @@ public class CertificateListViewModel extends ViewModel {
 
     private final static String TAG = "CertificateListVM";
 
-    private final CertificateRepository certificateRepository;
     private final ContextMediator ctxMediator;
 
     private final LiveData<List<CertEntity>> allCerts;
@@ -40,7 +39,6 @@ public class CertificateListViewModel extends ViewModel {
 
     @Inject
     public CertificateListViewModel(CertificateRepository certificateRepository, ContextMediator ctxMediator) {
-        this.certificateRepository = certificateRepository;
         this.ctxMediator = ctxMediator;
 
         allCerts = Transformations.map(certificateRepository.getAll(), input -> {

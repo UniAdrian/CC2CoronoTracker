@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
@@ -39,7 +40,7 @@ public class NewContactDialogFragment extends DialogFragment implements TextWatc
 
     private Uri imageUri = null;
 
-    ActivityResultLauncher<String[]> mGetContent = registerForActivityResult(new ActivityResultContracts.OpenDocument(), this::onImagePicked);
+    final ActivityResultLauncher<String[]> mGetContent = registerForActivityResult(new ActivityResultContracts.OpenDocument(), this::onImagePicked);
 
     public static NewContactDialogFragment newInstance() {
         NewContactDialogFragment newDialog = new NewContactDialogFragment();
@@ -58,6 +59,7 @@ public class NewContactDialogFragment extends DialogFragment implements TextWatc
         contactCreationViewModel = new ViewModelProvider(this.getActivity()).get(ContactCreationDialogViewModel.class);
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         LayoutInflater inflater = LayoutInflater.from(getActivity());
@@ -86,9 +88,7 @@ public class NewContactDialogFragment extends DialogFragment implements TextWatc
         // Enable the confirm button if a valid display name is entered.
         binding.txtLoDisplayName.addTextChangedListener(this);
 
-        binding.btnSelectFromGallery.setOnClickListener(v -> {
-            this.mGetContent.launch(new String[] {"image/*"});
-        });
+        binding.btnSelectFromGallery.setOnClickListener(v -> this.mGetContent.launch(new String[] {"image/*"}));
 
         return dialog;
     }

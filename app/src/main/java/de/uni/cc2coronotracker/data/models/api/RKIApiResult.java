@@ -2,6 +2,8 @@ package de.uni.cc2coronotracker.data.models.api;
 
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -30,11 +32,11 @@ public class RKIApiResult implements Serializable, Parcelable
     private SpatialReference spatialReference;
     @SerializedName("fields")
     @Expose
-    private List<Field> fields = new ArrayList<Field>();
+    private List<Field> fields = new ArrayList<>();
     @SerializedName("features")
     @Expose
-    private List<Feature> features = new ArrayList<Feature>();
-    public final static Creator<RKIApiResult> CREATOR = new Creator<RKIApiResult>() {
+    private List<Feature> features = new ArrayList<>();
+    public final static Creator<RKIApiResult> CREATOR = new Creator<>() {
 
 
         @SuppressWarnings({
@@ -62,65 +64,11 @@ public class RKIApiResult implements Serializable, Parcelable
         in.readList(this.features, (Feature.class.getClassLoader()));
     }
 
-    public RKIApiResult() {
-    }
-
-    public String getObjectIdFieldName() {
-        return objectIdFieldName;
-    }
-
-    public void setObjectIdFieldName(String objectIdFieldName) {
-        this.objectIdFieldName = objectIdFieldName;
-    }
-
-    public UniqueIdField getUniqueIdField() {
-        return uniqueIdField;
-    }
-
-    public void setUniqueIdField(UniqueIdField uniqueIdField) {
-        this.uniqueIdField = uniqueIdField;
-    }
-
-    public String getGlobalIdFieldName() {
-        return globalIdFieldName;
-    }
-
-    public void setGlobalIdFieldName(String globalIdFieldName) {
-        this.globalIdFieldName = globalIdFieldName;
-    }
-
-    public String getGeometryType() {
-        return geometryType;
-    }
-
-    public void setGeometryType(String geometryType) {
-        this.geometryType = geometryType;
-    }
-
-    public SpatialReference getSpatialReference() {
-        return spatialReference;
-    }
-
-    public void setSpatialReference(SpatialReference spatialReference) {
-        this.spatialReference = spatialReference;
-    }
-
-    public List<Field> getFields() {
-        return fields;
-    }
-
-    public void setFields(List<Field> fields) {
-        this.fields = fields;
-    }
-
     public List<Feature> getFeatures() {
         return features;
     }
 
-    public void setFeatures(List<Feature> features) {
-        this.features = features;
-    }
-
+    @NonNull
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

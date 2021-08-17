@@ -1,6 +1,5 @@
 package de.uni.cc2coronotracker.data.viewmodel;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.util.Log;
@@ -81,7 +80,7 @@ public class ContactDetailsViewModel extends ViewModel {
                         exposures.postValue(((Result.Success<List<Exposure>>) exposureResult).data);
                     } else {
                         exposures.postValue(null);
-                        Exception e = ((Result.Error) exposureResult).exception;
+                        Exception e = ((Result.Error<?>) exposureResult).exception;
                         Log.e(TAG, "Failed to fetch exposures.", e);
                     }
 
@@ -101,22 +100,19 @@ public class ContactDetailsViewModel extends ViewModel {
         Contact currentContact = contact.getValue();
         if (currentContact == null) return;
 
-        ctxMediator.request(RequestFactory.createConfirmationDialogRequest(R.string.confirm_contact_deletion, R.string.confirm_contact_deletion_title, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                isLoading.postValue(true);
-                contactRepository.delete(currentContact.id, result -> {
-                    if (result instanceof Result.Success) {
-                        ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.delete_contact_success, Snackbar.LENGTH_SHORT));
-                        ctxMediator.request(RequestFactory.createNavigationRequest(R.id.action_contactDetailsFragment_to_contacts));
-                    } else {
-                        ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.delete_contact_failure, Snackbar.LENGTH_SHORT, R.string.retry, (v) -> {
-                            deleteContact();
-                        }));
-                    }
-                    isLoading.postValue(false);
-                });
-            }
+        ctxMediator.request(RequestFactory.createConfirmationDialogRequest(R.string.confirm_contact_deletion, R.string.confirm_contact_deletion_title, (dialog, which) -> {
+            isLoading.postValue(true);
+            contactRepository.delete(currentContact.id, result -> {
+                if (result instanceof Result.Success) {
+                    ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.delete_contact_success, Snackbar.LENGTH_SHORT));
+                    ctxMediator.request(RequestFactory.createNavigationRequest(R.id.action_contactDetailsFragment_to_contacts));
+                } else {
+                    ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.delete_contact_failure, Snackbar.LENGTH_SHORT, R.string.retry, (v) -> {
+                        deleteContact();
+                    }));
+                }
+                isLoading.postValue(false);
+            });
         }, null, currentContact.displayName));
     }
 
@@ -124,7 +120,7 @@ public class ContactDetailsViewModel extends ViewModel {
         Contact currentContact = contact.getValue();
         if (currentContact == null) return;
 
-        prepareAndAddExposure(currentContact, true);
+        prepareAndAddExposure(currentContact);
     }
 
     private void addExposure(Exposure toAdd) {
@@ -142,13 +138,13 @@ public class ContactDetailsViewModel extends ViewModel {
                     activity.startActivity(intent);
                 }));
             } else {
-                Log.e(TAG, "Failed to insert exposure for contact.", ((Result.Error)result).exception);
+                Log.e(TAG, "Failed to insert exposure for contact.", ((Result.Error<?>)result).exception);
                 ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.insert_exposure_failed, Snackbar.LENGTH_LONG, R.string.retry, v -> addExposure(toAdd)));
             }
         });
     }
 
-    private void prepareAndAddExposure(Contact contact, boolean allowTracking) {
+    private void prepareAndAddExposure(Contact contact) {
         isLoading.postValue(true);
 
         Exposure toAdd = new Exposure();
@@ -156,7 +152,7 @@ public class ContactDetailsViewModel extends ViewModel {
         toAdd.location = null;
         toAdd.startDate = new java.sql.Date(new Date().getTime());
 
-        if (!allowTracking || !settingsProvider.getTrackExposures()) {
+        if (!settingsProvider.getTrackExposures()) {
             addExposure(toAdd);
             return;
         }

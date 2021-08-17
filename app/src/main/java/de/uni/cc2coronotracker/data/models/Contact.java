@@ -22,7 +22,6 @@ import java.util.UUID;
 )
 public class Contact {
     @PrimaryKey(autoGenerate = true)
-    @NonNull
     public long id;
 
     /**

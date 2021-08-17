@@ -2,6 +2,8 @@ package de.uni.cc2coronotracker.data.models.api;
 
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -12,7 +14,7 @@ public class Feature implements Serializable, Parcelable {
     @SerializedName("attributes")
     @Expose
     private Attributes attributes;
-    public final static Creator<Feature> CREATOR = new Creator<Feature>() {
+    public final static Creator<Feature> CREATOR = new Creator<>() {
 
 
         @SuppressWarnings({
@@ -33,17 +35,11 @@ public class Feature implements Serializable, Parcelable {
         this.attributes = ((Attributes) in.readValue((Attributes.class.getClassLoader())));
     }
 
-    public Feature() {
-    }
-
     public Attributes getAttributes() {
         return attributes;
     }
 
-    public void setAttributes(Attributes attributes) {
-        this.attributes = attributes;
-    }
-
+    @NonNull
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

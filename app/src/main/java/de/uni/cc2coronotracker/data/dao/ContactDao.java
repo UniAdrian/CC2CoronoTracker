@@ -1,7 +1,5 @@
 package de.uni.cc2coronotracker.data.dao;
 
-import android.net.Uri;
-
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Embedded;
@@ -24,19 +22,10 @@ public abstract class ContactDao {
     public abstract LiveData<List<Contact>> getAll();
 
     @Query("SELECT * FROM contacts WHERE uuid = :uuid")
-    public abstract LiveData<Contact> getByUUID(UUID uuid);
-
-    @Query("SELECT * FROM contacts WHERE uuid = :uuid")
     public abstract Contact getByUUIDSync(UUID uuid);
 
     @Query("SELECT * FROM contacts WHERE id = :id")
     public abstract Contact getByIdSync(long id);
-
-    @Query("SELECT * FROM contacts WHERE uuid IN (:uuids)")
-    public abstract LiveData<List<Contact>> getAllByIds(UUID[] uuids);
-
-    @Query("SELECT * FROM contacts WHERE lookup_uri = :lookupUri")
-    public abstract LiveData<Contact> findByLookUpUri(Uri lookupUri);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     public abstract long insert(Contact contact);

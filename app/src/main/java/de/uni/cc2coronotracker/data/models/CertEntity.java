@@ -6,15 +6,7 @@ import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-import com.google.iot.cbor.CborConversionException;
-import com.google.iot.cbor.CborParseException;
-
-import java.io.IOException;
-import java.util.zip.DataFormatException;
-
-import COSE.CoseException;
 import de.uni.cc2coronotracker.data.qr.EGC;
-import de.uni.cc2coronotracker.helper.EGCHelper;
 
 /**
  * Stores the raw QR information of a eu health certificate as well as some metadata for fast show-and-tell
@@ -24,7 +16,6 @@ import de.uni.cc2coronotracker.helper.EGCHelper;
 )
 public class CertEntity {
     @PrimaryKey(autoGenerate = true)
-    @NonNull
     public long id;
 
     // Raw QR contents
@@ -83,14 +74,5 @@ public class CertEntity {
             throw new IllegalArgumentException("Invalid EGC: Must contain a valid health certificate.");
         }
         return cert;
-    }
-
-    /**
-     * Translates the entity into an egc object by parsing the raw string again.
-     * Inefficient, but efficient enough under the current time constraints.
-     * Careful, this potentially takes a while and should be always executed on a background thread!
-     */
-    public EGC toEGC() throws CoseException, CborParseException, DataFormatException, IOException, CborConversionException {
-        return EGCHelper.parse(this.raw);
     }
 }

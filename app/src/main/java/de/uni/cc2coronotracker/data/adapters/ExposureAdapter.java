@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
@@ -59,6 +60,7 @@ public class ExposureAdapter extends RecyclerView.Adapter<ExposureAdapter.ViewHo
     }
 
     // Create new views (invoked by the layout manager)
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         // Create a new view, which defines the UI of the list item
@@ -70,7 +72,7 @@ public class ExposureAdapter extends RecyclerView.Adapter<ExposureAdapter.ViewHo
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, final int position) {
+    public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int position) {
         Exposure exp = exposures.get(position);
 
         int iconResource = R.drawable.ic_baseline_location_on_24;

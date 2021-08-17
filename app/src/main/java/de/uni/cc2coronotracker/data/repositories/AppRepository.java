@@ -67,17 +67,6 @@ public class AppRepository {
         return newUUID;
     }
 
-    public void getOrCreateUUID(RepositoryCallback<UUID> callback) {
-        executor.execute(() -> {
-            try {
-                UUID uuid = getOrCreateUUID();
-                callback.onComplete(new Result.Success<>(uuid));
-            } catch (Exception e) {
-                callback.onComplete(new Result.Error<>(e));
-            }
-        });
-    }
-
     public void generateExposureQRCode(int dimension, RepositoryCallback<Bitmap> callback) {
         executor.execute(() -> {
             QrIntent.AddExposure intent = new QrIntent.AddExposure(getOrCreateUUID(), true);

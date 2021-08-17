@@ -24,14 +24,8 @@ import de.uni.cc2coronotracker.ui.views.OngoingExposureActivity;
 
 public class OngoingExposureService extends LifecycleService {
 
-    public static final String TAG = "OngoingExposureSvc";
     public static final String CHANNEL_ID = "OngoingExposureSC";
     public static final String STOP_SERVICE = "STOP_SERVICE";
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -91,11 +85,6 @@ public class OngoingExposureService extends LifecycleService {
                 .build();
 
         startForeground(1, notification);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
     }
 
     @Nullable

@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -60,13 +61,11 @@ public class ReadQRFragment extends Fragment {
         readQRViewModel = new ViewModelProvider(this).get(ReadQRViewModel.class);
         contactSelectionViewModel = new ViewModelProvider(getActivity()).get(ContactSelectionDialogViewModel.class);
 
-        contactSelectionViewModel.getOnContactSelection().observe(this, contactPickEvent -> {
-            readQRViewModel.handleContactPick(contactPickEvent);
-        });
+        contactSelectionViewModel.getOnContactSelection().observe(this, contactPickEvent -> readQRViewModel.handleContactPick(contactPickEvent));
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_read_qr, container, false);
@@ -109,7 +108,7 @@ public class ReadQRFragment extends Fragment {
         super.onResume();
 
         Boolean isProcessing = readQRViewModel.isLoading().getValue();
-        if (isProcessing == null || isProcessing == false) {
+        if (isProcessing == null || !isProcessing) {
             requestForCamera();
         }
     }

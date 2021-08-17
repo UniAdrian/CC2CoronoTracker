@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -65,7 +66,7 @@ public class StatisticsViewModel extends ViewModel {
                 StatisticsDao.GeneralExposureInfo data = ((Result.Success<StatisticsDao.GeneralExposureInfo>) result).data;
                 generalExposureInfo.postValue(data);
             } else {
-                Log.e(TAG, "Failed to fetch exposures by contact", ((Result.Error)result).exception);
+                Log.e(TAG, "Failed to fetch exposures by contact", ((Result.Error<?>)result).exception);
                 exposuresByContact.postValue(null);
             }
         });
@@ -77,7 +78,7 @@ public class StatisticsViewModel extends ViewModel {
                 List<StatisticsDao.NumExposuresByContact> data = ((Result.Success<List<StatisticsDao.NumExposuresByContact>>) result).data;
                 exposuresByContact.postValue(processExposuresByContact(data));
             } else {
-                Log.e(TAG, "Failed to fetch exposures by contact", ((Result.Error)result).exception);
+                Log.e(TAG, "Failed to fetch exposures by contact", ((Result.Error<?>)result).exception);
                 exposuresByContact.postValue(null);
             }
         });
@@ -134,7 +135,7 @@ public class StatisticsViewModel extends ViewModel {
             if (result instanceof Result.Success) {
                 exposuresByRange.postValue(processNumExposuresByDay(((Result.Success<List<StatisticsDao.NumExposuresByDay>>) result).data, leastDate));
             } else {
-                Log.e(TAG, "Failed querying exposuresByDay.", ((Result.Error)result).exception);
+                Log.e(TAG, "Failed querying exposuresByDay.", ((Result.Error<?>)result).exception);
             }
         });
     }
@@ -165,7 +166,7 @@ public class StatisticsViewModel extends ViewModel {
         Date endDate = new Date();
         long numDays = TimeUnit.DAYS.convert(endDate.getTime() - leastDate.getTime(), TimeUnit.MILLISECONDS);
 
-        SimpleDateFormat df = new SimpleDateFormat("yyy-MM-dd");
+        SimpleDateFormat df = new SimpleDateFormat("yyy-MM-dd", Locale.getDefault());
 
         List<String> labels = new ArrayList<>((int) numDays);
         for (int i = 0; i < numDays; ++i) {

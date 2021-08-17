@@ -113,9 +113,7 @@ public class RequestFactory {
 
             SettingsClient settingsClient = LocationServices.getSettingsClient(c);
             Task<LocationSettingsResponse> task = settingsClient.checkLocationSettings(builder.build());
-            task.addOnSuccessListener(locationSettingsResponse -> {
-                callback.onComplete(new Result.Success<>(null));
-            });
+            task.addOnSuccessListener(locationSettingsResponse -> callback.onComplete(new Result.Success<>(null)));
 
             task.addOnFailureListener(((AppCompatActivity)c), e -> {
                 if (e instanceof ResolvableApiException) {

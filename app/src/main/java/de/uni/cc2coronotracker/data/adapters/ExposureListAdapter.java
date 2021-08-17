@@ -19,8 +19,8 @@ import de.uni.cc2coronotracker.R;
 import de.uni.cc2coronotracker.data.viewmodel.CalendarViewModel;
 
 public class ExposureListAdapter extends RecyclerView.Adapter<ExposureListAdapter.ExposureViewHolder> {
-    List<CalendarViewModel.ExposureDisplayInfo> data;
-    Context context;
+    final List<CalendarViewModel.ExposureDisplayInfo> data;
+    final Context context;
 
     public ExposureListAdapter(List<CalendarViewModel.ExposureDisplayInfo> data, Context ctx) {
         this.data = data;
@@ -48,9 +48,9 @@ public class ExposureListAdapter extends RecyclerView.Adapter<ExposureListAdapte
     }
 
     public static class ExposureViewHolder extends RecyclerView.ViewHolder {
-        TextView titleTextView;
-        TextView infoTextView;
-        ImageView avatarView;
+        final TextView titleTextView;
+        final TextView infoTextView;
+        final ImageView avatarView;
         public ExposureViewHolder(@NonNull View itemView) {
             super(itemView);
             titleTextView = itemView.findViewById(R.id.exposureListRVName);
