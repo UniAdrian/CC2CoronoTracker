@@ -19,12 +19,12 @@
         <LinearLayout
             android:id="@+id/contactContainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:orientation="vertical"
             android:padding="2dp"
             android:paddingStart="4dp"
             android:paddingEnd="4dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/btnDeleteContact"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -48,10 +48,10 @@
                 android:layout_marginStart="2dp"
                 android:layout_marginTop="7dp"
                 android:layout_marginEnd="2dp"
+                android:text="@{detailsVM.contact.displayName}"
                 android:textAlignment="center"
                 android:textSize="@dimen/titleFontSize"
                 android:textStyle="bold"
-                android:text="@{detailsVM.contact.displayName}"
                 android:visibility="@{detailsVM.contact.bound ? View.VISIBLE : View.GONE}"
                 tools:text="displayName" />
 
@@ -78,23 +78,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/description_no_exposures"
-                android:visibility="@{detailsVM.exposures.size > 0 ? View.GONE : View.VISIBLE}"
-                />
+                android:visibility="@{detailsVM.exposures.size > 0 ? View.GONE : View.VISIBLE}" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/contactDetailsExposures"
                 android:layout_width="match_parent"
                 android:layout_height="419dp"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                android:visibility="@{detailsVM.exposures.size > 0 ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{detailsVM.exposures.size > 0 ? View.VISIBLE : View.GONE}"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
         </LinearLayout>
 
         <Button
             android:id="@+id/btnDeleteContact"
             style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:backgroundTint="@color/common_google_signin_btn_text_light_default"
             android:onClick="@{() -> detailsVM.deleteContact()}"
             android:text="@string/delete_contact"
             android:textColor="@color/design_default_color_error"
@@ -114,7 +116,8 @@
             app:layout_constraintBottom_toBottomOf="@+id/contactContainer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="invisible">
 
             <ProgressBar
                 android:id="@+id/progressBar"
