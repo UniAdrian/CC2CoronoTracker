@@ -68,8 +68,7 @@ public class RepositoriesModule {
     @Provides
     @Singleton
     public AppDatabase provideAppDatabase(@ApplicationContext Context appContext)  {
-        // TODO: REMOVE fallbackToDestructiveMigration! THIS HAS NOTHING TO DO IN PROD.
-        return Room.databaseBuilder(appContext, AppDatabase.class, "cc2-db").fallbackToDestructiveMigration().build();
+        return Room.databaseBuilder(appContext, AppDatabase.class, "cc2-db").build();
     }
 
     @Provides
