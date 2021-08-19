@@ -23,6 +23,9 @@ import de.uni.cc2coronotracker.data.models.Contact;
 import de.uni.cc2coronotracker.data.repositories.async.RepositoryCallback;
 import de.uni.cc2coronotracker.data.repositories.async.Result;
 
+/**
+ * Single source of truth concerning Contact data.
+ */
 public class ContactRepository{
 
     private final Context applicationContext;
@@ -45,10 +48,19 @@ public class ContactRepository{
         this.contactDao = contactDao;
     }
 
-
+    /**
+     *
+     * @return A LiveData instance of a list containing all contacts with its respective exposures.
+     */
     public LiveData<List<ContactDao.ContactWithExposures>> getContactsWithExposures() {
         return contactDao.getAllContactsWithExposures();
     }
+
+    /**
+     * Fetches all {@link de.uni.cc2coronotracker.data.dao.ContactDao.ContactWithExposures} for the given contacts.
+     * @param forContacts The list of contacts to be fetched
+     * @param callback The {@link RepositoryCallback} to be called when done.
+     */
     public void getContactsWithExposures(List<Contact> forContacts, RepositoryCallback<List<ContactDao.ContactWithExposures>> callback) {
         executor.execute(() -> {
 
@@ -67,12 +79,24 @@ public class ContactRepository{
         });
     }
 
+    /**
+     * Fetches a single contact by unique id
+     * @param id The contacts unique id
+     * @return The contact fetched
+     */
     private Contact getContact(long id) {
         return contactDao.getByIdSync(id);
     }
+
     public Contact getContactSync(long id) {
         return getContact(id);
     }
+
+    /**
+     * Fetches a contact from the database by unique ID
+     * @param id The unique contact ID
+     * @param callback The {@link RepositoryCallback} to be called when done.
+     */
     public void getContact(long id, RepositoryCallback<Contact> callback) {
         executor.execute(() -> {
             try {
@@ -144,6 +168,11 @@ public class ContactRepository{
         });
     }
 
+    /**
+     * Imports all contacts from the phones contact list and stores it in the local database.
+     * Fetches and stores all fields in the {@link ContactRepository#CONTACT_PROJECTION}
+     * @param callback The {@link RepositoryCallback} to be called when done.
+     */
     public void importContacts(RepositoryCallback<Void> callback) {
         executor.execute( () -> {
             // Try with resources is your friend when working with cursors. No leaks guaranteed.
@@ -165,6 +194,12 @@ public class ContactRepository{
         });
     }
 
+    /**
+     * Given a valid contact Uri, reads the data from the phone contact and creates a Contact instance
+     * with the retrieved data.
+     * @param contactUri The URI of the phone contact
+     * @param callback The {@link RepositoryCallback} to be called when done.
+     */
     public void readContact(@NonNull Uri contactUri, RepositoryCallback<Contact> callback) {
         executor.execute(() -> {
             try {
@@ -176,6 +211,12 @@ public class ContactRepository{
         });
     }
 
+    /**
+     * Given a valid contact Uri, reads the data from the phone contact and creates a Contact instance
+     * with the retrieved data.
+     * @param contactUri
+     * @return The contact
+     */
     private Contact readContact(@NonNull Uri contactUri) {
         try (Cursor cursor = applicationContext.getContentResolver().query(contactUri, CONTACT_PROJECTION, null, null, null)) {
             if (!cursor.moveToFirst()) {
@@ -186,6 +227,12 @@ public class ContactRepository{
         }
     }
 
+    /**
+     * Given a valid cursor to a phone contact fetches and stores all projected fields in a new contact
+     * instance
+     * @param cursor The cursor to a phone contact
+     * @return The created contact instance
+     */
     private Contact contactFromCursor(@NonNull Cursor cursor) {
         // We have a valid cursor.
         int lookupIndex = cursor.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY);
@@ -214,10 +261,19 @@ public class ContactRepository{
         return result;
     }
 
+    /**
+     * Deletes a contact by unique ID
+     * @param id The unique id of the contact
+     */
     private void delete(long id) {
         contactDao.delete(id);
     }
 
+    /**
+     * Deletes a contact by unique ID
+     * @param id The unique id of the contact
+     * @param callback The {@link RepositoryCallback} to be called when done.
+     */
     public void delete(long id, RepositoryCallback<Void> callback) {
         executor.execute(() -> {
             try {

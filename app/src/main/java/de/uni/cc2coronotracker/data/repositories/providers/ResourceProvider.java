@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 
 import androidx.annotation.ArrayRes;
+import androidx.annotation.StringRes;
 
 import javax.inject.Inject;
 
@@ -16,10 +17,12 @@ import dagger.hilt.android.qualifiers.ApplicationContext;
 public class ResourceProvider {
 
     private final Context context;
+    public final Resources res;
 
     @Inject
     public ResourceProvider(@ApplicationContext Context context) {
         this.context = context;
+        res = context.getResources();
     }
 
     /**
@@ -38,5 +41,15 @@ public class ResourceProvider {
         }
 
         return result;
+    }
+
+    /**
+     * Returns a string resource to the caller.
+     * @param strId The strings resource id
+     * @param args The string arguments as a var-arg
+     * @return The (potentially interpreted) string
+     */
+    public String getString(@StringRes int strId, Object... args) {
+        return res.getString(strId, args);
     }
 }

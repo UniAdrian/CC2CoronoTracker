@@ -14,6 +14,9 @@ import de.uni.cc2coronotracker.data.qr.EGC;
 import de.uni.cc2coronotracker.data.repositories.CertificateRepository;
 import de.uni.cc2coronotracker.data.repositories.async.Result;
 
+/**
+ * Fetches and publishes a single certificate for detail view.
+ */
 @HiltViewModel
 public class CertificateViewModel extends ViewModel {
 
@@ -30,6 +33,10 @@ public class CertificateViewModel extends ViewModel {
         this.repository = repository;
     }
 
+    /**
+     * Given a valid egc makes it availabkle and creates a QR code from the raw string available.
+     * @param egc
+     */
     public void setCurrentCertificate(EGC egc) {
         this.currentCertificate = egc;
         loading.postValue(true);

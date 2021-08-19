@@ -41,6 +41,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * Provides the map views business logic
+ */
 @HiltViewModel
 public class MapsViewModel extends ViewModel {
 
@@ -85,6 +88,9 @@ public class MapsViewModel extends ViewModel {
     public LiveData<LocationInfo> getLocationInfo() { return locationInfos; }
 
 
+    /**
+     * Called once the map is available. All logic starts from here.
+     */
     public void onMapReady() {
         locationProvider.getLastLocation(result -> {
             if (result instanceof Result.Success) {
@@ -97,14 +103,25 @@ public class MapsViewModel extends ViewModel {
         });
     }
 
+    /**
+     * starts listening to location updates.
+     * @see {@link LocationProvider}
+     */
     public void startUpdateOwnLocation() {
         locationProvider.addLocationListener(ownLocationListener);
     }
 
+    /**
+     * Stops listening to location updates.
+     * @see {@link LocationProvider}
+     */
     public void stopUpdateOwnLocation() {
         locationProvider.removeLocationListener(ownLocationListener);
     }
 
+    /**
+     * Used to receive location updates via the {@link LocationProvider}
+     */
     private final LocationProvider.LocationListener ownLocationListener = new LocationProvider.LocationListener() {
         @Override
         public void onLocation(LocationResult location) {
@@ -121,6 +138,11 @@ public class MapsViewModel extends ViewModel {
         }
     };
 
+    /**
+     * Given a list of contacts fetches and prepares markers for all exposures of the given contacts.
+     * Only displays markers that have an actual location associated with them.
+     * @param contactList
+     */
     public void DisplayMarkersForContacts(List<Contact> contactList) {
         Log.d(TAG, "Got new contact list: " + contactList);
         selectedContacts.postValue(contactList);
@@ -140,6 +162,11 @@ public class MapsViewModel extends ViewModel {
         }
     }
 
+    /**
+     * Updates the topbottom sheet with RKI data for the currently selected location
+     * @param forLocation The location to fetch
+     * @apiNote Obviously only works inside of germany. Returns no information otherwise.
+     */
     public void updateLocationInfo(LatLng forLocation) {
         Call<RKIApiResult> incidenceByLocation = api.getIncidenceByLocation(String.format(Locale.US,"%f,%f,", forLocation.longitude, forLocation.latitude));
         isLoading.postValue(true);
@@ -168,6 +195,10 @@ public class MapsViewModel extends ViewModel {
         });
     }
 
+    /**
+     * Requests to translate to the given latlang.
+     * @param location
+     */
     public void gotoLocation(LatLng location) {
         requestPosition.postValue(location);
     }
@@ -221,13 +252,15 @@ public class MapsViewModel extends ViewModel {
         markers.postValue(newOptions);
     }
 
+    /**
+     * Location information as returned by the RKI api to be provided to the map view.
+     */
     public static class LocationInfo {
         public LatLng location;
         public String county;
         public String state;
         public double incidence;
 
-        public LocationInfo() {}
         public LocationInfo(LatLng location, String state, String county, double incidence) {
             this.location = location;
             this.state = state;

@@ -35,6 +35,9 @@ import de.uni.cc2coronotracker.data.repositories.async.Result;
 import de.uni.cc2coronotracker.helper.ContextMediator;
 import de.uni.cc2coronotracker.helper.RequestFactory;
 
+/**
+ * Manages access and retrieval of location data.
+ */
 public class LocationProvider implements LifecycleObserver {
     public interface LocationListener {
         void onLocation(LocationResult location);
@@ -58,6 +61,11 @@ public class LocationProvider implements LifecycleObserver {
 
     private final List<LocationListener> locationListeners = new LinkedList<>();
 
+    /**
+     * Adds a listener for location data
+     * If this is the first listener we start tracking location data.
+     * @param listener The listener
+     */
     public void addLocationListener(LocationListener listener) {
         if (locationListeners.size() == 0) {
             startTracking();
@@ -66,6 +74,11 @@ public class LocationProvider implements LifecycleObserver {
     }
 
 
+    /**
+     * Removes a location listener
+     * If this was the last listener we stop tracking location data.
+     * @param listener The listener to remove
+     */
     public void removeLocationListener(LocationListener listener) {
         locationListeners.remove(listener);
 
@@ -99,6 +112,11 @@ public class LocationProvider implements LifecycleObserver {
                 .setFastestInterval(FASTEST_INTERVAL);
     }
 
+    /**
+     * Request permission, then if successful, regularly informs listeners.
+     * On denied permissions, the attempt fails and the user is informed, otherwise the task proceeds
+     * to {@link #checkSettingsAndProceed()}
+     */
     private void startTracking() {
         Log.d(TAG, "waiting for permission...");
         ctxMediator.request(RequestFactory.createPermissionRequest(Manifest.permission.ACCESS_FINE_LOCATION, new PermissionListener() {
@@ -139,6 +157,11 @@ public class LocationProvider implements LifecycleObserver {
         }));
     }
 
+    /**
+     * Called by the MainActivity once a LOCATION_AVAILABILITY_REQUEST result is received.
+     * @param resultCode The result code
+     * @param data The recived intent
+     */
     @SuppressLint("MissingPermission")
     public void onSettingsResult(int resultCode, Intent data) {
         if (resultCode == AppCompatActivity.RESULT_OK) {
@@ -150,6 +173,9 @@ public class LocationProvider implements LifecycleObserver {
         }
     }
 
+    /**
+     * Informs all current listeners that location data is unavailable and stops tracking
+     */
     private void notifyAndStop() {
         for (LocationListener listener : locationListeners) {
             listener.onLocationUnavailable();
@@ -157,6 +183,9 @@ public class LocationProvider implements LifecycleObserver {
         stopTracking();
     }
 
+    /**
+     * Stops tracking of location data.
+     */
     private void stopTracking() {
         Log.d(TAG, "Stopping to track location...");
         fusedLocationClient.removeLocationUpdates(locationCallback);

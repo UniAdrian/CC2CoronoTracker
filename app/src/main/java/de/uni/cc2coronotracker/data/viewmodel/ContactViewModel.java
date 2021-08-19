@@ -32,6 +32,9 @@ import de.uni.cc2coronotracker.helper.Event;
 import de.uni.cc2coronotracker.helper.RequestFactory;
 import de.uni.cc2coronotracker.ui.views.ContactsFragmentDirections;
 
+/**
+ * Provides business logic for the Contact List
+ */
 @HiltViewModel
 public class ContactViewModel extends ViewModel {
 
@@ -56,17 +59,27 @@ public class ContactViewModel extends ViewModel {
         });
     }
 
+    /**
+     * Provides an updating source of Contacts with their respective exposures.
+     * @return
+     */
     public LiveData<List<ContactDao.ContactWithExposures>> getAllContactsWithExposures() {
         return allContactsWithExposures;
     }
 
+    /**
+     * @return A list of request events prompting contact picks by the user.
+     */
     public LiveData<Event<Void>> getRequestContactPick() { return requestContactPick; }
 
     public LiveData<Boolean> isLoading() {
         return loading;
     }
 
-
+    /**
+     * Imports a single phone contact into the repository on user choice.
+     * Given the permissions fail the user is prompted to try again.
+     */
     public void importPhoneContact() {
         ctxMediator.request(RequestFactory.createPermissionRequest(Manifest.permission.READ_CONTACTS, new PermissionListener() {
             @Override
@@ -90,6 +103,10 @@ public class ContactViewModel extends ViewModel {
         }));
     }
 
+    /**
+     * Imports all phone contacts into the repository.
+     * Given the permissions fail the user is prompted to try again.
+     */
     public void importPhoneContacts() {
         loading.postValue(true);
 
@@ -125,6 +142,9 @@ public class ContactViewModel extends ViewModel {
         }));
     }
 
+    /**
+     * Displays a simple error message when contact import fails.
+     */
     private void showImportError() {
         ctxMediator.request(RequestFactory.createSnackbarRequest(
                 R.string.import_contact_failed,
@@ -133,13 +153,19 @@ public class ContactViewModel extends ViewModel {
         );
     }
 
-    // Prompts the user to add new information
+    /**
+     * Request the applciation to display a {@link de.uni.cc2coronotracker.ui.dialogs.NewContactDialogFragment}
+     */
     public void addContact() {
         ctxMediator.request(RequestFactory.createNewContactDialogRequest());
     }
 
 
-    // Actually adds a contact to the repository
+    /**
+     * Called once the user confirms a new user after calling {@link #addContact()}
+     * Actually adds the new contact to the repository
+     * @param newContact The contact to be added.
+     */
     public void addContact(Contact newContact) {
         Log.d(TAG, "Creating new contact: " + newContact);
 

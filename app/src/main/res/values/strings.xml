@@ -178,4 +178,7 @@
     <string name="start_exposure_manual">Check-in</string>
     <string name="manual_checkin_failed">Check-in failed.</string>
     <string name="statistics_not_enough_data">Not enough data yet.</string>
+    <string name="statistics_exposures_by_contact">Exposures by contact</string>
+    <string name="statistics_other">Other</string>
+    <string name="statistics_label_exposures">Exposures</string>
 </resources>
