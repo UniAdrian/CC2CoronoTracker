@@ -29,11 +29,23 @@ import de.uni.cc2coronotracker.data.models.EUCertificate;
 import de.uni.cc2coronotracker.data.qr.EGC;
 import nl.minvws.encoding.Base45;
 
+/**
+ * Helper for parsing health certificates.
+ */
 public class EGCHelper {
 
     private static final String TAG = "EGCHelper";
 
-
+    /**
+     * Parses a string into a valid health certificate or throws an exception
+     * @param toParse The raw QR content
+     * @return The parsed EGC
+     * @throws CborConversionException
+     * @throws CborParseException
+     * @throws IOException
+     * @throws DataFormatException
+     * @throws CoseException
+     */
     public static EGC parse(String toParse) throws CborConversionException, CborParseException, IOException, DataFormatException, CoseException {
 
         byte[] decodedBytes = Base45.getDecoder().decode(toParse.substring(4));
@@ -122,7 +134,13 @@ public class EGCHelper {
         return egc;
     }
 
-
+    /**
+     * Returns the given entry if present in the map, {@code defaultValue} otherwise.
+     * @param map The map to be searched
+     * @param key The key to be fetched
+     * @param defaultValue The default value if not present
+     * @return The retrieved string or {@code defaultValue}
+     */
     private static String getFromMapOrDefault(Map<String, String> map, String key, String defaultValue) {
         // getOrDefault(key, defaultValue); would require a higher API level...
         if (map.containsKey(key))
@@ -130,6 +148,12 @@ public class EGCHelper {
         return defaultValue;
     }
 
+    /**
+     * Parses a prophylaxis certificate
+     * @param v The CborObject to be parsed
+     * @return The VaccinationGroup instance
+     * @throws CborParseException When the vaccination group is not compliant
+     */
     private static EUCertificate.VaccinationGroup parseVaccinationGroup(CborObject v) throws CborParseException {
         // For some reason they use an array even tho the spec requires exactly one entry ... always...
         Log.d(TAG, "Parsing VaccineGroup: " + v.toString());
@@ -160,6 +184,12 @@ public class EGCHelper {
         return vg;
     }
 
+    /**
+     * Parses a test certificate
+     * @param t The CborObject to be parsed
+     * @return The TestGroup instance
+     * @throws CborParseException When the test group is not compliant
+     */
     private static EUCertificate.TestGroup parseTestGroup(CborObject t) throws CborParseException {
         // For some reason they use an array even tho the spec requires exactly one entry ... always...
         Log.d(TAG, "Parsing TestGroup: " + t.toString());
@@ -192,6 +222,13 @@ public class EGCHelper {
         return tg;
     }
 
+
+    /**
+     * Parses a recovery certificate
+     * @param t The CborObject to be parsed
+     * @return The RecoveryGroup instance
+     * @throws CborParseException When the recovery group is not compliant
+     */
     private static EUCertificate.RecoveryGroup parseRecoveryGroup(CborObject t) throws CborParseException {
         // For some reason they use an array even tho the spec requires exactly one entry ... always...
         Log.d(TAG, "Parsing RecoveryGroup: " + t.toString());
@@ -215,6 +252,13 @@ public class EGCHelper {
         return rg;
     }
 
+    /**
+     * Attempts to the the string from the CborMap
+     * @param obj The cbormap to be searched
+     * @param key The key to be retrieved
+     * @return The retrieved String
+     * @throws IllegalArgumentException If the key is not present in the map
+     */
     private static String getString(CborMap obj, String key) {
         if (obj.containsKey(key))
             return StringUtils.unwrap(obj.get(key).toString(), '"');
@@ -222,6 +266,13 @@ public class EGCHelper {
         throw new IllegalArgumentException("Expected map to have key '" + key + "', but was not found.");
     }
 
+    /**
+     * Attempts to the the string from the CborMap, or {@code defaultVal} if not present.
+     * @param obj The cbormap to be searched
+     * @param key The key to be retrieved
+     * @param defaultVal The default value to return if key is not present
+     * @return The retrieved String or {@code defaultVal}
+     */
     private static String getString(CborMap obj, String key, String defaultVal) {
         if (obj.containsKey(key))
             return StringUtils.unwrap(obj.get(key).toString(), '"');
@@ -229,6 +280,13 @@ public class EGCHelper {
         return defaultVal;
     }
 
+    /**
+     * Decompresses the given byte array using zlib
+     * @param data The compressed byte array
+     * @return The uncompressed byte array
+     * @throws IOException
+     * @throws DataFormatException
+     */
     public static byte[] decompress(byte[] data) throws IOException, DataFormatException {
         Inflater inflater = new Inflater();
         inflater.setInput(data);

@@ -24,6 +24,12 @@ import de.uni.cc2coronotracker.data.viewmodel.ContactViewModel;
 import de.uni.cc2coronotracker.data.viewmodel.shared.ContactSelectionDialogViewModel;
 import de.uni.cc2coronotracker.databinding.DialogContactPickerBinding;
 
+/**
+ * Allows the user to select a contact from a list of all contacts.
+ * Allows single and multi select mode by passing the argument {@code isMultiSelect} to the dialog.
+ * Also optionally forwards an intent associated with the dialog via the {@code intent} parameter
+ * on confirmation.
+ */
 public class SelectContactDialogFragment extends DialogFragment {
 
     private boolean isMultiSelect = false;
@@ -36,6 +42,13 @@ public class SelectContactDialogFragment extends DialogFragment {
     private ContactSelectionDialogViewModel contactSelectionViewModel;
 
 
+    /**
+     * Creates a new instance of the DialogFragment
+     * Should be used exclusively to create an instance of this class.
+     * @param multiSelect If true allows selection of multiple contact, single contact otherwise
+     * @param intent Optional intent associated with this dialog.
+     * @return
+     */
     public static SelectContactDialogFragment newInstance(boolean multiSelect, @Nullable QrIntent.Intent intent) {
         SelectContactDialogFragment fragmentDemo = new SelectContactDialogFragment();
         Bundle args = new Bundle();
@@ -98,6 +111,10 @@ public class SelectContactDialogFragment extends DialogFragment {
         return builder.create();
     }
 
+    /**
+     * Called when a contact is clicked in Single select mode
+     * @param contact
+     */
     private void onSingleSelect(Contact contact) {
         ArrayList<Contact> returnArray = new ArrayList<>();
         returnArray.add(contact);
@@ -108,6 +125,9 @@ public class SelectContactDialogFragment extends DialogFragment {
         }
     }
 
+    /**
+     * Called when the user confirms selection in multi select mode.
+     */
     private void onMultiSelect() {
         List<Contact> returnArray = ((ContactSelectionAdapter)binding.rvContactList.getAdapter()).getSelected();
         contactSelectionViewModel.onContactSelection(new ContactSelectionDialogViewModel.ContactIntentTuple(returnArray, callerIntent));

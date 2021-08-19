@@ -34,6 +34,10 @@ import de.uni.cc2coronotracker.ui.dialogs.NewContactDialogFragment;
 import de.uni.cc2coronotracker.ui.dialogs.SelectContactDialogFragment;
 import de.uni.cc2coronotracker.ui.views.MainActivity;
 
+/**
+ * Provides easy access to commonly used requests.
+ * Used in conjunction with the {@link ContextMediator}
+ */
 public class RequestFactory {
 
     public static CallWithContextRequest createPermissionRequest(String permission, PermissionListener resultListener) {
