@@ -107,6 +107,7 @@ public class NewContactDialogFragment extends DialogFragment implements TextWatc
             getActivity().getContentResolver().takePersistableUriPermission(imgUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
             binding.imgAvatar.setImageURI(imgUri);
             binding.imgAvatar.setColorFilter(null);
+            binding.imgAvatar.setImageTintList(null);
         } catch (Exception e) {
             imageUri = null;
             binding.imgAvatar.setImageResource(R.drawable.ic_no_avatar_128);
