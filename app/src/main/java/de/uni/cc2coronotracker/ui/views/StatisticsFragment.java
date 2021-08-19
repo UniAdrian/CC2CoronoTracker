@@ -1,7 +1,6 @@
 package de.uni.cc2coronotracker.ui.views;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +54,10 @@ public class StatisticsFragment extends Fragment {
         binding.chrtExposuresByContacts.getDescription().setEnabled(false);
 
 
+        String notEnoughDataText = view.getResources().getString(R.string.statistics_not_enough_data);
+        binding.chrtExposuresLastN.setNoDataText(notEnoughDataText);
+        binding.chrtExposuresByContacts.setNoDataText(notEnoughDataText);
+
         binding.chrtExposuresLastN.getAxisRight().setEnabled(false);
         binding.chrtExposuresLastN.getDescription().setEnabled(false);
 
@@ -77,11 +80,11 @@ public class StatisticsFragment extends Fragment {
 
 
         mViewModel.getExposureByRangeEntries().observe(this.getViewLifecycleOwner(), exposureEntries -> {
-            if (exposureEntries == null) return;
 
-            // Prevents a very, very rare NPE
-            if (binding.chrtExposuresLastN == null) {
-                Log.w(TAG, "Unable to set exposure data, graph unavailable.");
+            // Not enough data?
+            if (exposureEntries == null || exposureEntries.data.getDataSetCount() < 1 || exposureEntries.data.getDataSetByIndex(0).getEntryCount() < 2) {
+                binding.chrtExposuresLastN.setData(null);
+                binding.chrtExposuresLastN.animateY(750);
                 return;
             }
 
@@ -101,12 +104,13 @@ public class StatisticsFragment extends Fragment {
         });
 
         mViewModel.getExposuresByContact().observe(this.getViewLifecycleOwner(), pieDataSet -> {
-            if (pieDataSet == null) return;
-            // Prevents a very, very rare NPE
-            if (binding.chrtExposuresLastN == null) {
-                Log.w(TAG, "Unable to set exposure data, graph unavailable.");
+            if (pieDataSet == null || pieDataSet.getDataSetCount() < 1 || pieDataSet.getDataSetByIndex(0).getEntryCount() < 1) {
+                binding.chrtExposuresLastN.setData(null);
+                binding.chrtExposuresLastN.animateY(750);
                 return;
             }
+
+
             binding.chrtExposuresByContacts.setData(pieDataSet);
             binding.chrtExposuresByContacts.invalidate();
         });

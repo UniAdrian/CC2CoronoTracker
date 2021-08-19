@@ -37,9 +37,9 @@ public class StatisticsViewModel extends ViewModel {
     private static final String TAG = "StatisticsVM";
 
     public enum EXPOSURE_RANGE {
-        DAY,
         WEEK,
         MONTH,
+        ALWAYS
     }
 
     private final StatisticsRepository statisticsRepository;
@@ -116,10 +116,9 @@ public class StatisticsViewModel extends ViewModel {
 
         java.sql.Date leastDate;
         switch (range) {
-            case DAY:
-                leastDate = last24h();
+            case ALWAYS:
+                leastDate = always();
                 break;
-
             case WEEK:
                 leastDate = lastWeek();
                 break;
@@ -133,28 +132,32 @@ public class StatisticsViewModel extends ViewModel {
 
         statisticsRepository.getExposuresByDay(leastDate, result -> {
             if (result instanceof Result.Success) {
-                exposuresByRange.postValue(processNumExposuresByDay(((Result.Success<List<StatisticsDao.NumExposuresByDay>>) result).data, leastDate));
+                exposuresByRange.postValue(processNumExposuresByDay(((Result.Success<List<StatisticsDao.NumExposuresByDay>>) result).data, leastDate, range));
             } else {
                 Log.e(TAG, "Failed querying exposuresByDay.", ((Result.Error<?>)result).exception);
             }
         });
     }
 
-    private ExposureRangeDataSet processNumExposuresByDay(List<StatisticsDao.NumExposuresByDay> data, Date leastDate) {
-
+    private ExposureRangeDataSet processNumExposuresByDay(List<StatisticsDao.NumExposuresByDay> data, Date leastDate, EXPOSURE_RANGE range) {
         ExposureRangeDataSet result = new ExposureRangeDataSet();
         if (data == null) {
             return result;
         }
 
-        List<Entry> barEntries = new ArrayList<>();
-        for (StatisticsDao.NumExposuresByDay entry : data) {
+        List<Entry> barEntries = new ArrayList<>(data.size());
+        List<String> alwaysLabels = new ArrayList<>(data.size());
 
-            Entry barEntry = new Entry(entry.dayDiff, entry.numExposures);
+
+        for (int i=0; i<data.size(); ++i) {
+            Entry barEntry = new Entry((range != EXPOSURE_RANGE.ALWAYS) ? data.get(i).dayDiff : i, data.get(i).numExposures);
             barEntries.add(barEntry);
+            alwaysLabels.add(data.get(i).day);
+
+            Log.d(TAG, "dayDiff: " + data.get(i).dayDiff);
         }
 
-        List<String> labels = prepLabelString(leastDate);
+        List<String> labels = (range != EXPOSURE_RANGE.ALWAYS) ? prepLabelString(leastDate) : alwaysLabels;
 
         result.data = new LineData(new LineDataSet(barEntries, "Exposures"));
         result.labels = labels;
@@ -178,9 +181,8 @@ public class StatisticsViewModel extends ViewModel {
     }
 
 
-    private java.sql.Date last24h() {
-        Date result = DateUtils.addDays(new Date(),-1);
-        return new java.sql.Date(result.getTime());
+    private java.sql.Date always() {
+        return new java.sql.Date(0);
     }
 
     private java.sql.Date lastWeek() {
