@@ -40,6 +40,10 @@ import de.uni.cc2coronotracker.helper.RequestFactory;
 import de.uni.cc2coronotracker.ui.views.OngoingExposureActivity;
 import de.uni.cc2coronotracker.ui.views.ReadQRFragmentDirections;
 
+/**
+ * Provides the business logic for the QR scanning screen.
+ * Parses, prepares and forwards valid QR intents.
+ */
 @HiltViewModel
 public class ReadQRViewModel extends ViewModel {
 
@@ -68,11 +72,15 @@ public class ReadQRViewModel extends ViewModel {
         this.certificateRepository = certificateRepository;
     }
 
+    /**
+     * Given a valid QR intent does the necessary work and forwards the data/user to corresponding fragments.
+     * @param intent
+     */
     public void handleQRIntent(QrIntent.Intent intent) {
         if (intent instanceof QrIntent.AddExposure) {
             handleAddExposureIntent((QrIntent.AddExposure) intent);
         } else if (intent instanceof QrIntent.ImportSettings) {
-            // TODO: Add me!
+            // TODO: Add me! I am a bonus feature.
             ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.unknown_intent, Snackbar.LENGTH_SHORT));
         } else if (intent instanceof EGC) {
             handleEGCIntent((EGC)intent);
@@ -81,6 +89,11 @@ public class ReadQRViewModel extends ViewModel {
         }
     }
 
+    /**
+     * Called when a valid EGC intent (aka a valid eu health certificate) is scanned.
+     * Stores the certificate and forwards the user to its details page.
+     * @param intent The valid EGC intent.
+     */
     private void handleEGCIntent(EGC intent) {
         isLoading.postValue(true);
         certificateRepository.addEGC(intent, result -> {
@@ -106,6 +119,10 @@ public class ReadQRViewModel extends ViewModel {
         });
     }
 
+    /**
+     * Navigates the user to the given certs details page.
+     * @param intent The certificate to display
+     */
     private void gotoCert(EGC intent) {
         isLoading.postValue(true);
         certificateRepository.getByIdentifier("", result -> {
@@ -119,6 +136,13 @@ public class ReadQRViewModel extends ViewModel {
         });
     }
 
+    /**
+     * Called when a valid add exposure intent is scanned.
+     * If no user is associated with the scanned UUID yet the user is asked to associate it with a
+     * user before proceeding.
+     * Then the ongoing exposure activity is opened for the user and the exposure added to the repo.
+     * @param intent The valid AddExposure intent scanned by the user.
+     */
     public void handleAddExposureIntent(QrIntent.AddExposure intent) {
         contactRepository.getContact(intent.uuid, result -> {
             if (result instanceof Result.Success) {
@@ -134,7 +158,12 @@ public class ReadQRViewModel extends ViewModel {
         });
     }
 
-
+    /**
+     * Called when a user was prompted to select a user for a given Intent.
+     * @param event The picked contact and the associated intent.
+     * @apiNote Currently only supports th AddExposure intent and must be expanded upon if new features
+     * are implemented.
+     */
     public void handleContactPick(Event<ContactSelectionDialogViewModel.ContactIntentTuple> event) {
         ContactSelectionDialogViewModel.ContactIntentTuple cit = event.peekContent();
         if (cit == null) return;
@@ -148,6 +177,10 @@ public class ReadQRViewModel extends ViewModel {
         }
     }
 
+    /**
+     * Adds the exposure to the repository and starts the ongoing exposure activity.
+     * @param toAdd The exposure to be added.
+     */
     private void addExposure(Exposure toAdd) {
         isLoadingText.postValue("One last step...");
         exposureRepository.addExposure(toAdd, result -> {
@@ -170,6 +203,13 @@ public class ReadQRViewModel extends ViewModel {
         });
     }
 
+
+    /**
+     * Prepares a new exposure (including location data if configured to do so and the other party allows it)
+     * Then calls <ref>this.addExposure()</ref>
+     * @param contact The contact to prepare a new exposure with
+     * @param allowTracking Wether or not the contact wants to be tracked
+     */
     private void prepareAndAddExposure(Contact contact, boolean allowTracking) {
         isLoading.postValue(true);
         isLoadingText.postValue("Preparing exposure...");
@@ -179,6 +219,8 @@ public class ReadQRViewModel extends ViewModel {
         toAdd.location = null;
         toAdd.startDate = new java.sql.Date(new Date().getTime());
 
+
+        // does the user want to be tracked and we allow it ourselves?
         if (!allowTracking || !settingsProvider.getTrackExposures()) {
             addExposure(toAdd);
             return;
@@ -206,6 +248,12 @@ public class ReadQRViewModel extends ViewModel {
         locationprovider.addLocationListener(locationListener);
     }
 
+    /**
+     * Associates a contact with a UUID, then calls <ref>prepareAndAddExposure</ref>
+     * @param contact The contact to be associated with the UUID
+     * @param uuid The UUID to be associated with the contact
+     * @param allowTracking Wether or not the user allows tracking.
+     */
     private void connectContactAndAddExposure(Contact contact, UUID uuid, boolean allowTracking) {
         Log.d(TAG, "AddExposure for " + uuid.toString() + " (" + allowTracking + ") -> " + contact);
         contact.uuid = uuid;
