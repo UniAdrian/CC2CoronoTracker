@@ -18,7 +18,6 @@ public abstract class StatisticsDao {
             "    Date(start_date / 1000, 'unixepoch') AS day,\n" +
             "    start_date AS timestamp,\n" +
             "    JulianDay(start_date / 1000,  'unixepoch', 'start of day') - JulianDay(:leastDate / 1000, 'unixepoch', 'start of day')  AS dayDiff,\n" +
-            "    JulianDay(start_date / 1000, 'unixepoch', 'start of day') AS derp,\n" +
             "    COUNT(*) AS numExposures\n" +
             "FROM exposures\n" +
             "WHERE dayDiff >= 0\n" +
