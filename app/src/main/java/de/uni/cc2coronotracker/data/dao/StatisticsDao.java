@@ -14,13 +14,16 @@ public abstract class StatisticsDao {
      * @param leastDate The minimum date to be included in the result
      * @return A list of NumExposuresByDay
      */
-    @Query("SELECT DATE(start_date / 1000, 'unixepoch') AS day,\n" +
-            "       (start_date - :leastDate) / 86400000 AS dayDiff,\n" +
-            "       COUNT(*) AS numExposures\n" +
-            " FROM   exposures\n" +
-            " WHERE dayDiff >= 0\n" +
-            " GROUP BY DATE(start_date / 1000, 'unixepoch')\n" +
-            " ORDER BY day")
+    @Query("SELECT \n" +
+            "    Date(start_date / 1000, 'unixepoch') AS day,\n" +
+            "    start_date AS timestamp,\n" +
+            "    JulianDay(start_date / 1000,  'unixepoch', 'start of day') - JulianDay(:leastDate / 1000, 'unixepoch', 'start of day')  AS dayDiff,\n" +
+            "    JulianDay(start_date / 1000, 'unixepoch', 'start of day') AS derp,\n" +
+            "    COUNT(*) AS numExposures\n" +
+            "FROM exposures\n" +
+            "WHERE dayDiff >= 0\n" +
+            "GROUP BY JulianDay(start_date / 1000, 'unixepoch', 'start of day')\n" +
+            "ORDER BY day")
     public abstract List<NumExposuresByDay> getExposuresByDay(Date leastDate);
 
     /**
@@ -59,6 +62,7 @@ public abstract class StatisticsDao {
 
     public static class NumExposuresByDay {
         public String day;
+        public long timestamp;
         public long dayDiff;
         public long numExposures;
     }

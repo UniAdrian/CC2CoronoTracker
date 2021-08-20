@@ -122,10 +122,9 @@
     <string name="map_own_location">Your Location</string>
     <string name="statistics">Statistics</string>
     <string name="statistics_contacts">Number of exposures</string>
-    <string name="today">24h</string>
+    <string name="always">All time</string>
     <string name="this_week">One week</string>
     <string name="this_month">One month</string>
-    <string name="all_time">All time</string>
     <string name="statistics_general">General statistics</string>
     <string name="statistics_highest_encounter">Highest exposure</string>
     <string name="statistics_by_contact">Highest exposures by contact</string>
@@ -178,4 +177,8 @@
     <string name="exposure_duration_format_string">H\' hours \'m\' minutes \'s\' seconds\'</string>
     <string name="start_exposure_manual">Check-in</string>
     <string name="manual_checkin_failed">Check-in failed.</string>
+    <string name="statistics_not_enough_data">Not enough data yet.</string>
+    <string name="statistics_exposures_by_contact">Exposures by contact</string>
+    <string name="statistics_other">Other</string>
+    <string name="statistics_label_exposures">Exposures</string>
 </resources>

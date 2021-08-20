@@ -26,8 +26,6 @@ import COSE.CoseException;
  *
  * If more complex QR Types should arise it is recommended to change the parsing pattern to a more
  * efficient, flexible and robust scheme.
- *
- * TODO: IMPLEMENT PROPER ERROR HANDLING WITH MEANINGFUL MESSAGES
  */
 public class QrIntent {
 

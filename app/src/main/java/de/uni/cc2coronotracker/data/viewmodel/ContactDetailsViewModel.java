@@ -33,6 +33,9 @@ import de.uni.cc2coronotracker.helper.ContextMediator;
 import de.uni.cc2coronotracker.helper.RequestFactory;
 import de.uni.cc2coronotracker.ui.views.OngoingExposureActivity;
 
+/**
+ * Provides the logic for the contact details screen.
+ */
 @HiltViewModel
 public class ContactDetailsViewModel extends ViewModel {
 
@@ -64,6 +67,10 @@ public class ContactDetailsViewModel extends ViewModel {
         this.settingsProvider = settingsProvider;
     }
 
+    /**
+     * Called initially, fetches the users information and makes them available for the fragment.
+     * @param contactId The id of the user to fetch details for.
+     */
     public void setContactId(long contactId) {
         isLoading.postValue(true);
 
@@ -96,6 +103,10 @@ public class ContactDetailsViewModel extends ViewModel {
         });
     }
 
+    /**
+     * Deletes the current contact if set, does nothing otherwise.
+     * @apiNote If this runs successfully the user is navigated to the contacts fragment automatically.
+     */
     public void deleteContact() {
         Contact currentContact = contact.getValue();
         if (currentContact == null) return;
@@ -116,6 +127,9 @@ public class ContactDetailsViewModel extends ViewModel {
         }, null, currentContact.displayName));
     }
 
+    /**
+     * Prepares an exposure and opens the ongoing exposure activity if a valid user is currently set.
+     */
     public void checkInManual() {
         Contact currentContact = contact.getValue();
         if (currentContact == null) return;
@@ -123,6 +137,10 @@ public class ContactDetailsViewModel extends ViewModel {
         prepareAndAddExposure(currentContact);
     }
 
+    /**
+     * Adds a new exposure to the database
+     * @param toAdd The exposure to add.
+     */
     private void addExposure(Exposure toAdd) {
         exposureRepository.addExposure(toAdd, result -> {
             isLoading.postValue(false);
@@ -144,6 +162,11 @@ public class ContactDetailsViewModel extends ViewModel {
         });
     }
 
+    /**
+     * Creates a new exposure and adds it to the repository for a given contact.
+     * If configured to track lcoation data it also requests and adds the location data.
+     * @param contact The contact to add a new exposure for.
+     */
     private void prepareAndAddExposure(Contact contact) {
         isLoading.postValue(true);
 
@@ -152,11 +175,14 @@ public class ContactDetailsViewModel extends ViewModel {
         toAdd.location = null;
         toAdd.startDate = new java.sql.Date(new Date().getTime());
 
+        // if we do not allow tracking of location data we proceed without it...
         if (!settingsProvider.getTrackExposures()) {
             addExposure(toAdd);
             return;
         }
 
+
+        // otherwise we use the locationprovider to fetch the current location data and then add the exposure.
         LocationProvider.LocationListener locationListener = new LocationProvider.LocationListener() {
             @Override
             public void onLocation(LocationResult locationResult) {
@@ -178,10 +204,22 @@ public class ContactDetailsViewModel extends ViewModel {
         locationprovider.addLocationListener(locationListener);
     }
 
+    /**
+     * Provides the ui a possibility to react to loading states.
+     * @return True if the viewmodel is currently waiting for asynchronous tasks to finish, false otherwise
+     */
     public LiveData<Boolean> getLoading() {
         return isLoading;
     }
+
+    /**
+     * @return The current contact or null
+     */
     public LiveData<Contact> getContact() { return contact; }
+
+    /**
+     * @return The current contacts exposures or null
+     */
     public LiveData<List<Exposure>> getExposures() {
         return exposures;
     }

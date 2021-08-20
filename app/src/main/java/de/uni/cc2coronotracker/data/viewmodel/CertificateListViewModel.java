@@ -27,6 +27,10 @@ import de.uni.cc2coronotracker.helper.EGCHelper;
 import de.uni.cc2coronotracker.helper.RequestFactory;
 import de.uni.cc2coronotracker.ui.views.CertificateListFragmentDirections;
 
+/**
+ * Provides business logic to the certificate list.
+ * PMostly retrieves a list of certificates and makes it available to the fragments
+ */
 @HiltViewModel
 public class CertificateListViewModel extends ViewModel {
 
@@ -47,11 +51,17 @@ public class CertificateListViewModel extends ViewModel {
         });
     }
 
-
+    /**
+     * Navigate the user to the QR scanning fragment
+     */
     public void gotoQRScan() {
         ctxMediator.request(RequestFactory.createNavigationRequest(R.id.action_certificateListFragment_to_readQR));
     }
 
+    /**
+     * Navigates the user to the given Certificates detail page
+     * @param entity
+     */
     public void gotoDetails(CertEntity entity) {
         try {
             EGC egc = EGCHelper.parse(entity.raw);

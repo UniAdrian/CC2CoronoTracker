@@ -27,6 +27,9 @@ import de.uni.cc2coronotracker.helper.ContextMediator;
 import de.uni.cc2coronotracker.helper.Event;
 import de.uni.cc2coronotracker.helper.RequestFactory;
 
+/**
+ * Provides business logic to the {@link de.uni.cc2coronotracker.ui.views.OngoingExposureActivity}
+ */
 @HiltViewModel
 public class OngoingExposureViewModel extends ViewModel {
 
@@ -50,6 +53,10 @@ public class OngoingExposureViewModel extends ViewModel {
         this.ctxMediator = ctxMediator;
     }
 
+    /**
+     * Prepares the vm for the given exposureId
+     * @param exposureId The unique ID of the current exposure
+     */
     public void setExposure(long exposureId) {
         this.isLoading.postValue(true);
         this.exposureRepository.getExposure(exposureId, result -> {
@@ -65,6 +72,10 @@ public class OngoingExposureViewModel extends ViewModel {
         });
     }
 
+    /**
+     * Fetches the user associated with the exposureId
+     * @param contactId
+     */
     private void setContact(long contactId) {
         this.isLoading.postValue(true);
         this.contactRepository.getContact(contactId, result -> {
@@ -88,8 +99,15 @@ public class OngoingExposureViewModel extends ViewModel {
     public LiveData<Contact> currentContact() {
         return currentContact;
     }
+
+    /**
+     * @return A list of request events to finish the activity.
+     */
     public LiveData<Event<Boolean>> getRequestFinish() { return requestFinish; }
 
+    /**
+     * If the current exposure is valid stores it and finishes the activity.
+     */
     public void finalizeCurrentExposure() {
         Exposure current = currentExposure.getValue();
         if (current == null || current.endDate != null) return;
@@ -97,6 +115,10 @@ public class OngoingExposureViewModel extends ViewModel {
         updateExposureAndBail(current);
     }
 
+    /**
+     * Updates the current exposure and stores it in the repository
+     * @param exposure The exposure to be updated
+     */
     private void updateExposureAndBail(Exposure exposure) {
         exposure.endDate = new Date(new java.util.Date().getTime());
         exposureRepository.updateExposure(exposure, result -> {

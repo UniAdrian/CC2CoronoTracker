@@ -29,10 +29,12 @@
         <ImageView
             android:id="@+id/imgAvatar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="150dp"
+            android:adjustViewBounds="false"
             android:contentDescription="@string/avatarDescription"
-            app:tint="@color/secondaryTextColor"
-            app:srcCompat="@drawable/ic_no_avatar_128" />
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/ic_no_avatar_128"
+            app:tint="@color/secondaryTextColor" />
 
         <Button
             android:id="@+id/btnSelectFromGallery"

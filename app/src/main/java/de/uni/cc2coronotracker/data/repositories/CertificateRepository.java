@@ -34,6 +34,11 @@ public class CertificateRepository {
         this.dao = dao;
     }
 
+    /**
+     * Stores the given egc in the database
+     * @param egc The egc to be stored
+     * @param callback The {@link RepositoryCallback} to be called when done.
+     */
     public void addEGC(EGC egc, RepositoryCallback<Long> callback) {
         executor.execute( () -> {
             try {
@@ -44,6 +49,11 @@ public class CertificateRepository {
         });
     }
 
+    /**
+     * Returns a certificate by its unique identifier
+     * @param identifier The identifier of the certificate
+     * @param callback The {@link RepositoryCallback} to be called when done.
+     */
     public void getByIdentifier(String identifier, RepositoryCallback<CertEntity> callback) {
         executor.execute(() -> {
             try {
@@ -54,10 +64,19 @@ public class CertificateRepository {
         });
     }
 
+    /**
+     * @return All certificates as LiveData
+     */
     public LiveData<List<CertEntity>> getAll() {
         return dao.getAll();
     }
 
+    /**
+     * Given a raw string generates and returns a new bitmap containing the QR Code
+     * @param dimension The dimensions of the square QR code
+     * @param raw The raw string to be put into the QR code
+     * @param callback The {@link RepositoryCallback} to be called when done.
+     */
     public void certToQr(int dimension, String raw, RepositoryCallback<Bitmap> callback) {
         executor.execute(() -> {
 

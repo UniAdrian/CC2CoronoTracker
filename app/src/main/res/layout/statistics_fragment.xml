@@ -66,13 +66,13 @@
                 app:layout_constraintTop_toBottomOf="@+id/chrtExposuresLastN">
 
                 <RadioButton
-                    android:id="@+id/exposuresToday"
+                    android:id="@+id/exposuresAlways"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:checked="@{vm.exposureRange == EXPOSURE_RANGE.DAY}"
+                    android:checked="@{vm.exposureRange == EXPOSURE_RANGE.ALWAYS}"
                     android:minHeight="48dp"
-                    android:onClick="@{() -> vm.updateExposuresByDay(EXPOSURE_RANGE.DAY)}"
-                    android:text="@string/today" />
+                    android:onClick="@{() -> vm.updateExposuresByDay(EXPOSURE_RANGE.ALWAYS)}"
+                    android:text="@string/always" />
 
                 <RadioButton
                     android:id="@+id/exposuresWeek"

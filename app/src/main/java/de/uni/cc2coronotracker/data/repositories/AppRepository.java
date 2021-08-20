@@ -67,6 +67,11 @@ public class AppRepository {
         return newUUID;
     }
 
+    /**
+     * Given the dimension creates the users private QR code and returns it as a bitmap
+     * @param dimension The smaller of the dimensions of the bitmap to be generated
+     * @param callback The {@link RepositoryCallback} to be called when done
+     */
     public void generateExposureQRCode(int dimension, RepositoryCallback<Bitmap> callback) {
         executor.execute(() -> {
             QrIntent.AddExposure intent = new QrIntent.AddExposure(getOrCreateUUID(), true);

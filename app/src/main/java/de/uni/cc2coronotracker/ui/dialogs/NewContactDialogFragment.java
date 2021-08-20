@@ -30,6 +30,10 @@ import de.uni.cc2coronotracker.data.models.Contact;
 import de.uni.cc2coronotracker.data.viewmodel.shared.ContactCreationDialogViewModel;
 import de.uni.cc2coronotracker.databinding.DialogNewContactBinding;
 
+/**
+ * Simple dialog that allows the user to create a new user from scratch
+ * Includes display name and avatar for the contact.
+ */
 @AndroidEntryPoint
 public class NewContactDialogFragment extends DialogFragment implements TextWatcher {
 
@@ -40,14 +44,17 @@ public class NewContactDialogFragment extends DialogFragment implements TextWatc
 
     private Uri imageUri = null;
 
+    // Used to prompt the use to select an image from the gallery.
     final ActivityResultLauncher<String[]> mGetContent = registerForActivityResult(new ActivityResultContracts.OpenDocument(), this::onImagePicked);
 
+    /**
+     * Creates a new instance of the dialog.
+     * Should be used to create instances of this class exclusively.
+     * @return A new instance of this dialog
+     */
     public static NewContactDialogFragment newInstance() {
         NewContactDialogFragment newDialog = new NewContactDialogFragment();
-
         Bundle args = new Bundle();
-        // Add args as needed.
-
         newDialog.setArguments(args);
         return newDialog;
     }
@@ -70,6 +77,7 @@ public class NewContactDialogFragment extends DialogFragment implements TextWatc
         binding.setContactVM(contactCreationViewModel);
         binding.setLifecycleOwner(this);
 
+        // Build the dialog and set the listeners...
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.AlertDialogTheme);
         builder.setView(view)
                 .setPositiveButton(R.string.confirm_create_contact, this::onConfirm)
@@ -93,7 +101,11 @@ public class NewContactDialogFragment extends DialogFragment implements TextWatc
         return dialog;
     }
 
-    // Called once the intent returns.
+    /**
+     * Sets or resets the contact avatar.
+     * Called once the activity launched by <ref>mGetContent</ref> returns.
+     * @param imgUri The images url or <code>Null</code>
+     */
     private void onImagePicked(Uri imgUri) {
         this.imageUri = imgUri;
 
@@ -107,6 +119,7 @@ public class NewContactDialogFragment extends DialogFragment implements TextWatc
             getActivity().getContentResolver().takePersistableUriPermission(imgUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
             binding.imgAvatar.setImageURI(imgUri);
             binding.imgAvatar.setColorFilter(null);
+            binding.imgAvatar.setImageTintList(null);
         } catch (Exception e) {
             imageUri = null;
             binding.imgAvatar.setImageResource(R.drawable.ic_no_avatar_128);
@@ -115,7 +128,12 @@ public class NewContactDialogFragment extends DialogFragment implements TextWatc
         }
     }
 
-
+    /**
+     * Called when the user actually confirms the dialog by pressing the positive action button
+     * Informs potential listeners via the contactCreationViewModel
+     * @param dialogInterface The dialog interface
+     * @param i The button index
+     */
     private void onConfirm(DialogInterface dialogInterface, int i) {
         try {
             Contact c = createContact();
@@ -125,6 +143,10 @@ public class NewContactDialogFragment extends DialogFragment implements TextWatc
         }
     }
 
+    /**
+     * Simply creates a new contact with the current settings
+     * @return The created contact.
+     */
     private Contact createContact() {
         Contact c = new Contact();
 
@@ -135,6 +157,15 @@ public class NewContactDialogFragment extends DialogFragment implements TextWatc
     }
 
 
+    /**
+     * Called when the user changes the display name.
+     * If the display name is null, emtpty or whitespace only the positive action button will be
+     * disabled
+     * @param s The current content
+     * @param start Where changes begin
+     * @param before The old length of the changed string
+     * @param count How many characters have changed from start
+     */
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
         positiveButton.setEnabled(false);
