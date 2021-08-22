@@ -5,14 +5,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -21,26 +19,18 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import de.uni.cc2coronotracker.R;
-import de.uni.cc2coronotracker.data.models.Contact;
-import de.uni.cc2coronotracker.data.models.Exposure;
 import de.uni.cc2coronotracker.data.viewmodel.CalendarViewModel;
-import de.uni.cc2coronotracker.data.viewmodel.ExposureMapViewModel;
-import de.uni.cc2coronotracker.data.viewmodel.MapsViewModel;
-import de.uni.cc2coronotracker.data.viewmodel.shared.ContactSelectionDialogViewModel;
 import de.uni.cc2coronotracker.databinding.FragmentExposureMapsBinding;
 
 public class ExposureMapFragment extends Fragment {
 
-    private String TAG = "Exposure Map";
-
-    private ExposureMapViewModel exposureMapsViewModel;
+    private final String TAG = "Exposure Map";
     private CalendarViewModel calendarViewModel;
     private CalendarViewModel.ExposureDisplayInfo selectedInfo;
     private FragmentExposureMapsBinding binding;
@@ -51,15 +41,11 @@ public class ExposureMapFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getActivity() != null) {
             MapsInitializer.initialize(getActivity().getApplicationContext());
-            exposureMapsViewModel = new ViewModelProvider(this.getActivity()).get(ExposureMapViewModel.class);
             calendarViewModel = new ViewModelProvider(this.getActivity()).get(CalendarViewModel.class);
-            // Get the clicked item id from the argument
             ExposureMapFragmentArgs exposureMapFragmentArgs = ExposureMapFragmentArgs.fromBundle(getArguments());
             long exposureId = exposureMapFragmentArgs.getExposureId();
             selectedInfo = calendarViewModel.getExposureInfoById(exposureId);
-            // Add selected marker to list
             markerOptionsList.add(generateMarkerOptions(selectedInfo, BitmapDescriptorFactory.HUE_GREEN));
-            // Update the array of markers based on info
             calendarViewModel.getExposureInfo().observe(this, exposureInfos -> {
                 for (CalendarViewModel.ExposureDisplayInfo info : exposureInfos) {
                     if (info.exposureData.id != exposureId) {
@@ -80,8 +66,6 @@ public class ExposureMapFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_exposure_maps, container, false);
-
-        binding.setExposureMapsVM(exposureMapsViewModel);
         binding.setLifecycleOwner(this);
         return binding.getRoot();
     }

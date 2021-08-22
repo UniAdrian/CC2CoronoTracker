@@ -69,7 +69,7 @@ public class CalendarFragment extends Fragment {
                 recyclerView.setAdapter(new ExposureListAdapter(new ArrayList<>(), getContext(), null));
             }
             else {
-                exposureView.setText(exposuresInfo.toString());
+                exposureView.setText(null);
                 recyclerView.setAdapter(new ExposureListAdapter(exposuresInfo, getContext(), this::gotoExposureMapFragment));
             }
         });

@@ -43,9 +43,9 @@ public class ExposureListAdapter extends RecyclerView.Adapter<ExposureListAdapte
         final ImageView avatarView;
         public ExposureViewHolder(@NonNull View itemView) {
             super(itemView);
-            titleTextView = (TextView) itemView.findViewById(R.id.exposureListRVName);
-            infoTextView = (TextView) itemView.findViewById(R.id.exposureListRVInfo);
-            avatarView = (ImageView) itemView.findViewById(R.id.exposureListRVAvatar);
+            titleTextView = itemView.findViewById(R.id.exposureListRVName);
+            infoTextView = itemView.findViewById(R.id.exposureListRVInfo);
+            avatarView = itemView.findViewById(R.id.exposureListRVAvatar);
         }
         private CalendarViewModel.ExposureDisplayInfo currentEntry;
         public CalendarViewModel.ExposureDisplayInfo getCurrentEntry() {
@@ -98,6 +98,6 @@ public class ExposureListAdapter extends RecyclerView.Adapter<ExposureListAdapte
         long millis = date.getTime();
         Calendar c = Calendar.getInstance();
         c.setTimeInMillis(millis);
-        return String.format(Locale.GERMANY, "%d:%d", c.get(Calendar.HOUR), c.get(Calendar.MINUTE));
+        return String.format(Locale.GERMANY, "%02d:%02d", c.get(Calendar.HOUR), c.get(Calendar.MINUTE));
     }
 }
