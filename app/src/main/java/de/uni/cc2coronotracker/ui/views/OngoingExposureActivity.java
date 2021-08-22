@@ -7,6 +7,7 @@ import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.splashscreen.SplashScreen;
 import androidx.lifecycle.ViewModelProvider;
 
 import java.util.Date;
@@ -28,6 +29,8 @@ public class OngoingExposureActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SplashScreen.installSplashScreen(this);
 
         viewModel = new ViewModelProvider(this).get(OngoingExposureViewModel.class);
 

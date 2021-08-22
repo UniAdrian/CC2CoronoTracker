@@ -17,6 +17,18 @@
         <item name="android:colorBackground">?attr/colorPrimaryVariant</item>
     </style>
 
+
+    <!-- Splash theme, shown at the start.-->
+    <style name="Theme.CC2Splash" parent="Theme.SplashScreen">
+        <item name="android:windowBackground">@drawable/splash_logo</item>
+        <item name="android:navigationBarColor" tools:targetApi="lollipop">@android:color/transparent</item>
+        <item name="android:statusBarColor" tools:targetApi="lollipop">?android:colorBackground</item>
+        <item name="colorSecondary">?colorAccent</item>
+        <item name="android:colorSecondary" tools:targetApi="n_mr1">?colorAccent</item>
+
+        <item name="postSplashScreenTheme">@style/Theme.CC2CoronoTracker</item>
+    </style>
+
     <style name="AlertDialogTheme" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
         <item name="colorSurface">@color/primaryDarkColor</item>
         <item name="materialAlertDialogTitleTextStyle">@style/TitleTextStyle</item>

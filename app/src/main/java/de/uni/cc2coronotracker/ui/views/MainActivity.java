@@ -2,16 +2,14 @@ package de.uni.cc2coronotracker.ui.views;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.splashscreen.SplashScreen;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -43,53 +41,20 @@ public class MainActivity extends AppCompatActivity {
     @Inject
     public LocationProvider locationProvider;
 
+    @SuppressWarnings("unused")
     private PreferencesViewModel preferencesViewModel;
     AppBarConfiguration appBarConfiguration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setupThemeMode();
-
         super.onCreate(savedInstanceState);
+
+        // Change from the splash theme to our actual theme.
+        SplashScreen.installSplashScreen(this);
         setContentView(R.layout.activity_main);
 
         // Referencing the view model here is actually enough already to assure the UUID is assigned on startup.
         preferencesViewModel = new ViewModelProvider(this).get(PreferencesViewModel.class);
-    }
-
-    /**
-     * Checks user preferences for night mode settings. Follows the preferences if they exist,
-     * defaults to {@code isNightDefaultMode} otherwise.
-     */
-    private void setupThemeMode() {
-        int currentNightMode = AppCompatDelegate.getDefaultNightMode();
-        // Default to night.
-        if (isNightMode()) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        }
-    }
-
-
-    /**
-     * Returns true or false according to the current nightmode settings or (if indeterminate) the
-     * boolean resource {@code isNightDefaultMode}
-     * @return
-     */
-    private boolean isNightMode() {
-        int nightModeFlags =
-            getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-        switch (nightModeFlags) {
-            case Configuration.UI_MODE_NIGHT_YES:
-                return true;
-
-            case Configuration.UI_MODE_NIGHT_NO:
-                return false;
-
-            default:
-                return getResources().getBoolean(R.bool.isNightDefaultMode);
-        }
     }
 
     @SuppressLint("NonConstantResourceId")
@@ -105,30 +70,6 @@ public class MainActivity extends AppCompatActivity {
 
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-
-        // Sets the app to fullscreen+no-decorations for the onboarding and splash screens.
-        navController.addOnDestinationChangedListener((controller, d, arguments) -> {
-            boolean condition = d.getId() == R.id.splashFragment || d.getId() == R.id.onBoardingFragment;
-            toolbar.setVisibility(condition ? View.GONE : View.VISIBLE);
-
-            switch (d.getId()) {
-                case R.id.splashFragment:
-                case R.id.onBoardingFragment:
-                    getWindow().getDecorView().setSystemUiVisibility(
-                            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                                    | View.SYSTEM_UI_FLAG_FULLSCREEN
-                    );
-                    break;
-                default:
-                    getWindow().getDecorView().setSystemUiVisibility(
-                            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    );
-                    break;
-            }
-        });
     }
 
 

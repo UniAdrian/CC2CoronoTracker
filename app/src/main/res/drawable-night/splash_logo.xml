@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
+    android:opacity="opaque" tools:ignore="UnusedAttribute">
+    <item android:gravity="fill">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/secondaryColor" />
+        </shape>
+    </item>
+
+    <item
+        android:drawable="@drawable/ic_virus_filled_opt"
+        android:gravity="center"/>
+</layer-list>

@@ -93,7 +93,7 @@
     <string name="certificate_issued_at">Issued at</string>
     <string name="certificate_vaccination">Vaccination</string>
     <string name="certificate_disease">Disease</string>
-    <string name="certificate_dose">Dose %s/%s</string>
+    <string name="certificate_dose">Dose %1$s/%2$s</string>
     <string name="cert_prophylaxis">Active substance</string>
     <string name="cert_dose_date">Date</string>
     <string name="cert_dose_brand">Brand</string>
@@ -181,4 +181,6 @@
     <string name="statistics_exposures_by_contact">Exposures by contact</string>
     <string name="statistics_other">Other</string>
     <string name="statistics_label_exposures">Exposures</string>
+    <string name="preferences_personal_uuid_key">app_uuid</string>
+    <string name="preferences_app_style">Cosmetic</string>
 </resources>
