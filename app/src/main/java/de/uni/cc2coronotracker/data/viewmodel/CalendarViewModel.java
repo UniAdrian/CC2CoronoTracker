@@ -28,8 +28,11 @@ public class CalendarViewModel extends ViewModel {
     private final ContextMediator ctxMediator;
     private final ExposureRepository exposureRepository;
     private final ContactRepository contactRepository;
+    private final List<Contact> contactList = new ArrayList<>();
+
     private List<Exposure> _exposures = new ArrayList<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
+
     public class ExposureDisplayInfo {
         public final Exposure exposureData;
         public final String contactName;
@@ -41,9 +44,17 @@ public class CalendarViewModel extends ViewModel {
         }
     }
 
-    private final MutableLiveData<List<ExposureDisplayInfo>> exposureInfo = new MutableLiveData<>();
+    private MutableLiveData<List<ExposureDisplayInfo>> exposureInfo = new MutableLiveData<>();
     public MutableLiveData<List<ExposureDisplayInfo>> getExposureInfo() {
         return exposureInfo;
+    }
+    public ExposureDisplayInfo getExposureInfoById (long id) {
+        List<ExposureDisplayInfo> infoList = exposureInfo.getValue();
+        for (ExposureDisplayInfo info: infoList) {
+            if (info.exposureData.id == id)
+                return info;
+        }
+        return null;
     }
     private MutableLiveData<Boolean> getIsLoading() { return isLoading; }
 
@@ -55,6 +66,7 @@ public class CalendarViewModel extends ViewModel {
         this.exposureRepository = exposureRepository;
         this.contactRepository = contactRepository;
     }
+
     public void fetchExposure(Date date) {
         exposureInfo.postValue(new ArrayList<>());
         exposureRepository.getExposuresByDate(date, queryResult -> {

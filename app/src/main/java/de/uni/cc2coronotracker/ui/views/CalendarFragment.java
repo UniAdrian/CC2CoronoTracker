@@ -7,10 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CalendarView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -41,15 +43,13 @@ public class CalendarFragment extends Fragment {
     public CalendarFragment() {
     }
 
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (this.getActivity() == null) return;
+        if(this.getActivity() == null)return;
         calenderViewModel = new ViewModelProvider(this.getActivity()).get(CalendarViewModel.class);
-
     }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
@@ -60,17 +60,17 @@ public class CalendarFragment extends Fragment {
         exposureListTitle = (TextView) view.findViewById(R.id.exposureListTitle);
         exposureView = view.findViewById(R.id.exposureView);
         recyclerView = view.findViewById(R.id.exposureListRV);
-        recyclerView.setAdapter(new ExposureListAdapter(new ArrayList<>(), getContext()));
+        recyclerView.setAdapter(new ExposureListAdapter(new ArrayList<>(), getContext(), null));
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         calenderViewModel.getExposureInfo().observe(this.getViewLifecycleOwner(), exposuresInfo -> {
             if(exposuresInfo.size() == 0) {
                 exposureView.setText("No exposures on this day!");
-                recyclerView.setAdapter(new ExposureListAdapter(new ArrayList<>(), getContext()));
+                recyclerView.setAdapter(new ExposureListAdapter(new ArrayList<>(), getContext(), null));
             }
             else {
-                exposureView.setText("");
-                recyclerView.setAdapter(new ExposureListAdapter(exposuresInfo, getContext()));
+                exposureView.setText(null);
+                recyclerView.setAdapter(new ExposureListAdapter(exposuresInfo, getContext(), this::gotoExposureMapFragment));
             }
         });
 
@@ -90,11 +90,26 @@ public class CalendarFragment extends Fragment {
             calendar.set(Calendar.YEAR, year1);
             calendar.set(Calendar.MONTH, mm);
             calendar.set(Calendar.DAY_OF_MONTH, dd);
-            Long date = calendar.getTimeInMillis();
+            long date = calendar.getTimeInMillis();
             selectedDate = new Date(date);
             exposureListTitle.setText(String.format("Exposures on: %s", selectedDate.toString()));
             calenderViewModel.fetchExposure(selectedDate);
         });
         return view;
     }
+
+    private void gotoExposureMapFragment (CalendarViewModel.ExposureDisplayInfo exposureDisplayInfo) {
+        if (exposureDisplayInfo.exposureData.location == null) {
+            CharSequence text = "No location information";
+            Toast toast = Toast.makeText(getActivity().getApplicationContext(), text, Toast.LENGTH_SHORT);
+            toast.show();
+        }
+        else {
+            CalendarFragmentDirections.ActionCalenderFragmentToExposureMapFragment
+                    navAction = CalendarFragmentDirections.actionCalenderFragmentToExposureMapFragment();
+            navAction.setExposureId(exposureDisplayInfo.exposureData.id);
+            Navigation.findNavController(getView()).navigate(navAction);
+        }
+    }
+
 }

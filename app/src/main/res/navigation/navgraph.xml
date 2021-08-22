@@ -156,10 +156,28 @@
         android:label="@string/map_view_title"
         tools:layout="@layout/fragment_maps" />
     <fragment
-        android:id="@+id/calendar"
-        android:name="de.uni.cc2coronotracker.ui.views.CalendarFragment"
-        android:label="fragment_calendar"
-        tools:layout="@layout/fragment_calendar" />
+    android:id="@+id/calendar"
+    android:name="de.uni.cc2coronotracker.ui.views.CalendarFragment"
+    android:label="Calendar"
+    tools:layout="@layout/fragment_calendar">
+    <action
+        android:id="@+id/action_calenderFragment_to_exposureMapFragment"
+        app:destination="@id/exposureMapFragment"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:popEnterAnim="@anim/slide_in_left"
+        app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/exposureMapFragment"
+        android:name="de.uni.cc2coronotracker.ui.views.ExposureMapFragment"
+        android:label="Exposures"
+        tools:layout="@layout/fragment_exposure_maps" >
+        <argument
+            android:name="exposureId"
+            android:defaultValue="-1L"
+            app:argType="long" />
+    </fragment>
     <fragment
         android:id="@+id/certificateFragment"
         android:name="de.uni.cc2coronotracker.ui.views.CertificateFragment"
