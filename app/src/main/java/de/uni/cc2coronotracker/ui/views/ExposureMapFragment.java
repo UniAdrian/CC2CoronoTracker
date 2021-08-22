@@ -19,10 +19,13 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import de.uni.cc2coronotracker.R;
 import de.uni.cc2coronotracker.data.viewmodel.CalendarViewModel;
@@ -35,6 +38,7 @@ public class ExposureMapFragment extends Fragment {
     private CalendarViewModel.ExposureDisplayInfo selectedInfo;
     private FragmentExposureMapsBinding binding;
     private List<MarkerOptions> markerOptionsList = new ArrayList<>();
+    private MarkerOptions selectedMarkerOptions;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,7 +49,7 @@ public class ExposureMapFragment extends Fragment {
             ExposureMapFragmentArgs exposureMapFragmentArgs = ExposureMapFragmentArgs.fromBundle(getArguments());
             long exposureId = exposureMapFragmentArgs.getExposureId();
             selectedInfo = calendarViewModel.getExposureInfoById(exposureId);
-            markerOptionsList.add(generateMarkerOptions(selectedInfo, BitmapDescriptorFactory.HUE_GREEN));
+            selectedMarkerOptions = generateMarkerOptions(selectedInfo, BitmapDescriptorFactory.HUE_GREEN);
             calendarViewModel.getExposureInfo().observe(this, exposureInfos -> {
                 for (CalendarViewModel.ExposureDisplayInfo info : exposureInfos) {
                     if (info.exposureData.id != exposureId) {
@@ -75,10 +79,11 @@ public class ExposureMapFragment extends Fragment {
             map.getUiSettings().setZoomControlsEnabled(false);
             map.getUiSettings().setMyLocationButtonEnabled(true);
             addMarkers(map, markerOptionsList);
-            // Zoom to the clicked exposure item
+            Marker marker = map.addMarker(selectedMarkerOptions);
+            if (marker != null)
+                marker.showInfoWindow();
             if (selectedInfo.exposureData.location != null)
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(selectedInfo.exposureData.location, 10.0f));
-            // Also show the info window
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(selectedInfo.exposureData.location, 20.0f));
         }
     };
 
@@ -92,15 +97,19 @@ public class ExposureMapFragment extends Fragment {
             mapFragment.getMapAsync(callback);
         }
     }
-    private MarkerOptions generateMarkerOptions (CalendarViewModel.ExposureDisplayInfo info, float hue) {
-        LatLng location = info.exposureData.location;
-        String title = String.format("%s was here on %s", info.contactName, info.exposureData.startDate);
-        MarkerOptions options;
-        if (location != null) {
-            options = new MarkerOptions().position(location).title(title)
-                    .icon(BitmapDescriptorFactory.defaultMarker(hue));
-            return options;
-        }
+        private MarkerOptions generateMarkerOptions (CalendarViewModel.ExposureDisplayInfo info, float hue) {
+            LatLng location = info.exposureData.location;
+            String title = String.format("%s", info.contactName);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm", Locale.US);
+            String time  = dateFormat.format(info.exposureData.startDate);
+            String snippet = String.format("on %s, at %s", info.exposureData.startDate, time);
+            MarkerOptions options;
+            if (location != null) {
+                options = new MarkerOptions().position(location)
+                        .title(title).snippet(snippet)
+                        .icon(BitmapDescriptorFactory.defaultMarker(hue));
+                return options;
+            }
         return null;
     }
     private void addMarkers(GoogleMap map, List<MarkerOptions> options) {
