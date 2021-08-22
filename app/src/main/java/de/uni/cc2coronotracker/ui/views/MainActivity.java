@@ -59,15 +59,36 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Checks user preferences for night mode settings. Follows the preferences if they exist,
-     * defaults to nightmode otherwise.
+     * defaults to {@code isNightDefaultMode} otherwise.
      */
     private void setupThemeMode() {
         int currentNightMode = AppCompatDelegate.getDefaultNightMode();
         // Default to night.
-        if (currentNightMode == Configuration.UI_MODE_NIGHT_NO) {
+        if (isNightMode()) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }
+    }
+
+
+    /**
+     * Returns true or false according to the current nightmode settings or (if indeterminate) the
+     * boolean resource {@code isNightDefaultMode}
+     * @return
+     */
+    private boolean isNightMode() {
+        int nightModeFlags =
+            getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        switch (nightModeFlags) {
+            case Configuration.UI_MODE_NIGHT_YES:
+                return true;
+
+            case Configuration.UI_MODE_NIGHT_NO:
+                return false;
+
+            default:
+                return getResources().getBoolean(R.bool.isNightDefaultMode);
         }
     }
 
