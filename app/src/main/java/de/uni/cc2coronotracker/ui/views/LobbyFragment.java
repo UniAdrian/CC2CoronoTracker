@@ -15,7 +15,16 @@ import androidx.transition.TransitionManager;
 
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.messages.Message;
+import com.google.android.gms.nearby.messages.MessageFilter;
 import com.google.android.gms.nearby.messages.MessageListener;
+import com.google.android.gms.nearby.messages.MessagesClient;
+import com.google.android.gms.nearby.messages.MessagesOptions;
+import com.google.android.gms.nearby.messages.NearbyPermissions;
+import com.google.android.gms.nearby.messages.PublishCallback;
+import com.google.android.gms.nearby.messages.PublishOptions;
+import com.google.android.gms.nearby.messages.Strategy;
+import com.google.android.gms.nearby.messages.SubscribeCallback;
+import com.google.android.gms.nearby.messages.SubscribeOptions;
 
 import java.util.ArrayList;
 
@@ -27,6 +36,9 @@ import de.uni.cc2coronotracker.databinding.LobbyFragmentBinding;
 import kotlin.Unit;
 
 
+/**
+ * The lobby uses Google Nearby to automatically detect and add exposures with nearby contacts.
+ */
 @AndroidEntryPoint
 public class LobbyFragment extends Fragment {
 
@@ -35,8 +47,45 @@ public class LobbyFragment extends Fragment {
     private LobbyFragmentBinding binding;
     private LobbyViewModel mViewModel;
 
-    private Message message;
+    /**
+     * The message client used for google nearby.
+     */
+    private MessagesClient messageClient;
+    /**
+     * The message listener for this device.
+     */
     private MessageListener messageListener;
+
+    /**
+     * The currently published message if any, null otherwise.
+     */
+    private Message currentMessage = null;
+
+    private final MessageFilter messageFilter = new MessageFilter.Builder()
+            .includeAllMyTypes()
+            .build();
+
+    private final SubscribeOptions subscribeOptions = new SubscribeOptions.Builder()
+            .setFilter(messageFilter)
+            .setStrategy(new Strategy.Builder().setDiscoveryMode(Strategy.DISCOVERY_MODE_BROADCAST).setTtlSeconds(Strategy.TTL_SECONDS_DEFAULT).build())
+            .setCallback(new SubscribeCallback() {
+                @Override
+                public void onExpired() {
+                    super.onExpired();
+                    Log.e(TAG, "Subscription expired!");
+                }
+            }).build();
+
+    private final PublishOptions publishOptions = new PublishOptions.Builder()
+            .setStrategy(new Strategy.Builder().setDiscoveryMode(Strategy.DISCOVERY_MODE_BROADCAST).setTtlSeconds(Strategy.TTL_SECONDS_DEFAULT).build())
+            .setCallback(new PublishCallback() {
+                @Override
+                public void onExpired() {
+                    super.onExpired();
+                    Log.e(TAG, "Publication expired!");
+                }
+            })
+            .build();
 
     public LobbyFragment() {
     }
@@ -46,20 +95,18 @@ public class LobbyFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.lobby_fragment, container, false);
 
+        // Initialize the message listener. Basicly calls the viewmodels onFound and onLost methods.
         messageListener = new MessageListener() {
             @Override
             public void onFound(@NonNull Message message) {
-                Log.d(TAG, "Found message: " + new String(message.getContent()));
+                mViewModel.onFound(message);
             }
 
             @Override
             public void onLost(@NonNull Message message) {
-                Log.d(TAG, "Lost sight of message: " + new String(message.getContent()));
+                mViewModel.onLost(message);
             }
         };
-
-        message = new Message("Hello World".getBytes());
-
         binding.lobbyExposures.setAdapter(new LobbyExposureAdapter(new ArrayList<>(), item -> {/* Do nothing... */}));
 
         return binding.getRoot();
@@ -69,30 +116,80 @@ public class LobbyFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        messageClient = Nearby.getMessagesClient(getActivity(), new MessagesOptions.Builder().setPermissions(NearbyPermissions.BLE).build());
+
         mViewModel = new ViewModelProvider(this).get(LobbyViewModel.class);
         binding.setVm(mViewModel);
 
         binding.swpBtnCheckInOut.setOnSwipedOnListener(this::onSwipedOn);
         binding.swpBtnCheckInOut.setOnSwipedOffListener(this::onSwipedOff);
+
+        mViewModel.getCurrentExposures().observe(getViewLifecycleOwner(), list -> {
+            if (list == null || list.isEmpty()) {
+                binding.lobbyExposures.setAdapter(new LobbyExposureAdapter(new ArrayList<>(), item -> {/* Do nothing... */}));
+                return;
+            }
+
+            binding.lobbyExposures.setAdapter(new LobbyExposureAdapter(list, this::onExposurePick));
+        });
+
+        mViewModel.getCurrentMessage().observe(getViewLifecycleOwner(), this::onNewMessage);
     }
 
-    private Unit onSwipedOn() {
-        Nearby.getMessagesClient(getActivity()).publish(message);
-        Nearby.getMessagesClient(getActivity()).subscribe(messageListener);
+    /**
+     * Called when the view model requests a new message to be published.
+     * Unpublishes the old message if any, then republishes the new message.
+     * @param message The new message to be published
+     */
+    private void onNewMessage(LobbyViewModel.LobbyMessage message) {
+        Log.d(TAG, "Publishing message: " + message);
+        unpublishCurrentMessage();
+        currentMessage = message.toMessage();
 
+        Log.d(TAG, "Namespace: " + currentMessage.getNamespace() + ", Type: " + currentMessage.getType());
+
+        messageClient.publish(currentMessage, publishOptions).addOnSuccessListener(unused -> {
+            Log.d(TAG, "Publish successful.");
+        })
+        .addOnFailureListener(e -> {
+            Log.e(TAG, "Failed to publish message", e);
+        });
+    }
+
+    /**
+     * Called, when the user clicks on a exposure in the RecyclerView
+     * @param progressiveExposure
+     */
+    private void onExposurePick(LobbyViewModel.ProgressiveExposure progressiveExposure) {
+        Log.d(TAG, "Picked exposure: " + progressiveExposure);
+    }
+
+    /**
+     * Called, when the user swipes on to join the lobby.
+     * @return null
+     */
+    private Unit onSwipedOn() {
+        messageClient.subscribe(messageListener, subscribeOptions);
+        mViewModel.startBroadcast();
         animateOn();
         return null;
     }
 
+    /**
+     * Called, when the user swipes off to leave the lobby.
+     * @return null
+     */
     private Unit onSwipedOff() {
-        Nearby.getMessagesClient(getActivity()).unpublish(message);
-        Nearby.getMessagesClient(getActivity()).unsubscribe(messageListener);
-
+        unpublishCurrentMessage();
+        messageClient.unsubscribe(messageListener);
         animateOff();
         return null;
     }
 
 
+    /**
+     * Simply animates visibility of some ui elements.
+     */
     private void animateOn() {
         TransitionManager.beginDelayedTransition(binding.frameLayout6);
         binding.txtLobbyWelcome.setVisibility(View.GONE);
@@ -100,6 +197,9 @@ public class LobbyFragment extends Fragment {
         binding.cntLobbyContacts.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * Simply animates visibility of some ui elements.
+     */
     private void animateOff() {
         TransitionManager.beginDelayedTransition(binding.frameLayout6);
         binding.txtLobbyWelcome.setVisibility(View.VISIBLE);
@@ -107,10 +207,25 @@ public class LobbyFragment extends Fragment {
         binding.cntLobbyContacts.setVisibility(View.GONE);
     }
 
+    /**
+     * {@inheritDoc}
+     * Unpublishes the current message if any, then unsubscribes from nearby.
+     */
     @Override
     public void onStop() {
-        Nearby.getMessagesClient(getActivity()).unpublish(message);
-        Nearby.getMessagesClient(getActivity()).unsubscribe(messageListener);
+        unpublishCurrentMessage();
+        messageClient.unsubscribe(messageListener);
+        mViewModel.finalizeExposures();
         super.onStop();
+    }
+
+    /**
+     * Un-publishes the current message if any.
+     */
+    private void unpublishCurrentMessage() {
+        if (messageClient != null && currentMessage != null)
+            messageClient.unpublish(currentMessage);
+
+        currentMessage = null;
     }
 }
