@@ -63,7 +63,7 @@ public class NewContactDialogFragment extends DialogFragment implements TextWatc
     public static NewContactDialogFragment newInstance(@Nullable Contact contact) {
         NewContactDialogFragment newDialog = new NewContactDialogFragment();
         Bundle args = new Bundle();
-        args.putSerializable("fromContact", contact);
+        args.putParcelable("fromContact", contact);
         newDialog.setArguments(args);
         return newDialog;
     }
@@ -76,7 +76,7 @@ public class NewContactDialogFragment extends DialogFragment implements TextWatc
 
         Bundle args = getArguments();
         if (args.containsKey("fromContact")) {
-            contactToUpdate = (Contact) getArguments().getSerializable("fromContact");
+            contactToUpdate = getArguments().getParcelable("fromContact");
         }
     }
 
