@@ -285,4 +285,18 @@ public class ContactRepository{
         });
     }
 
+
+    /**
+     * Updates the contact to the new values
+     * @param toUpdate The contact with new values.
+     */
+    public void update(Contact toUpdate, RepositoryCallback<Integer> callback) {
+        executor.execute(() -> {
+            try {
+                callback.onComplete(new Result.Success<>(contactDao.update(toUpdate)));
+            } catch (Exception e) {
+                callback.onComplete(new Result.Error<>(e));
+            }
+        });
+    }
 }

@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
@@ -37,12 +39,18 @@ import de.uni.cc2coronotracker.databinding.DialogNewContactBinding;
 @AndroidEntryPoint
 public class NewContactDialogFragment extends DialogFragment implements TextWatcher {
 
+    private final static String TAG = "NewContactDialogVM";
+
     private ContactCreationDialogViewModel contactCreationViewModel;
     private DialogNewContactBinding binding;
 
     private Button positiveButton = null;
-
     private Uri imageUri = null;
+
+    /**
+     * If non null we return the updated contact
+     */
+    private Contact contactToUpdate = null;
 
     // Used to prompt the use to select an image from the gallery.
     final ActivityResultLauncher<String[]> mGetContent = registerForActivityResult(new ActivityResultContracts.OpenDocument(), this::onImagePicked);
@@ -52,9 +60,10 @@ public class NewContactDialogFragment extends DialogFragment implements TextWatc
      * Should be used to create instances of this class exclusively.
      * @return A new instance of this dialog
      */
-    public static NewContactDialogFragment newInstance() {
+    public static NewContactDialogFragment newInstance(@Nullable Contact contact) {
         NewContactDialogFragment newDialog = new NewContactDialogFragment();
         Bundle args = new Bundle();
+        args.putSerializable("fromContact", contact);
         newDialog.setArguments(args);
         return newDialog;
     }
@@ -64,6 +73,11 @@ public class NewContactDialogFragment extends DialogFragment implements TextWatc
         super.onCreate(savedInstanceState);
 
         contactCreationViewModel = new ViewModelProvider(this.getActivity()).get(ContactCreationDialogViewModel.class);
+
+        Bundle args = getArguments();
+        if (args.containsKey("fromContact")) {
+            contactToUpdate = (Contact) getArguments().getSerializable("fromContact");
+        }
     }
 
     @NonNull
@@ -90,13 +104,22 @@ public class NewContactDialogFragment extends DialogFragment implements TextWatc
             // initially disable the confirm button.
             positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
             positiveButton.setEnabled(false);
-        });
 
+            // If we have a contact to update, set the values and enable the confirm button
+            // We have to call this here, since otherwise the dialog is not initialized completely
+            // and we will have NPEs all over. :P
+            if (contactToUpdate != null) {
+                onImagePicked(contactToUpdate.photoUri);
+                binding.txtLoDisplayName.setText(contactToUpdate.displayName);
+                positiveButton.setEnabled(true);
+                positiveButton.setText(R.string.confirm_update_contact);
+            }
+        });
 
         // Enable the confirm button if a valid display name is entered.
         binding.txtLoDisplayName.addTextChangedListener(this);
-
         binding.btnSelectFromGallery.setOnClickListener(v -> this.mGetContent.launch(new String[] {"image/*"}));
+
 
         return dialog;
     }
@@ -137,10 +160,12 @@ public class NewContactDialogFragment extends DialogFragment implements TextWatc
     private void onConfirm(DialogInterface dialogInterface, int i) {
         try {
             Contact c = createContact();
+            Log.d(TAG, "Posting new/updated contact: " + c);
             contactCreationViewModel.publish(c);
         } catch (Exception e) {
             Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
+        dismiss();
     }
 
     /**
@@ -149,6 +174,10 @@ public class NewContactDialogFragment extends DialogFragment implements TextWatc
      */
     private Contact createContact() {
         Contact c = new Contact();
+
+        if (contactToUpdate != null) {
+            c = contactToUpdate;
+        }
 
         c.displayName = binding.txtLoDisplayName.getText().toString();
         c.photoUri = this.imageUri;

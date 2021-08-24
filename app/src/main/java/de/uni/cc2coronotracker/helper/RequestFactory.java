@@ -27,6 +27,7 @@ import com.karumi.dexter.listener.single.PermissionListener;
 import java.util.concurrent.CancellationException;
 
 import de.uni.cc2coronotracker.R;
+import de.uni.cc2coronotracker.data.models.Contact;
 import de.uni.cc2coronotracker.data.qr.QrIntent;
 import de.uni.cc2coronotracker.data.repositories.async.RepositoryCallback;
 import de.uni.cc2coronotracker.data.repositories.async.Result;
@@ -106,7 +107,11 @@ public class RequestFactory {
     }
 
     public static CallWithContextRequest createNewContactDialogRequest() {
-        CallWithContextRequest.ContextfulCall call = c -> NewContactDialogFragment.newInstance().show(((AppCompatActivity)c).getSupportFragmentManager(), "");
+        return createNewContactDialogRequest(null);
+    }
+
+    public static CallWithContextRequest createNewContactDialogRequest(@Nullable Contact toEdit) {
+        CallWithContextRequest.ContextfulCall call = c -> NewContactDialogFragment.newInstance(toEdit).show(((AppCompatActivity)c).getSupportFragmentManager(), "");
 
         return new CallWithContextRequest(call);
     }

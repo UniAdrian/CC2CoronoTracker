@@ -18,7 +18,9 @@ import java.util.ArrayList;
 import dagger.hilt.android.AndroidEntryPoint;
 import de.uni.cc2coronotracker.R;
 import de.uni.cc2coronotracker.data.adapters.ExposureAdapter;
+import de.uni.cc2coronotracker.data.models.Contact;
 import de.uni.cc2coronotracker.data.viewmodel.ContactDetailsViewModel;
+import de.uni.cc2coronotracker.data.viewmodel.shared.ContactCreationDialogViewModel;
 import de.uni.cc2coronotracker.databinding.FragmentContactDetailsBinding;
 
 @AndroidEntryPoint
@@ -28,6 +30,7 @@ public class ContactDetailsFragment extends Fragment {
 
     private FragmentContactDetailsBinding binding;
     private ContactDetailsViewModel contactsDetailsViewModel;
+    private ContactCreationDialogViewModel contactCreationViewModel;
 
     public ContactDetailsFragment() {
     }
@@ -37,6 +40,8 @@ public class ContactDetailsFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         contactsDetailsViewModel = new ViewModelProvider(this).get(ContactDetailsViewModel.class);
+        // Use getActivity here, so we actually share the vm.
+        contactCreationViewModel = new ViewModelProvider(getActivity()).get(ContactCreationDialogViewModel.class);
 
         contactsDetailsViewModel.getExposures().observe(this, exposures -> {
             Log.d("EXPOSURES", "Exposures: " + exposures);
@@ -47,20 +52,30 @@ public class ContactDetailsFragment extends Fragment {
         });
 
         contactsDetailsViewModel.getContact().observe(this, contact -> {
+            if (contact == null)
+                return;
 
-        if (contact == null)
-            return;
+            if (contact.photoUri != null) {
+                binding.contactAvatar.setImageURI(contact.photoUri);
+            } else {
+                binding.contactAvatar.setImageResource(R.drawable.ic_no_avatar_128);
+            }
 
-        if (contact.photoUri != null) {
-            binding.contactAvatar.setImageURI(contact.photoUri);
-        } else {
-            binding.contactAvatar.setImageResource(R.drawable.ic_no_avatar_128);
-        }
+            Toolbar toolbar = requireActivity().findViewById(R.id.app_toolbar_top);
+            toolbar.setTitle(contact.displayName);
+        });
 
-        Toolbar toolbar = requireActivity().findViewById(R.id.app_toolbar_top);
-        toolbar.setTitle(contact.displayName);
-    });
+        // Handle contact updates etc.
+        contactCreationViewModel.getNewContacts().observe(this, event -> {
+            Log.d(TAG, "Got contact from contactCreationViewModel: " + event.peekContent());
+            // If the contact has an invalid id we return, its probably a new contact.
+            if (event.peekContent() == null || event.peekContent().id < 1) return;
 
+            Contact clm = event.getContentIfNotHandled();
+            if (clm != null) {
+                contactsDetailsViewModel.updateContact(clm);
+            }
+        });
     }
 
     @Override
@@ -69,6 +84,8 @@ public class ContactDetailsFragment extends Fragment {
 
         binding.setDetailsVM(contactsDetailsViewModel);
         binding.setLifecycleOwner(this);
+
+        binding.btnEditContact.setOnClickListener((v) -> contactsDetailsViewModel.openEditContactDialog());
 
         return binding.getRoot();
     }

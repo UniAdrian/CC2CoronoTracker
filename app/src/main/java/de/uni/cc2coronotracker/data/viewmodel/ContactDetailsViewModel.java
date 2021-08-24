@@ -224,4 +224,35 @@ public class ContactDetailsViewModel extends ViewModel {
         return exposures;
     }
 
+    /**
+     * Requests the application to display the dialog to edit the current contact if possible.
+     */
+    public void openEditContactDialog() {
+        if (contact.getValue() == null) return;
+
+        ctxMediator.request(RequestFactory.createNewContactDialogRequest(contact.getValue()));
+    }
+
+    /**
+     * Updates the current contact to the new values as long as IDs fit. ;)
+     * @param clm
+     */
+    public void updateContact(Contact clm) {
+        Contact currentContact = contact.getValue();
+        if (currentContact == null || clm == null || currentContact.id != clm.id) {
+            Log.w(TAG, "Invalid update request. (Current: " + currentContact + ", Received: " + clm + ")");
+            return;
+        }
+
+        isLoading.postValue(true);
+        contactRepository.update(clm, result -> {
+            if (result instanceof Result.Success) {
+                ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.contact_update_success, Snackbar.LENGTH_SHORT));
+                contact.postValue(clm);
+            } else if (result instanceof Result.Error) {
+                ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.contact_update_failure, Snackbar.LENGTH_SHORT));
+            }
+            isLoading.postValue(false);
+        });
+    }
 }

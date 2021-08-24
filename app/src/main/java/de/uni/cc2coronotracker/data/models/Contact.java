@@ -8,6 +8,7 @@ import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
@@ -20,7 +21,7 @@ import java.util.UUID;
             @Index(value = {"lookup_uri"}, unique = true)
         }
 )
-public class Contact {
+public class Contact implements Serializable {
     @PrimaryKey(autoGenerate = true)
     public long id;
 
