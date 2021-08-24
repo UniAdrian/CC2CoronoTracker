@@ -118,15 +118,7 @@ public class ContactRepository{
         executor.execute(() -> {
             try {
                 Contact c = contactDao.getByUUIDSync(uuid);
-
-                Result<Contact> result;
-                if (c == null) {
-                    result = new Result.Success<>(null);
-                } else {
-                    result = new Result.Success<>(c);
-                }
-
-                callback.onComplete(result);
+                callback.onComplete(new Result.Success<>(c));
             } catch (Exception e) {
                 Result<Contact> errorResult = new Result.Error<>(e);
                 callback.onComplete(errorResult);
