@@ -33,7 +33,7 @@ public class CalendarViewModel extends ViewModel {
     private List<Exposure> _exposures = new ArrayList<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
 
-    public class ExposureDisplayInfo {
+    public static class ExposureDisplayInfo {
         public final Exposure exposureData;
         public final String contactName;
         public final Uri contactPhotoUri;

@@ -49,6 +49,20 @@ public class ExposureRepository {
         });
     }
 
+    private List<Exposure> getExposuresAll() {
+        return exposureDao.getAll();
+    }
+    public void getExposuresAll(RepositoryCallback<List<Exposure>> callback) {
+        executor.execute(() -> {
+            try {
+                List<Exposure> c = getExposuresAll();
+                callback.onComplete(new Result.Success<>(c));
+            } catch (Exception e) {
+                callback.onComplete(new Result.Error<>(e));
+            }
+        });
+    }
+
     /**
      * Adds the given exposures to the database.
      * @param toAdd The exposures to add
