@@ -81,7 +81,7 @@ public class LobbyFragment extends Fragment {
      */
     private final SubscribeOptions subscribeOptions = new SubscribeOptions.Builder()
             .setFilter(messageFilter)
-            .setStrategy(new Strategy.Builder().setDiscoveryMode(Strategy.DISCOVERY_MODE_BROADCAST).setTtlSeconds(Strategy.TTL_SECONDS_DEFAULT).build())
+            .setStrategy(new Strategy.Builder().setDiscoveryMode(Strategy.DISCOVERY_MODE_BROADCAST).setTtlSeconds(Strategy.TTL_SECONDS_MAX).build())
             .setCallback(new SubscribeCallback() {
                 @Override
                 public void onExpired() {
@@ -95,7 +95,7 @@ public class LobbyFragment extends Fragment {
      * BLE Only, TTL_SECONDS_DEFAULT
      */
     private final PublishOptions publishOptions = new PublishOptions.Builder()
-            .setStrategy(new Strategy.Builder().setDiscoveryMode(Strategy.DISCOVERY_MODE_BROADCAST).setTtlSeconds(Strategy.TTL_SECONDS_DEFAULT).build())
+            .setStrategy(new Strategy.Builder().setDiscoveryMode(Strategy.DISCOVERY_MODE_BROADCAST).setTtlSeconds(Strategy.TTL_SECONDS_MAX).build())
             .setCallback(new PublishCallback() {
                 @Override
                 public void onExpired() {

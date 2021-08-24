@@ -163,10 +163,9 @@ public class LobbyViewModel extends ViewModel {
     }
 
     /**
-     * Fianlizes all current exposures as best as possible.
+     * Finalizes all open exposures, settings their end date and adding them to the database.
      */
     public void finalizeExposures() {
-
         // Reset state
         currentExposures.postValue(null);
         currentMessage.postValue(null);
