@@ -32,6 +32,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/incidenceButton"
+        android:text="Incidence History">
+    </Button>
+
     <TextView
         android:id="@+id/exposureView"
         android:layout_width="match_parent"

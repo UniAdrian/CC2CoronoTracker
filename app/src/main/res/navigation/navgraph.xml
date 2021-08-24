@@ -174,7 +174,19 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_calenderFragment_to_incidenceHistoryFragment"
+            app:destination="@id/incidenceHistory"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
+    <fragment
+        android:id="@+id/incidenceHistory"
+        android:name="de.uni.cc2coronotracker.ui.views.IncidenceHistoryFragment"
+        android:label="Incidence History"
+        tools:layout="@layout/fragment_incidence_history" />
     <fragment
         android:id="@+id/exposureMapFragment"
         android:name="de.uni.cc2coronotracker.ui.views.ExposureMapFragment"

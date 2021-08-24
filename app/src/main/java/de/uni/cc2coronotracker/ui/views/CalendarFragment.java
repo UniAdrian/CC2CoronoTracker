@@ -40,6 +40,7 @@ public class CalendarFragment extends Fragment {
     TextView exposureListTitle;
     TextView exposureView;
     Button statisticsBtn;
+    Button incidenceButton;
 
     @Inject()
     public CalendarFragment() {
@@ -62,12 +63,13 @@ public class CalendarFragment extends Fragment {
         exposureListTitle = (TextView) view.findViewById(R.id.exposureListTitle);
         exposureView = view.findViewById(R.id.exposureView);
         recyclerView = view.findViewById(R.id.exposureListRV);
+        incidenceButton = view.findViewById(R.id.incidenceButton);
         statisticsBtn = view.findViewById(R.id.statisticsButton);
-        statisticsBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Navigation.findNavController(getView()).navigate(CalendarFragmentDirections.actionCalenderFragmentToStatistics());
-            }
+        statisticsBtn.setOnClickListener((toStatistics) -> {
+            gotoStatisticsFragment();
+        });
+        incidenceButton.setOnClickListener((toIncidenceHistory) -> {
+            gotoIncidenceHistoryFragment();
         });
         recyclerView.setAdapter(new ExposureListAdapter(new ArrayList<>(), getContext(), null));
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -105,6 +107,14 @@ public class CalendarFragment extends Fragment {
             calenderViewModel.fetchExposure(selectedDate);
         });
         return view;
+    }
+
+    private void gotoStatisticsFragment () {
+        Navigation.findNavController(getView()).navigate(CalendarFragmentDirections.actionCalenderFragmentToStatistics());
+    }
+
+    private void gotoIncidenceHistoryFragment () {
+        Navigation.findNavController(getView()).navigate(CalendarFragmentDirections.actionCalenderFragmentToIncidenceHistoryFragment());
     }
 
     private void gotoExposureMapFragment (CalendarViewModel.ExposureDisplayInfo exposureDisplayInfo) {
