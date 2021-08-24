@@ -183,4 +183,5 @@
     <string name="statistics_label_exposures">Exposures</string>
     <string name="preferences_personal_uuid_key">app_uuid</string>
     <string name="preferences_app_style">Cosmetic</string>
+    <string name="incidenceListText">All incidences</string>
 </resources>
