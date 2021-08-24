@@ -25,12 +25,17 @@ import com.google.android.gms.nearby.messages.PublishOptions;
 import com.google.android.gms.nearby.messages.Strategy;
 import com.google.android.gms.nearby.messages.SubscribeCallback;
 import com.google.android.gms.nearby.messages.SubscribeOptions;
+import com.xwray.groupie.ExpandableGroup;
+import com.xwray.groupie.GroupieAdapter;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import de.uni.cc2coronotracker.R;
-import de.uni.cc2coronotracker.data.adapters.LobbyExposureAdapter;
+import de.uni.cc2coronotracker.data.adapters.items.LobbyExposureItem;
+import de.uni.cc2coronotracker.data.adapters.items.LobbyHeaderItem;
 import de.uni.cc2coronotracker.data.viewmodel.LobbyViewModel;
 import de.uni.cc2coronotracker.databinding.LobbyFragmentBinding;
 import kotlin.Unit;
@@ -61,10 +66,19 @@ public class LobbyFragment extends Fragment {
      */
     private Message currentMessage = null;
 
+
+    /**
+     * Allows us to only receive messages meant for us (Meaning having our Type and Namespace)
+     * Set to {@link MessageFilter.Builder#includeAllMyTypes()}
+     */
     private final MessageFilter messageFilter = new MessageFilter.Builder()
             .includeAllMyTypes()
             .build();
 
+    /**
+     * SubscriptionOptions used by our {@code MessageClient}
+     * BLE Only, TTL_SECONDS_DEFAULT
+     */
     private final SubscribeOptions subscribeOptions = new SubscribeOptions.Builder()
             .setFilter(messageFilter)
             .setStrategy(new Strategy.Builder().setDiscoveryMode(Strategy.DISCOVERY_MODE_BROADCAST).setTtlSeconds(Strategy.TTL_SECONDS_DEFAULT).build())
@@ -76,6 +90,10 @@ public class LobbyFragment extends Fragment {
                 }
             }).build();
 
+    /**
+     * PublishOptions used by our {@code MessageClient}
+     * BLE Only, TTL_SECONDS_DEFAULT
+     */
     private final PublishOptions publishOptions = new PublishOptions.Builder()
             .setStrategy(new Strategy.Builder().setDiscoveryMode(Strategy.DISCOVERY_MODE_BROADCAST).setTtlSeconds(Strategy.TTL_SECONDS_DEFAULT).build())
             .setCallback(new PublishCallback() {
@@ -87,8 +105,44 @@ public class LobbyFragment extends Fragment {
             })
             .build();
 
+
+    private final GroupieAdapter rvAdapter = new GroupieAdapter();
+
     public LobbyFragment() {
     }
+
+    /**
+     * Called when the publication of a message failed.
+     * @param e The failure reason
+     */
+    private static void onPublishFailure(Exception e) {
+        Log.e(TAG, "Failed to publish message", e);
+    }
+
+    /**
+     * Called, when a message is published successfully.
+     * @param unused Unused
+     */
+    private static void onPublishSuccess(Void unused) {
+        Log.d(TAG, "Publish successful.");
+    }
+
+    /**
+     * Called, when subscription to new messages was successfull.
+     * @param unused Unused
+     */
+    private static void onSubscriptionSuccess(Void unused) {
+        Log.d(TAG, "Successfully subscribed to messages.");
+    }
+
+    /**
+     * Called, when subscription to new messages failed
+     * @param e The failure reason
+     */
+    private static void onSubscriptionFailure(Exception e) {
+        Log.e(TAG, "Failed to subscribe to new messages.", e);
+    }
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -107,7 +161,8 @@ public class LobbyFragment extends Fragment {
                 mViewModel.onLost(message);
             }
         };
-        binding.lobbyExposures.setAdapter(new LobbyExposureAdapter(new ArrayList<>(), item -> {/* Do nothing... */}));
+
+        binding.lobbyExposures.setAdapter(rvAdapter);
 
         return binding.getRoot();
     }
@@ -116,7 +171,8 @@ public class LobbyFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        messageClient = Nearby.getMessagesClient(getActivity(), new MessagesOptions.Builder().setPermissions(NearbyPermissions.BLE).build());
+        messageClient = Nearby.getMessagesClient(getActivity(),
+                new MessagesOptions.Builder().setPermissions(NearbyPermissions.BLE).build());
 
         mViewModel = new ViewModelProvider(this).get(LobbyViewModel.class);
         binding.setVm(mViewModel);
@@ -124,16 +180,51 @@ public class LobbyFragment extends Fragment {
         binding.swpBtnCheckInOut.setOnSwipedOnListener(this::onSwipedOn);
         binding.swpBtnCheckInOut.setOnSwipedOffListener(this::onSwipedOff);
 
-        mViewModel.getCurrentExposures().observe(getViewLifecycleOwner(), list -> {
-            if (list == null || list.isEmpty()) {
-                binding.lobbyExposures.setAdapter(new LobbyExposureAdapter(new ArrayList<>(), item -> {/* Do nothing... */}));
-                return;
-            }
-
-            binding.lobbyExposures.setAdapter(new LobbyExposureAdapter(list, this::onExposurePick));
-        });
+        mViewModel.getCurrentExposures().observe(getViewLifecycleOwner(), this::onRvChanged);
 
         mViewModel.getCurrentMessage().observe(getViewLifecycleOwner(), this::onNewMessage);
+    }
+
+    private void onRvChanged(Map<UUID, List<LobbyViewModel.ProgressiveExposure>> exposureMap) {
+        if (exposureMap == null || exposureMap.isEmpty()) {
+            rvAdapter.clear();
+            return;
+        }
+
+        rvAdapter.clear();
+        for (Map.Entry<UUID, List<LobbyViewModel.ProgressiveExposure>> entry : exposureMap.entrySet()) {
+            if (entry.getValue().isEmpty())
+                continue;
+
+            LobbyHeaderItem lobbyHeaderItem = new LobbyHeaderItem(null);
+            ExpandableGroup group = new ExpandableGroup(lobbyHeaderItem, true);
+            //group.registerGroupDataObserver(rvAdapter);
+
+            for (LobbyViewModel.ProgressiveExposure exposure : entry.getValue()) {
+                group.add(new LobbyExposureItem(exposure));
+            }
+            rvAdapter.add(group);
+        }
+
+        animateHideNoExposures();
+    }
+
+    /**
+     * Resets "no exposure" indicators visibility (image + desc)
+     */
+    private void animateShowNoExposures() {
+        binding.lobbyNoEncounterYetDesc.setVisibility(View.VISIBLE);
+        binding.lobbyNoEncounterYetLogo.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * (Animates) hiding of the "no exposure" indicator (image + desc)
+     * @implNote Currently does not animate, since it leads to slight flickering under certain
+     * circumstances, that ruins the polished feel it is aimed to achieve.
+     */
+    private void animateHideNoExposures() {
+        binding.lobbyNoEncounterYetDesc.setVisibility(View.GONE);
+        binding.lobbyNoEncounterYetLogo.setVisibility(View.GONE);
     }
 
     /**
@@ -142,26 +233,19 @@ public class LobbyFragment extends Fragment {
      * @param message The new message to be published
      */
     private void onNewMessage(LobbyViewModel.LobbyMessage message) {
-        Log.d(TAG, "Publishing message: " + message);
+
+        // Simply unpublish?
+        if (message == null) {
+            unpublishCurrentMessage();
+            return;
+        }
+
         unpublishCurrentMessage();
         currentMessage = message.toMessage();
 
-        Log.d(TAG, "Namespace: " + currentMessage.getNamespace() + ", Type: " + currentMessage.getType());
-
-        messageClient.publish(currentMessage, publishOptions).addOnSuccessListener(unused -> {
-            Log.d(TAG, "Publish successful.");
-        })
-        .addOnFailureListener(e -> {
-            Log.e(TAG, "Failed to publish message", e);
-        });
-    }
-
-    /**
-     * Called, when the user clicks on a exposure in the RecyclerView
-     * @param progressiveExposure
-     */
-    private void onExposurePick(LobbyViewModel.ProgressiveExposure progressiveExposure) {
-        Log.d(TAG, "Picked exposure: " + progressiveExposure);
+        messageClient.publish(currentMessage, publishOptions)
+            .addOnSuccessListener(LobbyFragment::onPublishSuccess)
+            .addOnFailureListener(LobbyFragment::onPublishFailure);
     }
 
     /**
@@ -169,7 +253,9 @@ public class LobbyFragment extends Fragment {
      * @return null
      */
     private Unit onSwipedOn() {
-        messageClient.subscribe(messageListener, subscribeOptions);
+        messageClient.subscribe(messageListener, subscribeOptions)
+        .addOnSuccessListener(LobbyFragment::onSubscriptionSuccess)
+        .addOnFailureListener(LobbyFragment::onSubscriptionFailure);
         mViewModel.startBroadcast();
         animateOn();
         return null;
@@ -182,6 +268,7 @@ public class LobbyFragment extends Fragment {
     private Unit onSwipedOff() {
         unpublishCurrentMessage();
         messageClient.unsubscribe(messageListener);
+        mViewModel.finalizeExposures();
         animateOff();
         return null;
     }
@@ -205,6 +292,8 @@ public class LobbyFragment extends Fragment {
         binding.txtLobbyWelcome.setVisibility(View.VISIBLE);
         binding.txtLobbyDescription.setVisibility(View.VISIBLE);
         binding.cntLobbyContacts.setVisibility(View.GONE);
+
+        animateShowNoExposures();
     }
 
     /**
@@ -228,4 +317,5 @@ public class LobbyFragment extends Fragment {
 
         currentMessage = null;
     }
+
 }

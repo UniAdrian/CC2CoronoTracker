@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="contact"
+            type="de.uni.cc2coronotracker.data.models.Contact" />
+    </data>
+
+    <RelativeLayout
+        android:id="@+id/lobbyRvHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/textView66"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{(contact != null)?contact.displayName:@string/lobby_rv_uuid_unknown}"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="18sp" />
+    </RelativeLayout>
+</layout>

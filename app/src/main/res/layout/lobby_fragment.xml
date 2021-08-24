@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <data>
+        <import type="android.view.View" />
         <variable
             name="vm"
             type="de.uni.cc2coronotracker.data.viewmodel.LobbyViewModel" />
@@ -82,7 +83,7 @@
             tools:visibility="visible">
 
             <ImageView
-                android:id="@+id/imageView6"
+                android:id="@+id/lobby_no_encounter_yet_logo"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:contentDescription="@string/lobby_no_contacts"
@@ -90,7 +91,7 @@
                 app:tint="@color/secondaryTextColor" />
 
             <TextView
-                android:id="@+id/textView66"
+                android:id="@+id/lobby_no_encounter_yet_desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/lobby_no_contacts"
@@ -101,6 +102,8 @@
                 android:id="@+id/lobbyExposures"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:clickable="false"
+                android:longClickable="false"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
         </LinearLayout>
 

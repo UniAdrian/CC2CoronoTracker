@@ -12,14 +12,19 @@ import com.google.android.gms.nearby.messages.Message;
 import org.apache.commons.lang3.SerializationUtils;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.inject.Inject;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import de.uni.cc2coronotracker.data.models.Contact;
+import de.uni.cc2coronotracker.data.repositories.ContactRepository;
+import de.uni.cc2coronotracker.data.repositories.async.Result;
 import de.uni.cc2coronotracker.data.repositories.providers.ReadOnlySettingsProvider;
 
 @HiltViewModel
@@ -28,13 +33,22 @@ public class LobbyViewModel extends ViewModel {
     private static final String TAG = "LobbyViewModel";
 
     private final ReadOnlySettingsProvider settingsProvider;
+    private final ContactRepository contactRepository;
 
-    private final MutableLiveData<List<ProgressiveExposure>> currentExposures = new MutableLiveData<>();
+    private final MutableLiveData<Map<UUID, List<ProgressiveExposure>>> currentExposures = new MutableLiveData<>();
     private final MutableLiveData<LobbyMessage> currentMessage = new MutableLiveData<>();
 
+    /**
+     * Used for fast retrieval of contacts for received UUIDS
+     * Also acts as a lookup-cache.
+     */
+    private final Map<UUID, Contact> contactCache = new HashMap<>();
+
+
     @Inject
-    public LobbyViewModel(ReadOnlySettingsProvider settingsProvider) {
+    public LobbyViewModel(ReadOnlySettingsProvider settingsProvider, ContactRepository contactRepository) {
         this.settingsProvider = settingsProvider;
+        this.contactRepository = contactRepository;
     }
 
     public void startBroadcast() {
@@ -48,6 +62,52 @@ public class LobbyViewModel extends ViewModel {
      */
     public void onFound(Message message) {
         Log.d(TAG, "Found message: " + message);
+
+        try {
+            LobbyMessage lobbyMessage = LobbyMessage.fromByteArray(message.getContent());
+
+            CacheContact(lobbyMessage.uuid);
+
+            ProgressiveExposure newExposure = new ProgressiveExposure();
+            newExposure.uuid = lobbyMessage.uuid;
+            newExposure.start = new Date();
+
+            Map<UUID, List<ProgressiveExposure>> exposureMap = currentExposures.getValue();
+            if (exposureMap == null) {
+                exposureMap = new HashMap<>();
+            }
+
+            List<ProgressiveExposure> exposuresList = exposureMap.get(lobbyMessage.uuid);
+            if (exposuresList == null) {
+                exposuresList = new ArrayList<>();
+            }
+
+            // Update our state
+            exposuresList.add(newExposure);
+            exposureMap.put(lobbyMessage.uuid, exposuresList);
+            currentExposures.postValue(exposureMap);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to process message.", e);
+        }
+    }
+
+    /**
+     * Tries to fetch and cache a contact for the uuid if not yet present.
+     * @param uuid The uuid to fetch
+     */
+    private void CacheContact(UUID uuid) {
+        // Already cached?
+        if (contactCache.containsKey(uuid)) {
+            return;
+        }
+
+        contactRepository.getContact(uuid, result -> {
+            if (result instanceof Result.Success) {
+                contactCache.put(uuid, ((Result.Success<Contact>) result).data);
+            } else if (result instanceof Result.Error) {
+                Log.e(TAG, "Failed to fetch contact for UUID: " + uuid, ((Result.Error<Contact>) result).exception);
+            }
+        });
     }
 
     /**
@@ -56,16 +116,43 @@ public class LobbyViewModel extends ViewModel {
      */
     public void onLost(Message message) {
         Log.d(TAG, "Lost message: " + message);
+
+        try {
+            LobbyMessage lobbyMessage = LobbyMessage.fromByteArray(message.getContent());
+
+            // All objects handled here must be non-null at this point. So we do not bother checking.
+            // Every error that might occur is otherwise caught in the encompassing try-catch
+            Map<UUID, List<ProgressiveExposure>> exposureMap = currentExposures.getValue();
+            List<ProgressiveExposure> exposureList = exposureMap.get(lobbyMessage.uuid);
+
+            // Update the list
+            int idx = exposureList.size()-1;
+            ProgressiveExposure currentExposure = exposureList.get(idx);
+            currentExposure.end = new Date();
+            exposureList.set(idx, currentExposure);
+
+            // Update our state.
+            exposureMap.put(lobbyMessage.uuid, exposureList);
+            currentExposures.postValue(exposureMap);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to process message.", e);
+        }
     }
 
     /**
      * Fianlizes all current exposures as best as possible.
      */
     public void finalizeExposures() {
+
+        // Reset state
+        currentExposures.postValue(null);
+        currentMessage.postValue(null);
+        // We also clear the cache to save some memory. ;)
+        contactCache.clear();
     }
 
 
-    public LiveData<List<ProgressiveExposure>> getCurrentExposures() {
+    public LiveData<Map<UUID, List<ProgressiveExposure>>> getCurrentExposures() {
         return currentExposures;
     }
 
@@ -83,11 +170,27 @@ public class LobbyViewModel extends ViewModel {
 
     public static class LobbyMessage implements Serializable {
 
+        /**
+         * Future proofing.
+         * Allows us to add more functionality without changing the underlying message set
+         */
+        public enum LOBBY_MESSAGE_FLAGS {
+            LOBBY_MESSAGE_NONE(0),
+            LOBBY_MESSAGE_ALLOW_TRACKING(1 << 1);
+
+
+            private int ord;
+            LOBBY_MESSAGE_FLAGS(int ord) {
+                this.ord = ord;
+            }
+        }
+
         private final UUID uuid;
         private int flags = 0;
 
         public LobbyMessage(UUID uuid) {
             this.uuid = uuid;
+            this.flags = LOBBY_MESSAGE_FLAGS.LOBBY_MESSAGE_NONE.ord;
         }
 
         public int getFlags() {return flags;}
