@@ -32,6 +32,13 @@ public class LobbyViewModel extends ViewModel {
 
     private static final String TAG = "LobbyViewModel";
 
+    /**
+     * Resume threshold for progressive exposures in ms.
+     * Basicly, if the message is re-found again before the threshold is passed, the exposure is
+     * instead re-opened instead of adding a new one.
+     */
+    private static final long RESUME_THRESHOLD = 25000;
+
     private final ReadOnlySettingsProvider settingsProvider;
     private final ContactRepository contactRepository;
 
@@ -58,6 +65,8 @@ public class LobbyViewModel extends ViewModel {
 
     /**
      * Called, when a message is detected.
+     * Adds new exposures or - if present and the {@link #RESUME_THRESHOLD} has not yet passed -
+     * resumes the previously added exposure
      * @param message The new message found
      */
     public void onFound(Message message) {
@@ -82,8 +91,22 @@ public class LobbyViewModel extends ViewModel {
                 exposuresList = new ArrayList<>();
             }
 
+            // Check wether or not we can "resume" the last exposure.
+            if (!exposuresList.isEmpty()) {
+                int lastIndex = exposuresList.size() - 1;
+                ProgressiveExposure lastExposure = exposuresList.get(lastIndex);
+                if (lastExposure.end.getTime() + RESUME_THRESHOLD >= new Date().getTime()) {
+                    // We can resume the last exposure instead of adding a new one. :)
+                    lastExposure.end = null;
+                    exposuresList.set(lastIndex, lastExposure);
+                } else {
+                    exposuresList.add(newExposure);
+                }
+            } else {
+                exposuresList.add(newExposure);
+            }
+
             // Update our state
-            exposuresList.add(newExposure);
             exposureMap.put(lobbyMessage.uuid, exposuresList);
             currentExposures.postValue(exposureMap);
         } catch (Exception e) {

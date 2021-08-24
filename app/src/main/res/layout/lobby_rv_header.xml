@@ -15,6 +15,7 @@
             android:id="@+id/textView66"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:ellipsize="marquee"
             android:text="@{(contact != null)?contact.displayName:@string/lobby_rv_uuid_unknown}"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textSize="18sp" />
