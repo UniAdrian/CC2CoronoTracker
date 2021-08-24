@@ -13,8 +13,8 @@ import de.uni.cc2coronotracker.data.models.Exposure;
 
 @Dao
 public abstract class ExposureDao {
-    @Query("SELECT * FROM exposures")
-    public abstract LiveData<List<Exposure>> getAll();
+    @Query("SELECT * FROM exposures ORDER BY start_date DESC")
+    public abstract List<Exposure> getAll();
 
     @Query("SELECT * FROM exposures WHERE contact_id = :contact_id")
     public abstract List<Exposure> getByContactIDSync(long contact_id);
