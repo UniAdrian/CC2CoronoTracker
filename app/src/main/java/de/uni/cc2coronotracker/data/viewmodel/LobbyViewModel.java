@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.nearby.messages.Message;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.apache.commons.lang3.SerializationUtils;
 
@@ -22,10 +23,13 @@ import java.util.UUID;
 import javax.inject.Inject;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
+import de.uni.cc2coronotracker.R;
 import de.uni.cc2coronotracker.data.models.Contact;
 import de.uni.cc2coronotracker.data.repositories.ContactRepository;
 import de.uni.cc2coronotracker.data.repositories.async.Result;
 import de.uni.cc2coronotracker.data.repositories.providers.ReadOnlySettingsProvider;
+import de.uni.cc2coronotracker.helper.ContextMediator;
+import de.uni.cc2coronotracker.helper.RequestFactory;
 
 @HiltViewModel
 public class LobbyViewModel extends ViewModel {
@@ -42,6 +46,8 @@ public class LobbyViewModel extends ViewModel {
     private final ReadOnlySettingsProvider settingsProvider;
     private final ContactRepository contactRepository;
 
+    private final ContextMediator ctxMediator;
+
     private final MutableLiveData<Map<UUID, List<ProgressiveExposure>>> currentExposures = new MutableLiveData<>();
     private final MutableLiveData<LobbyMessage> currentMessage = new MutableLiveData<>();
 
@@ -53,9 +59,10 @@ public class LobbyViewModel extends ViewModel {
 
 
     @Inject
-    public LobbyViewModel(ReadOnlySettingsProvider settingsProvider, ContactRepository contactRepository) {
+    public LobbyViewModel(ReadOnlySettingsProvider settingsProvider, ContactRepository contactRepository, ContextMediator ctxMediator) {
         this.settingsProvider = settingsProvider;
         this.contactRepository = contactRepository;
+        this.ctxMediator = ctxMediator;
     }
 
     public void startBroadcast() {
@@ -75,62 +82,85 @@ public class LobbyViewModel extends ViewModel {
         try {
             LobbyMessage lobbyMessage = LobbyMessage.fromByteArray(message.getContent());
 
-            CacheContact(lobbyMessage.uuid);
-
-            ProgressiveExposure newExposure = new ProgressiveExposure();
-            newExposure.uuid = lobbyMessage.uuid;
-            newExposure.start = new Date();
-
-            Map<UUID, List<ProgressiveExposure>> exposureMap = currentExposures.getValue();
-            if (exposureMap == null) {
-                exposureMap = new HashMap<>();
+            if (contactCache.containsKey(lobbyMessage.uuid)) {
+                processMessage(lobbyMessage, contactCache.get(lobbyMessage.uuid));
+                return;
             }
 
-            List<ProgressiveExposure> exposuresList = exposureMap.get(lobbyMessage.uuid);
-            if (exposuresList == null) {
-                exposuresList = new ArrayList<>();
-            }
+            // TODO: As soon as there is time implement retry strategies for the error cases.
+            // (I recommend the strategy pattern for different retry-strategies)
+            contactRepository.getContact(lobbyMessage.uuid, result -> {
+                if (result instanceof Result.Success) {
+                    Contact fetchedContact = ((Result.Success<Contact>) result).data;
+                    if (fetchedContact != null) {
+                        contactCache.put(lobbyMessage.uuid, ((Result.Success<Contact>) result).data);
+                        processMessage(lobbyMessage, contactCache.get(lobbyMessage.uuid));
+                        return;
+                    }
+                    // Insert the contact, then proceed.
+                    Contact newContact = new Contact();
+                    newContact.uuid = lobbyMessage.uuid;
+                    newContact.displayName = lobbyMessage.uuid.toString();
 
-            // Check wether or not we can "resume" the last exposure.
-            if (!exposuresList.isEmpty()) {
-                int lastIndex = exposuresList.size() - 1;
-                ProgressiveExposure lastExposure = exposuresList.get(lastIndex);
-                if (lastExposure.end.getTime() + RESUME_THRESHOLD >= new Date().getTime()) {
-                    // We can resume the last exposure instead of adding a new one. :)
-                    lastExposure.end = null;
-                    exposuresList.set(lastIndex, lastExposure);
-                } else {
-                    exposuresList.add(newExposure);
+                    contactRepository.insertContact(newContact, (insertionResult) -> {
+                        if (insertionResult instanceof Result.Success) {
+                            processMessage(lobbyMessage, ((Result.Success<Contact>) result).data);
+                        } else if (insertionResult instanceof Result.Error) {
+                            Log.e(TAG, "Failed to fetch contact for UUID: " + lobbyMessage.uuid, ((Result.Error<Long>) insertionResult).exception);
+                            ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.lobby_insert_contact_failed, Snackbar.LENGTH_SHORT));
+                        }
+                    });
+                } else if (result instanceof Result.Error) {
+                    Log.e(TAG, "Failed to fetch contact for UUID: " + lobbyMessage.uuid, ((Result.Error<Contact>) result).exception);
+                    ctxMediator.request(RequestFactory.createSnackbarRequest(R.string.lobby_contact_fetch_failed, Snackbar.LENGTH_SHORT));
                 }
-            } else {
-                exposuresList.add(newExposure);
-            }
-
-            // Update our state
-            exposureMap.put(lobbyMessage.uuid, exposuresList);
-            currentExposures.postValue(exposureMap);
+            });
         } catch (Exception e) {
             Log.e(TAG, "Failed to process message.", e);
         }
     }
 
     /**
-     * Tries to fetch and cache a contact for the uuid if not yet present.
-     * @param uuid The uuid to fetch
+     * Adds new exposures or - if present and the {@link #RESUME_THRESHOLD} has not yet passed -
+     * resumes the previously added exposure
+     * Called by {@link #onFound(Message)}
+     * @param lobbyMessage The parsed lobbyMessage received via {@link #onFound(Message)}
+     * @param contact The contact associated with the messages uuid
      */
-    private void CacheContact(UUID uuid) {
-        // Already cached?
-        if (contactCache.containsKey(uuid)) {
-            return;
+    private void processMessage(LobbyMessage lobbyMessage, Contact contact) {
+        ProgressiveExposure newExposure = new ProgressiveExposure();
+        newExposure.uuid = lobbyMessage.uuid;
+        newExposure.start = new Date();
+        newExposure.contact = contact;
+
+        Map<UUID, List<ProgressiveExposure>> exposureMap = currentExposures.getValue();
+        if (exposureMap == null) {
+            exposureMap = new HashMap<>();
         }
 
-        contactRepository.getContact(uuid, result -> {
-            if (result instanceof Result.Success) {
-                contactCache.put(uuid, ((Result.Success<Contact>) result).data);
-            } else if (result instanceof Result.Error) {
-                Log.e(TAG, "Failed to fetch contact for UUID: " + uuid, ((Result.Error<Contact>) result).exception);
+        List<ProgressiveExposure> exposuresList = exposureMap.get(lobbyMessage.uuid);
+        if (exposuresList == null) {
+            exposuresList = new ArrayList<>();
+        }
+
+        // Check wether or not we can "resume" the last exposure.
+        if (!exposuresList.isEmpty()) {
+            int lastIndex = exposuresList.size() - 1;
+            ProgressiveExposure lastExposure = exposuresList.get(lastIndex);
+            if (lastExposure.end.getTime() + RESUME_THRESHOLD >= new Date().getTime()) {
+                // We can resume the last exposure instead of adding a new one. :)
+                lastExposure.end = null;
+                exposuresList.set(lastIndex, lastExposure);
+            } else {
+                exposuresList.add(newExposure);
             }
-        });
+        } else {
+            exposuresList.add(newExposure);
+        }
+
+        // Update our state
+        exposureMap.put(lobbyMessage.uuid, exposuresList);
+        currentExposures.postValue(exposureMap);
     }
 
     /**

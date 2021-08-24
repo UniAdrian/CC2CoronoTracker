@@ -196,7 +196,7 @@ public class LobbyFragment extends Fragment {
             if (entry.getValue().isEmpty())
                 continue;
 
-            LobbyHeaderItem lobbyHeaderItem = new LobbyHeaderItem(null);
+            LobbyHeaderItem lobbyHeaderItem = new LobbyHeaderItem(entry.getValue().get(0).contact);
             ExpandableGroup group = new ExpandableGroup(lobbyHeaderItem, true);
             //group.registerGroupDataObserver(rvAdapter);
 
