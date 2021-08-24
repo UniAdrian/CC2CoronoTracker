@@ -113,6 +113,7 @@ public class NewContactDialogFragment extends DialogFragment implements TextWatc
                 binding.txtLoDisplayName.setText(contactToUpdate.displayName);
                 positiveButton.setEnabled(true);
                 positiveButton.setText(R.string.confirm_update_contact);
+                dialog.setTitle(R.string.update_contact);
             }
         });
 

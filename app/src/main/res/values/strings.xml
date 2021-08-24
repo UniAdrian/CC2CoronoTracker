@@ -189,4 +189,5 @@
     <string name="contact_update_success">Contact updated successfully!</string>
     <string name="contact_update_failure">Contact update failed.</string>
     <string name="confirm_update_contact">Update</string>
+    <string name="update_contact">Update contact</string>
 </resources>
