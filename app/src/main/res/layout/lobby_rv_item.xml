@@ -5,8 +5,8 @@
     <data>
         <import type="java.text.DateFormat" />
         <variable
-            name="exposure"
-            type="de.uni.cc2coronotracker.data.viewmodel.LobbyViewModel.ProgressiveExposure" />
+            name="exposurePair"
+            type="de.uni.cc2coronotracker.data.viewmodel.LobbyViewModel.ExposureContactPair" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -36,7 +36,7 @@
             android:id="@+id/textView73"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{DateFormat.getDateTimeInstance().format(exposure.start).toString()}"
+            android:text="@{DateFormat.getDateTimeInstance().format(exposurePair.exposure.startDate).toString()}"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/textView71"
@@ -46,7 +46,7 @@
             android:id="@+id/textView74"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{(exposure.end != null) ? DateFormat.getDateTimeInstance().format(exposure.end).toString() : `Ongoing`}"
+            android:text="@{(exposurePair.exposure.endDate != null) ? DateFormat.getDateTimeInstance().format(exposurePair.exposure.endDate).toString() : `Ongoing`}"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView71"

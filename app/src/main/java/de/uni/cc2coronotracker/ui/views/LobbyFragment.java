@@ -185,14 +185,14 @@ public class LobbyFragment extends Fragment {
         mViewModel.getCurrentMessage().observe(getViewLifecycleOwner(), this::onNewMessage);
     }
 
-    private void onRvChanged(Map<UUID, List<LobbyViewModel.ProgressiveExposure>> exposureMap) {
+    private void onRvChanged(Map<UUID, List<LobbyViewModel.ExposureContactPair>> exposureMap) {
         if (exposureMap == null || exposureMap.isEmpty()) {
             rvAdapter.clear();
             return;
         }
 
         rvAdapter.clear();
-        for (Map.Entry<UUID, List<LobbyViewModel.ProgressiveExposure>> entry : exposureMap.entrySet()) {
+        for (Map.Entry<UUID, List<LobbyViewModel.ExposureContactPair>> entry : exposureMap.entrySet()) {
             if (entry.getValue().isEmpty())
                 continue;
 
@@ -200,7 +200,7 @@ public class LobbyFragment extends Fragment {
             ExpandableGroup group = new ExpandableGroup(lobbyHeaderItem, true);
             //group.registerGroupDataObserver(rvAdapter);
 
-            for (LobbyViewModel.ProgressiveExposure exposure : entry.getValue()) {
+            for (LobbyViewModel.ExposureContactPair exposure : entry.getValue()) {
                 group.add(new LobbyExposureItem(exposure));
             }
             rvAdapter.add(group);

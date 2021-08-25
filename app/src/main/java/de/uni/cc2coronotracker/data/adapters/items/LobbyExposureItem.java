@@ -12,8 +12,8 @@ import de.uni.cc2coronotracker.databinding.LobbyRvItemBinding;
 
 public class LobbyExposureItem extends BindableItem<LobbyRvItemBinding> {
 
-    private LobbyViewModel.ProgressiveExposure exposure;
-    public LobbyExposureItem(LobbyViewModel.ProgressiveExposure exposure) {
+    private LobbyViewModel.ExposureContactPair exposure;
+    public LobbyExposureItem(LobbyViewModel.ExposureContactPair exposure) {
         this.exposure = exposure;
     }
 
@@ -24,7 +24,7 @@ public class LobbyExposureItem extends BindableItem<LobbyRvItemBinding> {
     }
 
     @Override public void bind(LobbyRvItemBinding binding, int position) {
-        binding.setExposure(exposure);
+        binding.setExposurePair(exposure);
     }
 
     @Override public int getLayout() {

@@ -40,4 +40,32 @@ public class Exposure {
 
     @ColumnInfo(name = "location", defaultValue = "NULL")
     public LatLng location;
+
+    /**
+     * Required default constrcutor
+     */
+    public Exposure() {}
+
+    /**
+     * Copy constructor
+     * @param other Exposure to copy from
+     */
+    public Exposure(Exposure other) {
+        this.id = other.id;
+        this.contactId = other.contactId;
+        this.startDate = other.startDate;
+        this.endDate = other.endDate;
+        this.location = other.location;
+    }
+
+    @Override
+    public String toString() {
+        return "Exposure{" +
+                "id=" + id +
+                ", contactId=" + contactId +
+                ", startDate=" + startDate.getTime() +
+                ", endDate=" + ((endDate != null) ? endDate.getTime() : null) +
+                ", location=" + location +
+                '}';
+    }
 }
