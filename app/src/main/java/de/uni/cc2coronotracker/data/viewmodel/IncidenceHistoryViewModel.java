@@ -12,6 +12,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -34,7 +35,7 @@ public class IncidenceHistoryViewModel extends ViewModel {
     private ContextMediator ctxMediator;
 
     private MutableLiveData<List<CalendarViewModel.ExposureDisplayInfo>> exposureInfo = new MutableLiveData<>();
-    private HashMap<String, List<CalendarViewModel.ExposureDisplayInfo>> groupedHashMap = new HashMap<>();
+    private LinkedHashMap<String, List<CalendarViewModel.ExposureDisplayInfo>> groupedHashMap = new LinkedHashMap<>();
     private LiveData<List<IncidenceRVItems.ListItem>> consolidatedList;
     public MutableLiveData<List<CalendarViewModel.ExposureDisplayInfo>> getExposureInfo () {
         return exposureInfo;
@@ -68,8 +69,8 @@ public class IncidenceHistoryViewModel extends ViewModel {
         });
     }
 
-    private HashMap<String, List<CalendarViewModel.ExposureDisplayInfo>> groupDataIntoHashMap(List<CalendarViewModel.ExposureDisplayInfo> listOfInfo) {
-        HashMap<String, List<CalendarViewModel.ExposureDisplayInfo>> groupedHashMap = new HashMap<>();
+    private LinkedHashMap<String, List<CalendarViewModel.ExposureDisplayInfo>> groupDataIntoHashMap(List<CalendarViewModel.ExposureDisplayInfo> listOfInfo) {
+        LinkedHashMap<String, List<CalendarViewModel.ExposureDisplayInfo>> groupedHashMap = new LinkedHashMap<>();
         for(CalendarViewModel.ExposureDisplayInfo info : listOfInfo) {
             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
             String hashMapKey = dateFormat.format(info.exposureData.startDate);
