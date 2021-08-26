@@ -118,15 +118,7 @@ public class ContactRepository{
         executor.execute(() -> {
             try {
                 Contact c = contactDao.getByUUIDSync(uuid);
-
-                Result<Contact> result;
-                if (c == null) {
-                    result = new Result.Success<>(null);
-                } else {
-                    result = new Result.Success<>(c);
-                }
-
-                callback.onComplete(result);
+                callback.onComplete(new Result.Success<>(c));
             } catch (Exception e) {
                 Result<Contact> errorResult = new Result.Error<>(e);
                 callback.onComplete(errorResult);
@@ -285,4 +277,18 @@ public class ContactRepository{
         });
     }
 
+
+    /**
+     * Updates the contact to the new values
+     * @param toUpdate The contact with new values.
+     */
+    public void update(Contact toUpdate, RepositoryCallback<Integer> callback) {
+        executor.execute(() -> {
+            try {
+                callback.onComplete(new Result.Success<>(contactDao.update(toUpdate)));
+            } catch (Exception e) {
+                callback.onComplete(new Result.Error<>(e));
+            }
+        });
+    }
 }

@@ -1,6 +1,8 @@
 package de.uni.cc2coronotracker.data.models;
 
 import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
@@ -20,7 +22,12 @@ import java.util.UUID;
             @Index(value = {"lookup_uri"}, unique = true)
         }
 )
-public class Contact {
+public class Contact implements Parcelable {
+
+    // Required default constructor
+    public Contact() {
+    }
+
     @PrimaryKey(autoGenerate = true)
     public long id;
 
@@ -55,5 +62,43 @@ public class Contact {
      */
     public boolean isBound() {
         return lookupUri != null;
+    }
+
+
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public Contact createFromParcel(Parcel in) {
+            return new Contact(in);
+        }
+
+        public Contact[] newArray(int size) {
+            return new Contact[size];
+        }
+    };
+
+    public Contact(Parcel in){
+        this.id = in.readLong();
+        this.uuid = (UUID) in.readSerializable();
+        this.displayName = in.readString();
+        // Boolean support requires a higher API level...
+        this.favorite = in.readInt() == 1;
+        this.photoUri = in.readParcelable(Contact.class.getClassLoader());
+        this.lookupUri = in.readParcelable(Contact.class.getClassLoader());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int flags) {
+        parcel.writeLong(id);
+        parcel.writeSerializable(uuid);
+        parcel.writeString(displayName);
+        // Boolean support requires a higher API level...
+        parcel.writeInt((favorite)?1:0);
+        parcel.writeParcelable(photoUri, flags);
+        parcel.writeParcelable(lookupUri, flags);
     }
 }

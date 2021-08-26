@@ -184,4 +184,12 @@
     <string name="preferences_personal_uuid_key">app_uuid</string>
     <string name="preferences_app_style">Cosmetic</string>
     <string name="incidenceListText">All incidences</string>
+    <string name="lobby_rv_uuid_unknown">Unknown UUID</string>
+    <string name="EditContactDesc">Edit contact</string>
+    <string name="contact_update_success">Contact updated successfully!</string>
+    <string name="contact_update_failure">Contact update failed.</string>
+    <string name="confirm_update_contact">Update</string>
+    <string name="update_contact">Update contact</string>
+    <string name="lobby_contact_fetch_failed">Failed to process received message: Contact retrieval failed.</string>
+    <string name="lobby_insert_contact_failed">Failed to process received message: Contact insertion failed.</string>
 </resources>

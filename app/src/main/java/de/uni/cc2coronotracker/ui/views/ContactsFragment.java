@@ -48,8 +48,8 @@ public class ContactsFragment extends Fragment implements SearchView.OnQueryText
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        contactsViewModel = new ViewModelProvider(this.getActivity()).get(ContactViewModel.class);
-        contactCreationViewModel = new ViewModelProvider(this.getActivity()).get(ContactCreationDialogViewModel.class);
+        contactsViewModel = new ViewModelProvider(this).get(ContactViewModel.class);
+        contactCreationViewModel = new ViewModelProvider(this).get(ContactCreationDialogViewModel.class);
 
         getContactLauncher = registerForActivityResult(new ActivityResultContracts.PickContact(), uri -> contactsViewModel.onContactPick(uri));
 

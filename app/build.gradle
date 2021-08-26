@@ -87,6 +87,11 @@ dependencies {
     // statistics, graphs, etc
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
+    // Groupie for nice rv's
+    def groupie_version = "2.9.0";
+    implementation "com.github.lisawray.groupie:groupie:$groupie_version"
+    implementation "com.github.lisawray.groupie:groupie-viewbinding:$groupie_version"
+
     // Rest API requests
     implementation 'com.google.code.gson:gson:2.8.7'
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
